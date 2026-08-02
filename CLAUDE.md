@@ -67,9 +67,12 @@ docs/
   especificacao.md        brief original, historico, nao mantido
 scripts/
   bootstrap-tools.ps1     baixa yt-dlp e FFmpeg
+  build-icon.ps1          desenha assets/ytdown.ico
   publish.ps1             gera pasta, zip e instalador em dist/
 installer/
   YTDown.iss              script do Inno Setup, compilado pelo publish.ps1
+assets/
+  ytdown.ico              icone do aplicativo e do instalador
 tools/
   tools.lock.json         versoes fixadas + SHA256
   yt-dlp.exe, ffmpeg.exe  nao versionados
@@ -336,6 +339,24 @@ dos 97 MB do FFmpeg.
 O script confere que `tools/` saiu com o yt-dlp, o FFmpeg e o `tools.lock.json`.
 Sem isso, a falta so apareceria na maquina de quem recebeu o pacote.
 
+### O icone e desenhado por codigo
+
+`scripts/build-icon.ps1` gera `assets/ytdown.ico`. Desenhar por codigo em vez de
+editar em uma ferramenta grafica segue a mesma logica das ferramentas externas:
+o resultado pode ser refeito e ajustado sem depender de nada instalado, e o
+binario versionado deixa de ser um arquivo sem procedencia. O script reproduz o
+`.ico` byte a byte.
+
+**Cada tamanho e desenhado no seu proprio tamanho**, e nao reduzido do maior, que
+e o que deixa icone borrado nas dimensoes pequenas. Sao sete: 16, 24, 32, 48, 64,
+128 e 256. Ate 48 vao como DIB, que qualquer contexto do shell le; acima disso
+como PNG, para o arquivo nao inchar.
+
+Um `ApplicationIcon` no `csproj` resolve executavel, janela e barra de tarefas de
+uma vez, porque o WPF usa o icone do proprio executavel. O instalador precisa do
+seu, pelo `SetupIconFile`: sem ele o `setup.exe` sai com o icone generico do Inno
+Setup, e ele e o primeiro arquivo que a pessoa ve.
+
 ### O instalador nao pede administrador
 
 `installer/YTDown.iss`, compilado pelo Inno Setup 7 a partir do `publish.ps1`,
@@ -434,7 +455,6 @@ Video de referencia para testes: `https://www.youtube.com/watch?v=UKcJqQqiXq0`
   downloads: e o unico problema aqui sem solucao tecnica.
 - **Gerar o instalador exige o Inno Setup** instalado na maquina que publica.
   Sem ele o script gera apenas a pasta e o zip, e avisa.
-- **Sem icone proprio.** O executavel usa o icone padrao do .NET.
 - Sem tratador global de excecoes na UI.
 
 ---

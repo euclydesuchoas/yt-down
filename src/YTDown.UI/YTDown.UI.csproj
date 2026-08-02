@@ -18,6 +18,11 @@
     <Description>Baixa videos e audios do YouTube.</Description>
     <Authors>Euclydes Uchoas</Authors>
     <Copyright>Euclydes Uchoas</Copyright>
+
+    <!-- Vale para o executavel, para a janela e para a barra de tarefas de uma
+         vez so: o WPF usa o icone do proprio executavel. Gerado por
+         scripts/build-icon.ps1. -->
+    <ApplicationIcon>..\..\assets\ytdown.ico</ApplicationIcon>
   </PropertyGroup>
 
   <!--

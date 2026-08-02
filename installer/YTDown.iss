@@ -51,6 +51,10 @@ SolidCompression=yes
 OutputDir={#OutputDirectory}
 OutputBaseFilename=YTDown-{#AppVersion}-setup
 
+; Sem isto o proprio setup.exe sai com o icone generico do Inno Setup, que e o
+; primeiro arquivo que a pessoa ve ao receber o aplicativo.
+SetupIconFile=..\assets\ytdown.ico
+
 ; O publico-alvo nao tem o que decidir aqui: sem componentes, sem escolha de
 ; pasta do menu Iniciar, sem tela de boas-vindas para clicar em Avancar.
 DisableProgramGroupPage=yes
