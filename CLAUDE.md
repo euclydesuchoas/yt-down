@@ -67,6 +67,7 @@ docs/
   especificacao.md        brief original, historico, nao mantido
 scripts/
   bootstrap-tools.ps1     baixa yt-dlp e FFmpeg
+  publish.ps1             gera o pacote self-contained em dist/
 tools/
   tools.lock.json         versoes fixadas + SHA256
   yt-dlp.exe, ffmpeg.exe  nao versionados
@@ -249,6 +250,27 @@ Falha ao gravar nao impede o usuario de fechar a tela: a escolha vale na mesma
 hora e dura ate o aplicativo fechar. Recusar a mudanca por causa de um arquivo
 que nao pode ser escrito seria pior que perde-la na proxima abertura.
 
+### O pacote leva o .NET junto, e nao e um arquivo unico
+
+`scripts/publish.ps1` publica **self-contained** para `win-x64`. Pedir que o
+publico-alvo instale um runtime antes de baixar um video seria perder a pessoa
+na primeira tela. Custa 255 MB em pasta, 113 MB no zip.
+
+**Sem `PublishSingleFile`.** Um executavel unico seria mais bonito de entregar,
+mas o WPF precisa extrair bibliotecas nativas para uma pasta temporaria na
+primeira execucao — mais lentidao e mais um motivo para o antivirus reclamar. O
+destino final e um instalador, onde uma pasta com muitos arquivos e o normal.
+
+**Sem trimming.** O WPF carrega XAML por reflexao, e o recorte remove o que ele
+so procura em tempo de execucao. Falharia na abertura, nao no build.
+
+**Com `PublishReadyToRun`.** Troca tamanho por tempo ate a janela aparecer, que
+e por onde este publico julga qualidade. Os megabytes a mais pesam pouco ao lado
+dos 97 MB do FFmpeg.
+
+O script confere que `tools/` saiu com o yt-dlp, o FFmpeg e o `tools.lock.json`.
+Sem isso, a falta so apareceria na maquina de quem recebeu o pacote.
+
 ### FluentAssertions fixado em 7.x
 
 A partir da 8.0.0 o pacote exige licenca comercial para uso nao open source. A
@@ -317,6 +339,10 @@ Video de referencia para testes: `https://www.youtube.com/watch?v=UKcJqQqiXq0`
   aviso na tela. Falhar o download seria pior, mas o usuario pode estranhar.
 - O limite de cinquenta registros do historico continua fixo no codigo. E um
   botao de desenvolvedor numa tela feita para quem nao e.
+- **Nao ha instalador nem assinatura.** A entrega e um zip, e o Windows avisa
+  que o programa e de origem desconhecida. Assinar exige um certificado pago; um
+  instalador exige uma ferramenta que esta maquina ainda nao tem.
+- **Sem icone proprio.** O executavel usa o icone padrao do .NET.
 - Sem tratador global de excecoes na UI.
 
 ---
@@ -332,7 +358,8 @@ Video de referencia para testes: `https://www.youtube.com/watch?v=UKcJqQqiXq0`
 | 5 | Runtime JavaScript, se o 403 e a verificacao anti-robo reincidirem |
 | 6 (feita) | Historico dos ultimos downloads, em janela propria |
 | 7 (feita) | Configuracoes de destino e de qualidade padrao |
-| 8+ | Fila, tema, distribuicao |
+| 8 (parcial) | Pacote self-contained e zip; falta o instalador |
+| 9+ | Fila, tema |
 
 ### Decisoes ja tomadas
 

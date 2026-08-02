@@ -57,6 +57,21 @@ temporariamente o seu endereco de rede. No dia a dia, prefira o filtro acima.
 
 ---
 
+## Gerar uma versao para entregar
+
+```powershell
+./scripts/publish.ps1
+```
+
+Produz `dist/YTDown-<versao>-win-x64/` e o zip correspondente. O .NET vai dentro
+do pacote: quem receber extrai e executa `YTDown.exe`, sem instalar nada.
+
+Nao e um instalador, e o executavel nao e assinado — o Windows vai avisar que o
+programa e de origem desconhecida, e a pessoa precisa escolher executar mesmo
+assim.
+
+---
+
 ## Estrutura
 
 ```
