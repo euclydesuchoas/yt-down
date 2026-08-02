@@ -8,7 +8,12 @@
         Background="#FFF7F8FA"
         FontFamily="Segoe UI">
 
-    <Grid Margin="32,28">
+    <!--
+        IsSharedSizeScope alinha os campos das linhas de escolha: os rotulos tem
+        larguras diferentes, e sem isso cada campo comecaria em um ponto,
+        formando um ziguezague. A coluna se ajusta sozinha ao rotulo mais largo.
+    -->
+    <Grid Margin="32,28" Grid.IsSharedSizeScope="True">
         <!--
             A ordem das linhas conta a historia da tela: endereco, o video que
             foi encontrado, as escolhas sobre ele e o resultado. Escolher antes
@@ -248,7 +253,7 @@
               IsEnabled="{Binding DownloadCommand.IsRunning, Converter={StaticResource InverseBoolean}}"
               Visibility="{Binding Video, Converter={StaticResource NotEmptyToVisibility}}">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" SharedSizeGroup="RotuloDaEscolha" />
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
@@ -289,7 +294,7 @@
               IsEnabled="{Binding DownloadCommand.IsRunning, Converter={StaticResource InverseBoolean}}"
               Visibility="{Binding Video, Converter={StaticResource NotEmptyToVisibility}}">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" SharedSizeGroup="RotuloDaEscolha" />
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
@@ -330,7 +335,7 @@
               IsEnabled="{Binding DownloadCommand.IsRunning, Converter={StaticResource InverseBoolean}}"
               Visibility="{Binding Video, Converter={StaticResource NotEmptyToVisibility}}">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" SharedSizeGroup="RotuloDaEscolha" />
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
