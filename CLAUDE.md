@@ -16,9 +16,10 @@ prioridade e simplicidade de uso.
 O aplicativo nao reimplementa nada que o **yt-dlp** e o **FFmpeg** ja resolvem:
 ele os orquestra e apresenta o resultado de forma compreensivel.
 
-**Estado atual:** consulta de metadados e download funcionando de ponta a ponta,
-com progresso, cancelamento e abertura da pasta. Sem selecao de qualidade,
-historico ou configuracoes.
+**Estado atual:** consulta, escolha de qualidade, download em MP4 ou MP3,
+progresso, cancelamento, abertura da pasta, ferramentas que se instalam e se
+atualizam sozinhas, e historico dos ultimos downloads. Sem configuracoes e sem
+fila.
 
 ---
 
@@ -56,7 +57,7 @@ controle positivo que garante que a deteccao de dependencias esta funcionando.
 src/
   YTDown.Domain/          Exceptions/ ValueObjects/
   YTDown.Application/     Common/ DTOs/ DependencyInjection/ Interfaces/ Services/
-  YTDown.Infrastructure/  DependencyInjection/ Processes/ Tools/ YouTube/
+  YTDown.Infrastructure/  DependencyInjection/ FileSystem/ Processes/ Tools/ YouTube/
   YTDown.UI/              Converters/ Resources/ ViewModels/ Views/
 tests/
   YTDown.UnitTests/         espelha a estrutura de src/
@@ -98,7 +99,9 @@ Download de um video:
 4. `YtDlpProgressParser` le cada linha; `DownloadProgressAggregator` transforma
    o progresso de cada stream em um unico percentual crescente
 5. A pasta de trabalho e removida em `finally`; ao cancelar, nada sobra
-6. O ViewModel exibe o arquivo e habilita "Abrir pasta", que passa pelo
+6. Dando certo, o `DownloadService` registra o download pelo
+   `DownloadHistoryService`, que grava em `history.json`
+7. O ViewModel exibe o arquivo e habilita "Abrir pasta", que passa pelo
    `IFileExplorer` porque a apresentacao nao pode iniciar processos
 
 ---
@@ -202,6 +205,28 @@ As faixas vem da proporcao real medida: no video de referencia o audio e pouco
 mais de 7% dos bytes. O percentual nunca retrocede, porque os dois streams sao
 baixados em sequencia e cada um comeca do zero.
 
+### O historico e um JSON, e guarda pouco
+
+Fica em `%LOCALAPPDATA%\YTDown\history.json`, ao lado da pasta `tools`. Sao
+poucas dezenas de registros lidos de uma vez so: um banco embarcado traria
+esquema, migracao e mais uma dependencia grande no instalador para um problema
+que este aplicativo nao tem. Em texto, o arquivo ainda pode ser conferido a mao.
+
+**Guarda so o que se sabe quando o download termina:** endereco normalizado,
+caminho, nome, tamanho, tipo e horario. Titulo e canal ficam de fora porque so
+existem se o usuario tiver buscado o video antes, e baixar sem buscar e um
+caminho valido. O nome do arquivo ja e o titulo, escrito pelo yt-dlp.
+
+A escrita e feita em arquivo ao lado, seguida de troca, para que uma queda no
+meio nao deixe o historico pela metade. Na leitura, JSON invalido devolve lista
+vazia: perder a lista e aceitavel, deixar o aplicativo sem abrir nao e. Falha de
+acesso ao arquivo tambem nao derruba um download que ja terminou — mas qualquer
+excecao que **nao** seja `IOException` ou `UnauthorizedAccessException` continua
+subindo, porque ai o defeito e nosso.
+
+O limite e de cinquenta registros. Passando disso, a lista deixa de responder a
+pergunta que motiva abri-la e vira algo que ninguem le.
+
 ### FluentAssertions fixado em 7.x
 
 A partir da 8.0.0 o pacote exige licenca comercial para uso nao open source. A
@@ -261,7 +286,11 @@ Video de referencia para testes: `https://www.youtube.com/watch?v=UKcJqQqiXq0`
   aplicativo para de funcionar e o usuario nao tera como resolver.
 - Uma playlist colada e reduzida ao video atual, sem qualquer aviso na tela.
 - Apenas um download por vez, sem fila.
-- Sem persistencia: nada de historico ou configuracoes.
+- **O historico nao sabe se o arquivo ainda existe.** Registro apagado ou movido
+  continua na lista, e "Abrir pasta" leva a pasta sem selecionar nada. Conferir
+  a existencia de cinquenta arquivos a cada abertura custaria mais do que
+  resolve, e um registro que some sozinho seria pior de entender.
+- Sem configuracoes: destino, limite do historico e qualidade padrao sao fixos.
 - Sem tratador global de excecoes na UI.
 
 ---
@@ -275,7 +304,8 @@ Video de referencia para testes: `https://www.youtube.com/watch?v=UKcJqQqiXq0`
 | 3 (feita) | Selecao de qualidade e download somente de audio em MP3 |
 | 4 (feita) | Ferramentas em `%LOCALAPPDATA%` e atualizacao automatica do yt-dlp |
 | 5 | Runtime JavaScript, se o 403 e a verificacao anti-robo reincidirem |
-| 6+ | Historico, configuracoes, fila, tema, distribuicao |
+| 6 (feita) | Historico dos ultimos downloads, em janela propria |
+| 7+ | Configuracoes, fila, tema, distribuicao |
 
 ### Decisoes ja tomadas
 
@@ -285,7 +315,7 @@ Video de referencia para testes: `https://www.youtube.com/watch?v=UKcJqQqiXq0`
   gastando minutos de CPU a 100% com a barra parada. Para o publico deste
   aplicativo, um MP4 previsivel vale mais que resolucao maior.
 - **Pasta Downloads, sem perguntar.** Um seletor de pasta a cada download e
-  atrito exatamente onde o publico-alvo trava. Vira configuracao na fatia 5.
+  atrito exatamente onde o publico-alvo trava. Vira configuracao na fatia 7.
 - **Um download por vez.** Downloads simultaneos dividem a banda, embaralham o
   progresso e tornam cancelamento e limpeza bem mais dificeis.
 
