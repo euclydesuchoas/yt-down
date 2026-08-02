@@ -20,19 +20,35 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <StackPanel Grid.Row="0">
-            <TextBlock Text="YTDown" Style="{StaticResource HeadingText}" />
-            <TextBlock Style="{StaticResource SubtleText}"
-                       Margin="0,4,0,0"
-                       Text="Cole o endereco do video do YouTube. O arquivo e salvo na sua pasta Downloads." />
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
 
-            <TextBlock Style="{StaticResource SubtleText}"
-                       Margin="0,6,0,0"
-                       FontSize="12"
-                       Foreground="#FF98A0AF"
-                       Text="{Binding MaintenanceMessage}"
-                       Visibility="{Binding MaintenanceMessage, Converter={StaticResource NotEmptyToVisibility}}" />
-        </StackPanel>
+            <StackPanel Grid.Column="0">
+                <TextBlock Text="YTDown" Style="{StaticResource HeadingText}" />
+                <TextBlock Style="{StaticResource SubtleText}"
+                           Margin="0,4,0,0"
+                           Text="Cole o endereco do video do YouTube. O arquivo e salvo na sua pasta Downloads." />
+
+                <TextBlock Style="{StaticResource SubtleText}"
+                           Margin="0,6,0,0"
+                           FontSize="12"
+                           Foreground="#FF98A0AF"
+                           Text="{Binding MaintenanceMessage}"
+                           Visibility="{Binding MaintenanceMessage, Converter={StaticResource NotEmptyToVisibility}}" />
+            </StackPanel>
+
+            <Button Grid.Column="1"
+                    Margin="16,0,0,0"
+                    Height="34"
+                    Padding="16,0"
+                    VerticalAlignment="Top"
+                    Content="Historico"
+                    Style="{StaticResource SecondaryButton}"
+                    Click="OnHistoryRequested" />
+        </Grid>
 
         <Grid Grid.Row="1"
               Margin="0,24,0,0"

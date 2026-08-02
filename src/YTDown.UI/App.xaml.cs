@@ -28,6 +28,12 @@ public partial class App : System.Windows.Application
         services.AddSingleton<MainViewModel>();
         services.AddSingleton<MainWindow>();
 
+        // O historico e uma janela por abertura, e nao uma so reaproveitada: a
+        // lista precisa chegar recem-lida do disco.
+        services.AddTransient<HistoryViewModel>();
+        services.AddTransient<HistoryWindow>();
+        services.AddSingleton<Func<HistoryWindow>>(provider => provider.GetRequiredService<HistoryWindow>);
+
         _services = services.BuildServiceProvider();
     }
 
