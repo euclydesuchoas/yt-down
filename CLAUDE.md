@@ -55,7 +55,7 @@ controle positivo que garante que a deteccao de dependencias esta funcionando.
 
 ```
 src/
-  YTDown.Domain/          Exceptions/ ValueObjects/
+  YTDown.Domain/          Exceptions/ ValueObjects/   (VideoUrl, OutputFileName)
   YTDown.Application/     Common/ DTOs/ DependencyInjection/ Interfaces/ Services/
   YTDown.Infrastructure/  DependencyInjection/ FileSystem/ Processes/ Tools/ YouTube/
   YTDown.UI/              Converters/ Resources/ ViewModels/ Views/
@@ -249,6 +249,27 @@ primeiro ainda na tela.
 A ordem das linhas da `MainWindow` conta essa historia: endereco, video
 encontrado, escolhas sobre ele, resultado. O botao Baixar vive na linha das
 escolhas, junto das decisoes que executa.
+
+### O yt-dlp mente quando o arquivo ja existe
+
+**Medido, nao suposto.** Pedindo um video com o nome de um arquivo que ja esta na
+pasta, o yt-dlp **pula o download, termina com codigo zero e imprime o caminho
+final** como se tivesse baixado. O aplicativo mostraria "Download concluido", o
+historico registraria, e o arquivo seria o antigo. Ele tambem nao acrescenta
+sufixo sozinho.
+
+Por isso `YtDlpOutputTemplate` escolhe um nome livre **antes** de chamar a
+ferramenta: `Musica`, `Musica (2)`, `Musica (3)`, como faz o navegador.
+Sobrescrever resolveria a mentira, mas apagaria em silencio um arquivo do
+usuario.
+
+Isso ja valia para nomes vindos do titulo — dois videos de titulo igual, ou que
+truncam igual em cem caracteres — so que era raro. Com nome escolhido a mao,
+"Musica" e "Ao Vivo" viram rotina.
+
+**O `%` abre um campo no template de saida.** Um nome com "100%" seria lido como
+instrucao, e "%(title)s" viraria o titulo do video. Duplicar (`%%`) devolve o
+caractere literal; verificado com `--simulate --print filename`.
 
 ### A pasta tem dois niveis: padrao nas configuracoes, excecao no download
 

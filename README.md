@@ -32,6 +32,11 @@ tempo sao ignorados: apenas o video colado e considerado.
 A lista de qualidades mostra o que aquele video realmente oferece. Marque
 **Baixar somente o audio** para receber um MP3 no lugar do video.
 
+**Nome** vem preenchido com o titulo do video e pode ser trocado — clicar
+seleciona tudo, entao basta digitar por cima. A extensao fica ao lado e nao e
+digitada. Se ja houver um arquivo com esse nome na pasta, o novo sai como
+`Nome (2)`, sem apagar o anterior.
+
 **Salvar em** escolhe a pasta deste download, sem mexer nas configuracoes. A
 lista traz a pasta padrao e as usadas recentemente; **Escolher...** abre o
 seletor do Windows. A escolha vale para os proximos downloads ate fechar o
