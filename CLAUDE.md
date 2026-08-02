@@ -18,8 +18,8 @@ ele os orquestra e apresenta o resultado de forma compreensivel.
 
 **Estado atual:** consulta, escolha de qualidade, download em MP4 ou MP3,
 progresso, cancelamento, abertura da pasta, ferramentas que se instalam e se
-atualizam sozinhas, e historico dos ultimos downloads. Sem configuracoes e sem
-fila.
+atualizam sozinhas, historico dos ultimos downloads e configuracoes de destino e
+qualidade. Sem fila.
 
 ---
 
@@ -93,7 +93,7 @@ Download de um video:
 1. `MainViewModel.DownloadAsync` cria o `Progress<T>` na linha da interface, de
    modo que cada atualizacao volte para ela sozinha
 2. `DownloadService` valida a URL e pergunta o destino ao
-   `IDownloadLocationProvider`
+   `IDownloadLocationProvider`, que consulta as configuracoes
 3. `YtDlpVideoDownloader` cria a pasta de trabalho, monta os argumentos e
    acompanha a saida linha a linha
 4. `YtDlpProgressParser` le cada linha; `DownloadProgressAggregator` transforma
@@ -227,6 +227,28 @@ subindo, porque ai o defeito e nosso.
 O limite e de cinquenta registros. Passando disso, a lista deixa de responder a
 pergunta que motiva abri-la e vira algo que ninguem le.
 
+### As configuracoes ficam em memoria depois da primeira leitura
+
+Em `%LOCALAPPDATA%\YTDown\settings.json`, pelo mesmo `JsonFile` do historico.
+Guardam a pasta de destino e o teto de qualidade.
+
+Sao lidas do disco **uma vez**. Todo download consulta o destino, e reler a cada
+consulta seria pagar por algo que nunca muda sozinha: quem grava e o proprio
+aplicativo, que atualiza a copia em memoria ao salvar.
+
+**Nulo e resposta, e nao ausencia:** significa a pasta Downloads e a melhor
+qualidade disponivel. Por isso `SettingsDto` tem os dois campos anulaveis e um
+`Default` estatico, em vez de valores fixos escritos no DTO.
+
+**O teto de qualidade e limite, nao exigencia.** As qualidades que o video
+oferece continuam todas na lista; o teto so decide qual ja vem marcada. Um video
+que so exista em 480p continua sendo baixado com o teto em 1080p. Esconder o que
+existe transformaria uma preferencia em impedimento.
+
+Falha ao gravar nao impede o usuario de fechar a tela: a escolha vale na mesma
+hora e dura ate o aplicativo fechar. Recusar a mudanca por causa de um arquivo
+que nao pode ser escrito seria pior que perde-la na proxima abertura.
+
 ### FluentAssertions fixado em 7.x
 
 A partir da 8.0.0 o pacote exige licenca comercial para uso nao open source. A
@@ -290,7 +312,11 @@ Video de referencia para testes: `https://www.youtube.com/watch?v=UKcJqQqiXq0`
   continua na lista, e "Abrir pasta" leva a pasta sem selecionar nada. Conferir
   a existencia de cinquenta arquivos a cada abertura custaria mais do que
   resolve, e um registro que some sozinho seria pior de entender.
-- Sem configuracoes: destino, limite do historico e qualidade padrao sao fixos.
+- **Pasta de destino que sumiu volta a Downloads em silencio.** Pendrive
+  removido ou unidade de rede fora do ar levam o arquivo para Downloads sem
+  aviso na tela. Falhar o download seria pior, mas o usuario pode estranhar.
+- O limite de cinquenta registros do historico continua fixo no codigo. E um
+  botao de desenvolvedor numa tela feita para quem nao e.
 - Sem tratador global de excecoes na UI.
 
 ---
@@ -305,7 +331,8 @@ Video de referencia para testes: `https://www.youtube.com/watch?v=UKcJqQqiXq0`
 | 4 (feita) | Ferramentas em `%LOCALAPPDATA%` e atualizacao automatica do yt-dlp |
 | 5 | Runtime JavaScript, se o 403 e a verificacao anti-robo reincidirem |
 | 6 (feita) | Historico dos ultimos downloads, em janela propria |
-| 7+ | Configuracoes, fila, tema, distribuicao |
+| 7 (feita) | Configuracoes de destino e de qualidade padrao |
+| 8+ | Fila, tema, distribuicao |
 
 ### Decisoes ja tomadas
 
@@ -315,7 +342,8 @@ Video de referencia para testes: `https://www.youtube.com/watch?v=UKcJqQqiXq0`
   gastando minutos de CPU a 100% com a barra parada. Para o publico deste
   aplicativo, um MP4 previsivel vale mais que resolucao maior.
 - **Pasta Downloads, sem perguntar.** Um seletor de pasta a cada download e
-  atrito exatamente onde o publico-alvo trava. Vira configuracao na fatia 7.
+  atrito exatamente onde o publico-alvo trava. Quem quer outro destino escolhe
+  uma vez nas configuracoes, e nao a cada download.
 - **Um download por vez.** Downloads simultaneos dividem a banda, embaralham o
   progresso e tornam cancelamento e limpeza bem mais dificeis.
 

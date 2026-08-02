@@ -5,7 +5,7 @@ simples.
 
 > **Estado atual:** em desenvolvimento. O aplicativo ja consulta um video, baixa
 > em MP4 na qualidade escolhida ou extrai apenas o audio em MP3, com progresso,
-> cancelamento e historico dos ultimos downloads. Ainda nao ha configuracoes.
+> cancelamento, historico e configuracoes. Ainda nao ha fila de downloads.
 
 ---
 
@@ -37,6 +37,10 @@ a qualidade maxima, mesmo em videos publicados em 4K.
 
 **Historico**, no canto superior direito, lista os ultimos cinquenta downloads e
 abre a pasta de qualquer um deles. Limpar a lista nao apaga arquivo nenhum.
+
+**Configuracoes**, ao lado, guarda duas escolhas: em que pasta salvar e ate que
+qualidade baixar. O limite de qualidade nao impede nada — um video que so exista
+em 480p continua sendo baixado.
 
 ---
 
