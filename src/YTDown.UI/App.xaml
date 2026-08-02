@@ -3,8 +3,14 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:converters="clr-namespace:YTDown.UI.Converters">
     <Application.Resources>
-        <converters:NotEmptyToVisibilityConverter x:Key="NotEmptyToVisibility" />
-        <converters:InverseBooleanConverter x:Key="InverseBoolean" />
-        <BooleanToVisibilityConverter x:Key="BooleanToVisibility" />
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Resources/AppStyles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <converters:NotEmptyToVisibilityConverter x:Key="NotEmptyToVisibility" />
+            <converters:InverseBooleanConverter x:Key="InverseBoolean" />
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibility" />
+        </ResourceDictionary>
     </Application.Resources>
 </Application>
