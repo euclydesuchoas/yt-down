@@ -53,6 +53,19 @@ public class MainViewModelTests
             .ReturnsAsync(Result<VideoInfoDto>.Success(new VideoInfoDto(
                 "UKcJqQqiXq0", "Titulo", "Canal", TimeSpan.FromSeconds(96), null, ValidUrl, availableHeights)));
 
+    /// <summary>
+    /// A versao sai do assembly, e nao de uma constante: uma copia divergiria da
+    /// declarada no csproj na primeira publicacao.
+    /// </summary>
+    [Fact]
+    public void Credit_NamesTheAuthorAndTheVersionThatIsRunning()
+    {
+        var credit = CreateViewModel().Credit;
+
+        credit.Should().Contain("Euclydes Uchoas");
+        credit.Should().MatchRegex(@"YTDown \d+\.\d+\.\d+");
+    }
+
     [Fact]
     public void Commands_AreDisabledWhileTheAddressIsEmpty()
     {

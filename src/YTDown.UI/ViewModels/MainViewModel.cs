@@ -119,6 +119,9 @@ public sealed partial class MainViewModel : ObservableObject
 
     public string? ProgressText => Progress is null ? null : DownloadProgressText.For(Progress);
 
+    /// <summary>Autoria e versao, no rodape da janela.</summary>
+    public string Credit => ApplicationInfo.Credit;
+
     partial void OnVideoChanged(VideoInfoDto? value)
     {
         OnPropertyChanged(nameof(DurationText));
