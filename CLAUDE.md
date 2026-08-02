@@ -250,6 +250,28 @@ A ordem das linhas da `MainWindow` conta essa historia: endereco, video
 encontrado, escolhas sobre ele, resultado. O botao Baixar vive na linha das
 escolhas, junto das decisoes que executa.
 
+### A pasta tem dois niveis: padrao nas configuracoes, excecao no download
+
+O destino sai das configuracoes, mas cada download pode apontar outro pelo campo
+`DestinationDirectory` de `DownloadOptionsDto`. Quem organiza arquivos por
+assunto — um album por cantor, por exemplo — troca de pasta o tempo todo, e
+mandar essa pessoa as configuracoes a cada download seria atrito no lugar errado.
+
+**A escolha explicita nao vira outra coisa em silencio.** Pasta que sumiu falha
+com `ErrorCode.DestinationUnavailable`. O silencio se justifica para o destino
+padrao, configurado uma vez e esquecido, mas nao para uma pasta que o usuario
+acabou de apontar: o arquivo iria parar longe dali e ele so descobriria ao
+procurar.
+
+**As pastas recentes saem do historico**, que ja guarda o caminho completo de
+cada arquivo. Guardar essa lista em separado seria manter uma segunda verdade
+sobre o mesmo fato. A excecao e a pasta recem-apontada no seletor, que entra na
+lista antes de existir no historico — este so registra downloads concluidos, e
+sem isso ela sumiria no instante seguinte ao de ser escolhida.
+
+**A escolha dura a sessao**, e nao um download so. Separar doze musicas em uma
+pasta custaria doze idas ao seletor.
+
 ### As configuracoes ficam em memoria depois da primeira leitura
 
 Em `%LOCALAPPDATA%\YTDown\settings.json`, pelo mesmo `JsonFile` do historico.

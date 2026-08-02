@@ -32,6 +32,11 @@ tempo sao ignorados: apenas o video colado e considerado.
 A lista de qualidades mostra o que aquele video realmente oferece. Marque
 **Baixar somente o audio** para receber um MP3 no lugar do video.
 
+**Salvar em** escolhe a pasta deste download, sem mexer nas configuracoes. A
+lista traz a pasta padrao e as usadas recentemente; **Escolher...** abre o
+seletor do Windows. A escolha vale para os proximos downloads ate fechar o
+aplicativo.
+
 O video sai em MP4 com H.264, o formato que abre em qualquer player, celular ou
 aplicativo de mensagens. Como o YouTube nao oferece H.264 acima de 1080p, essa e
 a qualidade maxima, mesmo em videos publicados em 4K.
