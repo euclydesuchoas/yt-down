@@ -21,6 +21,10 @@ public static class YtDlpErrorClassifier
             "inappropriate for some users"
         ]),
 
+        // Marcador curto de proposito: evita o apostrofo, que o yt-dlp emite
+        // como aspa tipografica, e nao colide com "sign in to confirm your age".
+        (ErrorCode.BotCheckRequired, ["not a bot"]),
+
         (ErrorCode.RegionBlocked,
         [
             "in your country",

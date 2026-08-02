@@ -21,6 +21,16 @@ public enum ErrorCode
     /// <summary>O video nao esta disponivel na regiao atual.</summary>
     RegionBlocked,
 
+    /// <summary>
+    /// O YouTube exigiu verificacao antes de liberar o acesso.
+    /// </summary>
+    /// <remarks>
+    /// Costuma acontecer depois de muitos downloads seguidos do mesmo endereco
+    /// de rede, e passa sozinho. Insistir imediatamente so prolonga o bloqueio,
+    /// entao a mensagem ao usuario pede espera em vez de nova tentativa.
+    /// </remarks>
+    BotCheckRequired,
+
     /// <summary>Falha de rede ao contatar o YouTube.</summary>
     NetworkError,
 

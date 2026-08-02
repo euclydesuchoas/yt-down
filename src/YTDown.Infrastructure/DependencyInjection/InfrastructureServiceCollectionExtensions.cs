@@ -15,7 +15,11 @@ public static class InfrastructureServiceCollectionExtensions
     public static IServiceCollection AddInfrastructure(this IServiceCollection services)
     {
         services.AddSingleton<IProcessRunner, ProcessRunner>();
-        services.AddSingleton<IToolLocator, LocalToolLocator>();
+
+        services.AddSingleton<ToolLocations>();
+        services.AddSingleton<IToolLocator, ManagedToolLocator>();
+        services.AddSingleton<IToolInstaller, YtDlpInstaller>();
+        services.AddSingleton<IToolUpdater, YtDlpUpdater>();
         services.AddSingleton<IVideoMetadataProvider, YtDlpMetadataProvider>();
         services.AddSingleton<IVideoDownloader, YtDlpVideoDownloader>();
         services.AddSingleton<IDownloadLocationProvider, WindowsDownloadLocationProvider>();
