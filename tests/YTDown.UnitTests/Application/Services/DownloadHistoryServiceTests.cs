@@ -88,6 +88,59 @@ public class DownloadHistoryServiceTests
         entries[^1].FileName.Should().Be("video-6.mp4");
     }
 
+    private static DownloadHistoryEntryDto AnEntryIn(string folder, string fileName) =>
+        AnEntry(fileName) with { FilePath = Path.Combine(folder, fileName) };
+
+    [Fact]
+    public async Task GetRecentFoldersAsync_WithNothingRecorded_ReturnsAnEmptyList()
+    {
+        (await CreateService().GetRecentFoldersAsync(5, CancellationToken.None)).Should().BeEmpty();
+    }
+
+    /// <summary>
+    /// Quem organiza por assunto volta as mesmas pastas. Repeti-las na lista
+    /// gastaria o espaco que as outras precisam.
+    /// </summary>
+    [Fact]
+    public async Task GetRecentFoldersAsync_ListsEachFolderOnceFromTheMostRecent()
+    {
+        var service = CreateService();
+
+        await service.RecordAsync(AnEntryIn(@"D:\Musicas\Elvis", "um.mp3"), CancellationToken.None);
+        await service.RecordAsync(AnEntryIn(@"D:\Musicas\Roberto", "dois.mp3"), CancellationToken.None);
+        await service.RecordAsync(AnEntryIn(@"D:\Musicas\Elvis", "tres.mp3"), CancellationToken.None);
+
+        var folders = await service.GetRecentFoldersAsync(5, CancellationToken.None);
+
+        folders.Should().Equal(@"D:\Musicas\Elvis", @"D:\Musicas\Roberto");
+    }
+
+    [Fact]
+    public async Task GetRecentFoldersAsync_ComparesFoldersWithoutCaringAboutCase()
+    {
+        var service = CreateService();
+
+        await service.RecordAsync(AnEntryIn(@"D:\Musicas", "um.mp3"), CancellationToken.None);
+        await service.RecordAsync(AnEntryIn(@"D:\MUSICAS", "dois.mp3"), CancellationToken.None);
+
+        (await service.GetRecentFoldersAsync(5, CancellationToken.None)).Should().ContainSingle();
+    }
+
+    [Fact]
+    public async Task GetRecentFoldersAsync_StopsAtTheLimitItWasGiven()
+    {
+        var service = CreateService();
+
+        for (var index = 1; index <= 8; index++)
+        {
+            await service.RecordAsync(AnEntryIn($@"D:\Pasta{index}", $"video-{index}.mp4"), CancellationToken.None);
+        }
+
+        var folders = await service.GetRecentFoldersAsync(3, CancellationToken.None);
+
+        folders.Should().Equal(@"D:\Pasta8", @"D:\Pasta7", @"D:\Pasta6");
+    }
+
     [Fact]
     public async Task ClearAsync_LeavesNothingBehind()
     {

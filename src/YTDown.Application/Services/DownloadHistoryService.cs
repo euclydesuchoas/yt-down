@@ -43,6 +43,23 @@ public sealed class DownloadHistoryService : IDownloadHistoryService
         }
     }
 
+    public async Task<IReadOnlyList<string>> GetRecentFoldersAsync(
+        int maximum,
+        CancellationToken cancellationToken)
+    {
+        var entries = await GetRecentAsync(cancellationToken);
+
+        return
+        [
+            .. entries
+                .Select(entry => Path.GetDirectoryName(entry.FilePath))
+                .OfType<string>()
+                .Where(folder => folder.Length > 0)
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .Take(maximum)
+        ];
+    }
+
     public async Task RecordAsync(DownloadHistoryEntryDto entry, CancellationToken cancellationToken)
     {
         await _access.WaitAsync(cancellationToken);
