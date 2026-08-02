@@ -9,6 +9,7 @@ public sealed class ProcessRunner : IProcessRunner
     public async Task<ProcessResult> RunAsync(
         string executablePath,
         IReadOnlyList<string> arguments,
+        Action<string>? onStandardOutputLine,
         CancellationToken cancellationToken)
     {
         var startInfo = new ProcessStartInfo
@@ -34,8 +35,8 @@ public sealed class ProcessRunner : IProcessRunner
         process.Start();
 
         // As duas saidas sao lidas em paralelo: um buffer cheio trava o processo filho.
-        var standardOutput = process.StandardOutput.ReadToEndAsync(cancellationToken);
-        var standardError = process.StandardError.ReadToEndAsync(cancellationToken);
+        var standardOutput = ReadLinesAsync(process.StandardOutput, onStandardOutputLine, cancellationToken);
+        var standardError = ReadLinesAsync(process.StandardError, onLine: null, cancellationToken);
 
         try
         {
@@ -48,6 +49,22 @@ public sealed class ProcessRunner : IProcessRunner
         }
 
         return new ProcessResult(process.ExitCode, await standardOutput, await standardError);
+    }
+
+    private static async Task<string> ReadLinesAsync(
+        StreamReader reader,
+        Action<string>? onLine,
+        CancellationToken cancellationToken)
+    {
+        var accumulated = new StringBuilder();
+
+        while (await reader.ReadLineAsync(cancellationToken) is { } line)
+        {
+            accumulated.AppendLine(line);
+            onLine?.Invoke(line);
+        }
+
+        return accumulated.ToString();
     }
 
     /// <remarks>

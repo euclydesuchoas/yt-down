@@ -32,8 +32,13 @@ public class YtDlpMetadataProviderTests
     private void GivenYtDlpProduces(ProcessResult processResult, Action<IReadOnlyList<string>>? captureArguments = null)
     {
         _processRunner
-            .Setup(runner => runner.RunAsync(YtDlpPath, It.IsAny<IReadOnlyList<string>>(), It.IsAny<CancellationToken>()))
-            .Callback<string, IReadOnlyList<string>, CancellationToken>((_, arguments, _) => captureArguments?.Invoke(arguments))
+            .Setup(runner => runner.RunAsync(
+                YtDlpPath,
+                It.IsAny<IReadOnlyList<string>>(),
+                It.IsAny<Action<string>>(),
+                It.IsAny<CancellationToken>()))
+            .Callback<string, IReadOnlyList<string>, Action<string>?, CancellationToken>(
+                (_, arguments, _, _) => captureArguments?.Invoke(arguments))
             .ReturnsAsync(processResult);
     }
 
@@ -119,7 +124,11 @@ public class YtDlpMetadataProviderTests
         GivenYtDlpIsInstalled();
 
         _processRunner
-            .Setup(runner => runner.RunAsync(YtDlpPath, It.IsAny<IReadOnlyList<string>>(), It.IsAny<CancellationToken>()))
+            .Setup(runner => runner.RunAsync(
+                YtDlpPath,
+                It.IsAny<IReadOnlyList<string>>(),
+                It.IsAny<Action<string>>(),
+                It.IsAny<CancellationToken>()))
             .ThrowsAsync(new OperationCanceledException());
 
         var result = await CreateProvider().GetMetadataAsync(VideoUrl, CancellationToken.None);
@@ -134,7 +143,11 @@ public class YtDlpMetadataProviderTests
         GivenYtDlpIsInstalled();
 
         _processRunner
-            .Setup(runner => runner.RunAsync(YtDlpPath, It.IsAny<IReadOnlyList<string>>(), It.IsAny<CancellationToken>()))
+            .Setup(runner => runner.RunAsync(
+                YtDlpPath,
+                It.IsAny<IReadOnlyList<string>>(),
+                It.IsAny<Action<string>>(),
+                It.IsAny<CancellationToken>()))
             .ThrowsAsync(new IOException("acesso negado"));
 
         var result = await CreateProvider().GetMetadataAsync(VideoUrl, CancellationToken.None);

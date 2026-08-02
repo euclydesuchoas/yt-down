@@ -1,5 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using YTDown.Application.Interfaces;
+using YTDown.Infrastructure.FileSystem;
 using YTDown.Infrastructure.Processes;
 using YTDown.Infrastructure.Tools;
 using YTDown.Infrastructure.YouTube;
@@ -16,6 +17,8 @@ public static class InfrastructureServiceCollectionExtensions
         services.AddSingleton<IProcessRunner, ProcessRunner>();
         services.AddSingleton<IToolLocator, LocalToolLocator>();
         services.AddSingleton<IVideoMetadataProvider, YtDlpMetadataProvider>();
+        services.AddSingleton<IVideoDownloader, YtDlpVideoDownloader>();
+        services.AddSingleton<IDownloadLocationProvider, WindowsDownloadLocationProvider>();
 
         return services;
     }

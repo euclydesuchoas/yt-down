@@ -10,8 +10,15 @@ namespace YTDown.Infrastructure.Processes;
 /// </remarks>
 public interface IProcessRunner
 {
+    /// <param name="onStandardOutputLine">
+    /// Recebe cada linha assim que ela e emitida, em ordem. Necessario para
+    /// acompanhar progresso, que perde o sentido se so chegar no fim.
+    /// E um delegate, e nao IProgress, justamente para preservar a ordem: as
+    /// implementacoes de IProgress podem entregar fora de ordem.
+    /// </param>
     Task<ProcessResult> RunAsync(
         string executablePath,
         IReadOnlyList<string> arguments,
+        Action<string>? onStandardOutputLine,
         CancellationToken cancellationToken);
 }

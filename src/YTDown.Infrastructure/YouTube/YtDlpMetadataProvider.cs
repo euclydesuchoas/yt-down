@@ -32,7 +32,11 @@ public sealed class YtDlpMetadataProvider : IVideoMetadataProvider
 
         try
         {
-            processResult = await _processRunner.RunAsync(ytDlpPath, BuildArguments(videoUrl), cancellationToken);
+            processResult = await _processRunner.RunAsync(
+                ytDlpPath,
+                BuildArguments(videoUrl),
+                onStandardOutputLine: null,
+                cancellationToken);
         }
         catch (OperationCanceledException)
         {
