@@ -16,8 +16,9 @@ prioridade e simplicidade de uso.
 O aplicativo nao reimplementa nada que o **yt-dlp** e o **FFmpeg** ja resolvem:
 ele os orquestra e apresenta o resultado de forma compreensivel.
 
-**Estado atual:** consulta de metadados funcionando de ponta a ponta. Download
-ainda nao implementado.
+**Estado atual:** consulta de metadados e download funcionando de ponta a ponta,
+com progresso, cancelamento e abertura da pasta. Sem selecao de qualidade,
+historico ou configuracoes.
 
 ---
 
@@ -86,6 +87,20 @@ Consulta de um video:
 6. O ViewModel exibe o video ou traduz o `ErrorCode` em frase pelo
    `ErrorMessages`
 
+Download de um video:
+
+1. `MainViewModel.DownloadAsync` cria o `Progress<T>` na linha da interface, de
+   modo que cada atualizacao volte para ela sozinha
+2. `DownloadService` valida a URL e pergunta o destino ao
+   `IDownloadLocationProvider`
+3. `YtDlpVideoDownloader` cria a pasta de trabalho, monta os argumentos e
+   acompanha a saida linha a linha
+4. `YtDlpProgressParser` le cada linha; `DownloadProgressAggregator` transforma
+   o progresso de cada stream em um unico percentual crescente
+5. A pasta de trabalho e removida em `finally`; ao cancelar, nada sobra
+6. O ViewModel exibe o arquivo e habilita "Abrir pasta", que passa pelo
+   `IFileExplorer` porque a apresentacao nao pode iniciar processos
+
 ---
 
 ## Tecnologias
@@ -146,6 +161,35 @@ existe porque o local definitivo ainda vai mudar: as ferramentas precisarao
 viver em pasta gravavel para se atualizarem sozinhas, o que nao acontece com o
 aplicativo instalado em Arquivos de Programas.
 
+### Como o yt-dlp e conduzido durante o download
+
+Tres detalhes desta integracao custaram tempo e nao devem ser desfeitos:
+
+- **O caminho final e pedido em JSON**, com `--print "after_move:FINAL|%(filepath)j"`.
+  Ao escrever em um pipe, o yt-dlp **descarta silenciosamente tudo o que nao for
+  ASCII**: o video de referencia, de titulo japones, chegava como ` EDED.mp4`,
+  um arquivo que nao existe em disco, embora o arquivo real estivesse correto.
+  Em JSON os caracteres viajam como escapes. Definir `PYTHONIOENCODING` nao
+  resolve sozinho, mas fica, por ser a outra metade da leitura em UTF-8.
+- **`--print` implica `--quiet`**, o que silencia o progresso por completo.
+  `--progress` o traz de volta.
+- **Os arquivos intermediarios vao para uma pasta propria**, via
+  `--paths temp:`, criada dentro do destino para que a mudanca final ocorra no
+  mesmo volume. A limpeza e apagar a pasta inteira, em `finally`, sem depender
+  de adivinhar nomes de `.part`.
+
+O formato do progresso e imposto por nos com `--progress-template`, e nao lido
+do texto que a ferramenta mostra ao usuario, que muda entre versoes. Video e
+audio se distinguem porque o yt-dlp informa o codec de video como `none`
+enquanto baixa o audio.
+
+### Faixas do progresso
+
+Video ocupa 0 a 90%, audio de 90 a 97%, e a juncao fica em 97% ate concluir.
+As faixas vem da proporcao real medida: no video de referencia o audio e pouco
+mais de 7% dos bytes. O percentual nunca retrocede, porque os dois streams sao
+baixados em sequencia e cada um comeca do zero.
+
 ### FluentAssertions fixado em 7.x
 
 A partir da 8.0.0 o pacote exige licenca comercial para uso nao open source. A
@@ -187,10 +231,17 @@ Video de referencia para testes: `https://www.youtube.com/watch?v=UKcJqQqiXq0`
 
 ## Limitacoes conhecidas
 
-- Somente consulta de metadados. Nao ha download.
+- **Teto de 1080p**, consequencia de preferir H.264 para nao reconverter. Sem
+  selecao de qualidade ou de formato: sempre o melhor MP4 disponivel.
+- **Nenhum runtime JavaScript embarcado.** O yt-dlp avisa que a extracao sem um
+  runtime esta depreciada e que alguns formatos podem faltar. Hoje o video de
+  referencia funciona normalmente, mas isso tende a piorar. Embarcar um runtime
+  significa mais uma dependencia grande no instalador. Decisao adiada
+  conscientemente, para a fatia das ferramentas.
 - O yt-dlp esta congelado na versao fixada. Quando o YouTube o quebrar, o
   aplicativo para de funcionar e o usuario nao tera como resolver.
 - Uma playlist colada e reduzida ao video atual, sem qualquer aviso na tela.
+- Apenas um download por vez, sem fila.
 - Sem persistencia: nada de historico ou configuracoes.
 - Sem tratador global de excecoes na UI.
 
@@ -201,23 +252,28 @@ Video de referencia para testes: `https://www.youtube.com/watch?v=UKcJqQqiXq0`
 | Fatia | Conteudo |
 |---|---|
 | 1 (feita) | Consulta de metadados de ponta a ponta |
-| 2 | Download com progresso agregado e cancelamento com limpeza de `.part` |
-| 3 | Selecao de qualidade e formato |
-| 4 | Ferramentas em `%LOCALAPPDATA%` e `yt-dlp -U` |
-| 5+ | Historico, configuracoes, tema, distribuicao |
+| 2 (feita) | Download com progresso agregado, cancelamento e limpeza |
+| 3 | Selecao de qualidade e de somente audio |
+| 4 | Ferramentas em `%LOCALAPPDATA%`, `yt-dlp -U` e runtime JavaScript |
+| 5+ | Historico, configuracoes, fila, tema, distribuicao |
 
-### Decisoes adiadas, e por que
+### Decisoes ja tomadas
 
-- **Codec, remux ou reconversao.** Se o usuario pede "1080p MP4" e o YouTube
-  entrega VP9/AV1, o FFmpeg reconverte: minutos de CPU a 100% com a barra de
-  progresso parada, e o usuario conclui que travou. As saidas sao restringir a
-  `avc1` (teto de 1080p), entregar `.mkv` quando nao der remux, ou aceitar a
-  reconversao com aviso honesto. So decidivel vendo os formatos reais. Fatia 3.
-- **Progresso.** O yt-dlp baixa video e audio como dois streams sequenciais (a
-  barra vai a 100% duas vezes) e depois entra em `Merging formats` sem progresso
-  algum. Exige `--progress-template` e um modelo agregado. Fatia 2.
-- **Limpeza no cancelamento.** `ProcessRunner` ja encerra a arvore de processos,
-  mas ninguem remove `.part`, `.ytdl` e fragmentos orfaos. Fatia 2.
+- **Compatibilidade antes de qualidade.** Preferir H.264 com AAC permite juntar
+  sem reconverter. A alternativa seria entregar 4K em VP9/AV1, mas ou o arquivo
+  sai em MKV, que pode nao abrir onde o usuario espera, ou o FFmpeg reconverte,
+  gastando minutos de CPU a 100% com a barra parada. Para o publico deste
+  aplicativo, um MP4 previsivel vale mais que resolucao maior.
+- **Pasta Downloads, sem perguntar.** Um seletor de pasta a cada download e
+  atrito exatamente onde o publico-alvo trava. Vira configuracao na fatia 5.
+- **Um download por vez.** Downloads simultaneos dividem a banda, embaralham o
+  progresso e tornam cancelamento e limpeza bem mais dificeis.
+
+### Decisao adiada
+
+- **Runtime JavaScript.** Ver limitacoes conhecidas. Nao ha urgencia enquanto os
+  formatos continuarem disponiveis, mas o aviso do yt-dlp e explicito quanto a
+  depreciacao.
 
 ---
 

@@ -3,8 +3,9 @@
 Aplicativo desktop para Windows que baixa videos e audios do YouTube de forma
 simples.
 
-> **Estado atual:** em desenvolvimento. Hoje o aplicativo consulta e exibe as
-> informacoes de um video. O download ainda nao foi implementado.
+> **Estado atual:** em desenvolvimento. O aplicativo ja consulta um video e o
+> baixa em MP4, com progresso e cancelamento. Ainda nao ha selecao de
+> qualidade, download so de audio, historico nem configuracoes.
 
 ---
 
@@ -20,11 +21,16 @@ Requisitos: [.NET 10 SDK](https://dotnet.microsoft.com/download) e Windows.
 dotnet run --project src/YTDown.UI
 ```
 
-Cole o endereco de um video do YouTube e clique em **Buscar**.
+Cole o endereco de um video do YouTube. **Buscar** mostra qual video foi
+reconhecido; **Baixar** salva o arquivo na sua pasta Downloads.
 
 Enderecos aceitos incluem `youtube.com/watch?v=...`, `youtu.be/...`,
 `/shorts/...`, `/live/...`, com ou sem `https://`. Parametros de playlist e de
 tempo sao ignorados: apenas o video colado e considerado.
+
+O arquivo sai em MP4 com H.264, o formato que abre em qualquer player, celular
+ou aplicativo de mensagens. Como o YouTube nao oferece H.264 acima de 1080p,
+essa e a qualidade maxima por enquanto.
 
 ---
 
