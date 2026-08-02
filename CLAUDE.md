@@ -1,7 +1,9 @@
 # CLAUDE.md
 
 Memoria tecnica do projeto. Este documento deve ser suficiente para entender o
-YTDown sem ler todo o codigo.
+YTDown sem ler todo o codigo, e e a **documentacao viva**: onde ele divergir de
+[`docs/especificacao.md`](docs/especificacao.md), que e o brief original
+preservado sem manutencao, este documento prevalece.
 
 ---
 
@@ -59,6 +61,8 @@ tests/
   YTDown.UnitTests/         espelha a estrutura de src/
   YTDown.IntegrationTests/  exercita o yt-dlp real
   YTDown.ArchitectureTests/ regras de dependencia
+docs/
+  especificacao.md        brief original, historico, nao mantido
 scripts/
   bootstrap-tools.ps1     baixa yt-dlp e FFmpeg
 tools/
