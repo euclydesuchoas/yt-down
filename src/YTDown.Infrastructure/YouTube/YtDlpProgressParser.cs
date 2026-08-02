@@ -1,5 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using System.Text.Json;
 
 namespace YTDown.Infrastructure.YouTube;
 
@@ -17,11 +18,18 @@ public static class YtDlpProgressParser
     public const string ProgressTemplate =
         "PROG|%(info.vcodec)s|%(progress.status)s|%(progress.downloaded_bytes)s|%(progress.total_bytes)s|%(progress.speed)s|%(progress.eta)s";
 
-    /// <summary>Faz o yt-dlp anunciar o caminho definitivo, ja depois da juncao.</summary>
-    public const string FinalFileTemplate = "after_move:FINAL|%(filepath)s";
+    /// <summary>
+    /// Faz o yt-dlp anunciar o caminho definitivo, ja depois da juncao.
+    /// </summary>
+    /// <remarks>
+    /// O sufixo <c>j</c> pede o valor em JSON, e nao texto puro. Isso importa:
+    /// ao escrever em um pipe, o yt-dlp descarta silenciosamente tudo o que nao
+    /// for ASCII, e um titulo com ideogramas vira um caminho que nao existe em
+    /// disco. Em JSON esses caracteres viajam como escapes.
+    /// </remarks>
+    public const string FinalFileTemplate = "after_move:FINAL|%(filepath)j";
 
     public const string FinalFilePrefix = "FINAL|";
-    public const string DestinationPrefix = "[download] Destination: ";
     public const string MergingPrefix = "[Merger]";
 
     private const string ProgressPrefix = "PROG|";
@@ -64,25 +72,26 @@ public static class YtDlpProgressParser
         return true;
     }
 
-    /// <summary>Extrai o caminho anunciado por uma linha com o prefixo informado.</summary>
-    public static bool TryParsePath(string? line, string prefix, [NotNullWhen(true)] out string? path)
+    /// <summary>Extrai o caminho do arquivo final, que chega codificado em JSON.</summary>
+    public static bool TryParseFinalFilePath(string? line, [NotNullWhen(true)] out string? path)
     {
         path = null;
 
-        if (line is null || !line.StartsWith(prefix, StringComparison.Ordinal))
+        if (line is null || !line.StartsWith(FinalFilePrefix, StringComparison.Ordinal))
         {
             return false;
         }
 
-        var candidate = line[prefix.Length..].Trim();
-
-        if (candidate.Length == 0)
+        try
+        {
+            path = JsonSerializer.Deserialize<string>(line[FinalFilePrefix.Length..].Trim());
+        }
+        catch (JsonException)
         {
             return false;
         }
 
-        path = candidate;
-        return true;
+        return !string.IsNullOrWhiteSpace(path);
     }
 
     private static long? ParseLong(string field) =>

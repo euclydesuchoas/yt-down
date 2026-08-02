@@ -54,7 +54,10 @@ public class YtDlpMetadataProviderIntegrationTests
         result.Value!.VideoId.Should().Be(ReferenceVideoId);
         result.Value.ChannelName.Should().Be("TOHO animation");
         result.Value.Duration.Should().Be(TimeSpan.FromSeconds(96));
-        result.Value.Title.Should().NotBeNullOrWhiteSpace();
+        // Afirmar o titulo exato e o que revela perda de codificacao entre o
+        // yt-dlp e o aplicativo. Um "nao esta vazio" deixaria passar.
+        result.Value.Title.Should().Be(
+            "『無職転生Ⅲ ～異世界行ったら本気だす～』ノンクレジットED映像／EDテーマ：「祈り、終われば」中島美嘉");
         result.Value.ThumbnailUrl.Should().StartWith("https://");
         result.Value.Url.Should().Be($"https://www.youtube.com/watch?v={ReferenceVideoId}");
     }

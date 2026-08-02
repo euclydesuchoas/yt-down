@@ -7,17 +7,18 @@ namespace YTDown.Infrastructure.Processes;
 public sealed class ProcessRunner : IProcessRunner
 {
     public async Task<ProcessResult> RunAsync(
-        string executablePath,
-        IReadOnlyList<string> arguments,
+        ProcessRequest request,
         Action<string>? onStandardOutputLine,
         CancellationToken cancellationToken)
     {
         var startInfo = new ProcessStartInfo
         {
-            FileName = executablePath,
+            FileName = request.ExecutablePath,
             RedirectStandardOutput = true,
             RedirectStandardError = true,
-            // Titulos de video trazem acentos e emoji; sem isto a saida chega corrompida.
+            // Titulos de video trazem acentos, ideogramas e emoji. Isto resolve
+            // apenas a leitura; instruir o programa a *escrever* em UTF-8 e
+            // responsabilidade de quem o conhece, via EnvironmentVariables.
             StandardOutputEncoding = Encoding.UTF8,
             StandardErrorEncoding = Encoding.UTF8,
             UseShellExecute = false,
@@ -26,9 +27,17 @@ public sealed class ProcessRunner : IProcessRunner
 
         // ArgumentList escapa cada argumento individualmente, evitando os problemas
         // de aspas de uma linha de comando montada por concatenacao.
-        foreach (var argument in arguments)
+        foreach (var argument in request.Arguments)
         {
             startInfo.ArgumentList.Add(argument);
+        }
+
+        if (request.EnvironmentVariables is not null)
+        {
+            foreach (var (name, value) in request.EnvironmentVariables)
+            {
+                startInfo.Environment[name] = value;
+            }
         }
 
         using var process = new Process { StartInfo = startInfo };

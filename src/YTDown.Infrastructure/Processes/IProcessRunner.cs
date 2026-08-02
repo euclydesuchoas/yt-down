@@ -17,8 +17,7 @@ public interface IProcessRunner
     /// implementacoes de IProgress podem entregar fora de ordem.
     /// </param>
     Task<ProcessResult> RunAsync(
-        string executablePath,
-        IReadOnlyList<string> arguments,
+        ProcessRequest request,
         Action<string>? onStandardOutputLine,
         CancellationToken cancellationToken);
 }

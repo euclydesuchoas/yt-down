@@ -48,8 +48,12 @@ public sealed class YtDlpVideoDownloader : IVideoDownloader
                 "yt-dlp.exe ou ffmpeg.exe nao foi encontrado na pasta tools.");
         }
 
+        // Os arquivos intermediarios ficam isolados em uma pasta propria, dentro
+        // do destino para que a mudanca final seja no mesmo volume. Assim a
+        // limpeza e apagar a pasta inteira, sem precisar adivinhar nomes.
+        var workDirectory = Path.Combine(destinationDirectory, $".ytdown-{Guid.NewGuid():N}");
+
         var aggregator = new DownloadProgressAggregator();
-        var temporaryFiles = new List<string>();
         string? finalFilePath = null;
 
         void HandleOutputLine(string line)
@@ -58,14 +62,9 @@ public sealed class YtDlpVideoDownloader : IVideoDownloader
             {
                 progress.Report(aggregator.ForStream(streamProgress));
             }
-            else if (YtDlpProgressParser.TryParsePath(line, YtDlpProgressParser.FinalFilePrefix, out var path))
+            else if (YtDlpProgressParser.TryParseFinalFilePath(line, out var path))
             {
                 finalFilePath = path;
-            }
-            else if (YtDlpProgressParser.TryParsePath(line, YtDlpProgressParser.DestinationPrefix, out var temporary))
-            {
-                // Guardado para poder limpar caso o usuario cancele no meio.
-                temporaryFiles.Add(temporary);
             }
             else if (line.StartsWith(YtDlpProgressParser.MergingPrefix, StringComparison.Ordinal))
             {
@@ -73,55 +72,65 @@ public sealed class YtDlpVideoDownloader : IVideoDownloader
             }
         }
 
-        ProcessResult processResult;
-
         try
         {
-            Directory.CreateDirectory(destinationDirectory);
+            Directory.CreateDirectory(workDirectory);
 
-            processResult = await _processRunner.RunAsync(
-                ytDlpPath,
-                BuildArguments(videoUrl, destinationDirectory, ffmpegPath),
-                HandleOutputLine,
-                cancellationToken);
-        }
-        catch (OperationCanceledException)
-        {
-            DeleteLeftovers(temporaryFiles);
+            ProcessResult processResult;
 
-            return Result<DownloadedFileDto>.Failure(ErrorCode.Canceled);
+            try
+            {
+                processResult = await _processRunner.RunAsync(
+                    new ProcessRequest(
+                        ytDlpPath,
+                        BuildArguments(videoUrl, destinationDirectory, workDirectory, ffmpegPath),
+                        YtDlpEnvironment.Variables),
+                    HandleOutputLine,
+                    cancellationToken);
+            }
+            catch (OperationCanceledException)
+            {
+                return Result<DownloadedFileDto>.Failure(ErrorCode.Canceled);
+            }
+
+            if (!processResult.Succeeded)
+            {
+                return Result<DownloadedFileDto>.Failure(
+                    YtDlpErrorClassifier.Classify(processResult.StandardError),
+                    processResult.StandardError);
+            }
+
+            if (finalFilePath is null || !File.Exists(finalFilePath))
+            {
+                return Result<DownloadedFileDto>.Failure(
+                    ErrorCode.ToolFailure,
+                    $"O yt-dlp terminou sem indicar o arquivo final. Saida: {processResult.StandardOutput}");
+            }
+
+            progress.Report(aggregator.ForCompletion());
+
+            var file = new FileInfo(finalFilePath);
+
+            return Result<DownloadedFileDto>.Success(new DownloadedFileDto(file.FullName, file.Name, file.Length));
         }
         catch (Exception exception)
         {
-            DeleteLeftovers(temporaryFiles);
-
+            // Este e o limite entre o aplicativo e o sistema operacional: qualquer
+            // falha vira resultado tipado, para que o usuario receba uma mensagem
+            // em vez de o aplicativo encerrar.
             return Result<DownloadedFileDto>.Failure(ErrorCode.Unexpected, exception.ToString());
         }
-
-        if (!processResult.Succeeded)
+        finally
         {
-            DeleteLeftovers(temporaryFiles);
-
-            return Result<DownloadedFileDto>.Failure(
-                YtDlpErrorClassifier.Classify(processResult.StandardError),
-                processResult.StandardError);
+            DeleteWorkDirectory(workDirectory);
         }
-
-        if (finalFilePath is null || !File.Exists(finalFilePath))
-        {
-            return Result<DownloadedFileDto>.Failure(
-                ErrorCode.ToolFailure,
-                $"O yt-dlp terminou sem indicar o arquivo final. Saida: {processResult.StandardOutput}");
-        }
-
-        progress.Report(aggregator.ForCompletion());
-
-        var file = new FileInfo(finalFilePath);
-
-        return Result<DownloadedFileDto>.Success(new DownloadedFileDto(file.FullName, file.Name, file.Length));
     }
 
-    private static string[] BuildArguments(VideoUrl videoUrl, string destinationDirectory, string ffmpegPath) =>
+    private static string[] BuildArguments(
+        VideoUrl videoUrl,
+        string destinationDirectory,
+        string workDirectory,
+        string ffmpegPath) =>
     [
         "-f", FormatSelector,
         "--merge-output-format", "mp4",
@@ -130,39 +139,30 @@ public sealed class YtDlpVideoDownloader : IVideoDownloader
         "--no-warnings",
         // Sem isto o progresso vem com retorno de carro e nunca fecha a linha.
         "--newline",
+        // --print implica --quiet, que silencia o progresso. Este argumento o
+        // traz de volta, e sem ele a barra so se moveria ao terminar.
+        "--progress",
         "--progress-template", YtDlpProgressParser.ProgressTemplate,
         "--print", YtDlpProgressParser.FinalFileTemplate,
-        "-o", Path.Combine(destinationDirectory, OutputTemplate),
+        "--paths", $"home:{destinationDirectory}",
+        "--paths", $"temp:{workDirectory}",
+        "-o", OutputTemplate,
         videoUrl.Value
     ];
 
-    /// <summary>
-    /// Remove os arquivos parciais que o yt-dlp so apaga quando termina bem.
-    /// </summary>
     /// <remarks>
-    /// O FFmpeg pode levar um instante para soltar o arquivo depois de
+    /// O FFmpeg pode levar um instante para soltar os arquivos depois de
     /// encerrado, entao a remocao e tentada mais de uma vez antes de desistir.
     /// </remarks>
-    private static void DeleteLeftovers(IReadOnlyList<string> temporaryFiles)
-    {
-        foreach (var path in temporaryFiles)
-        {
-            foreach (var candidate in new[] { path, path + ".part", path + ".ytdl" })
-            {
-                TryDelete(candidate);
-            }
-        }
-    }
-
-    private static void TryDelete(string path)
+    private static void DeleteWorkDirectory(string workDirectory)
     {
         for (var attempt = 0; attempt < 3; attempt++)
         {
             try
             {
-                if (File.Exists(path))
+                if (Directory.Exists(workDirectory))
                 {
-                    File.Delete(path);
+                    Directory.Delete(workDirectory, recursive: true);
                 }
 
                 return;

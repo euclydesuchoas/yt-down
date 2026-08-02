@@ -33,8 +33,7 @@ public sealed class YtDlpMetadataProvider : IVideoMetadataProvider
         try
         {
             processResult = await _processRunner.RunAsync(
-                ytDlpPath,
-                BuildArguments(videoUrl),
+                new ProcessRequest(ytDlpPath, BuildArguments(videoUrl), YtDlpEnvironment.Variables),
                 onStandardOutputLine: null,
                 cancellationToken);
         }

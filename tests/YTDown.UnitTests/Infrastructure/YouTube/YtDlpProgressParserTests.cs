@@ -77,33 +77,44 @@ public class YtDlpProgressParserTests
     }
 
     [Fact]
-    public void TryParsePath_WithFinalFileLine_ReturnsThePath()
+    public void TryParseFinalFilePath_WithJsonEncodedPath_DecodesIt()
     {
-        const string line = @"FINAL|C:\Users\Euclydes\Downloads\video.mp4";
+        const string line = """
+            FINAL|"C:\\Users\\Euclydes\\Downloads\\video.mp4"
+            """;
 
-        var parsed = YtDlpProgressParser.TryParsePath(line, YtDlpProgressParser.FinalFilePrefix, out var path);
+        var parsed = YtDlpProgressParser.TryParseFinalFilePath(line, out var path);
 
         parsed.Should().BeTrue();
         path.Should().Be(@"C:\Users\Euclydes\Downloads\video.mp4");
     }
 
+    /// <summary>
+    /// Regressao do defeito que motivou pedir o caminho em JSON: ao escrever em
+    /// um pipe, o yt-dlp descarta o que nao for ASCII, e o caminho resultante
+    /// nao existe em disco.
+    /// </summary>
     [Fact]
-    public void TryParsePath_WithDestinationLine_ReturnsTheTemporaryFile()
+    public void TryParseFinalFilePath_WithNonAsciiTitle_PreservesEveryCharacter()
     {
-        const string line = @"[download] Destination: C:\Users\Euclydes\Downloads\video.f137.mp4";
+        const string line = """
+            FINAL|"C:\\Downloads\\\u300e\u7121\u8077\u8ee2\u751f\u2162.mp4"
+            """;
 
-        var parsed = YtDlpProgressParser.TryParsePath(line, YtDlpProgressParser.DestinationPrefix, out var path);
+        var parsed = YtDlpProgressParser.TryParseFinalFilePath(line, out var path);
 
         parsed.Should().BeTrue();
-        path.Should().Be(@"C:\Users\Euclydes\Downloads\video.f137.mp4");
+        path.Should().Be(@"C:\Downloads\『無職転生Ⅲ.mp4");
     }
 
     [Theory]
     [InlineData("FINAL|")]
     [InlineData("FINAL|   ")]
+    [InlineData("FINAL|nao e json")]
+    [InlineData("FINAL|\"\"")]
     [InlineData("outra coisa")]
-    public void TryParsePath_WithoutAPath_Fails(string line)
+    public void TryParseFinalFilePath_WithoutAUsablePath_Fails(string line)
     {
-        YtDlpProgressParser.TryParsePath(line, YtDlpProgressParser.FinalFilePrefix, out _).Should().BeFalse();
+        YtDlpProgressParser.TryParseFinalFilePath(line, out _).Should().BeFalse();
     }
 }

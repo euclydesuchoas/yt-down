@@ -29,16 +29,15 @@ public class YtDlpMetadataProviderTests
             .Returns(true);
     }
 
-    private void GivenYtDlpProduces(ProcessResult processResult, Action<IReadOnlyList<string>>? captureArguments = null)
+    private void GivenYtDlpProduces(ProcessResult processResult, Action<ProcessRequest>? captureRequest = null)
     {
         _processRunner
             .Setup(runner => runner.RunAsync(
-                YtDlpPath,
-                It.IsAny<IReadOnlyList<string>>(),
+                It.Is<ProcessRequest>(request => request.ExecutablePath == YtDlpPath),
                 It.IsAny<Action<string>>(),
                 It.IsAny<CancellationToken>()))
-            .Callback<string, IReadOnlyList<string>, Action<string>?, CancellationToken>(
-                (_, arguments, _, _) => captureArguments?.Invoke(arguments))
+            .Callback<ProcessRequest, Action<string>?, CancellationToken>(
+                (request, _, _) => captureRequest?.Invoke(request))
             .ReturnsAsync(processResult);
     }
 
@@ -78,17 +77,35 @@ public class YtDlpMetadataProviderTests
     [Fact]
     public async Task GetMetadataAsync_AsksForJsonOfASingleVideoUsingTheCanonicalUrl()
     {
-        IReadOnlyList<string>? arguments = null;
+        ProcessRequest? request = null;
 
         GivenYtDlpIsInstalled();
-        GivenYtDlpProduces(new ProcessResult(0, SuccessfulJson, string.Empty), captured => arguments = captured);
+        GivenYtDlpProduces(new ProcessResult(0, SuccessfulJson, string.Empty), captured => request = captured);
 
         await CreateProvider().GetMetadataAsync(VideoUrl, CancellationToken.None);
 
-        arguments.Should().NotBeNull();
-        arguments.Should().Contain("--dump-single-json");
-        arguments.Should().Contain("--no-playlist");
-        arguments!.Last().Should().Be($"https://www.youtube.com/watch?v={VideoId}");
+        request.Should().NotBeNull();
+        request!.Arguments.Should().Contain("--dump-single-json");
+        request.Arguments.Should().Contain("--no-playlist");
+        request.Arguments.Last().Should().Be($"https://www.youtube.com/watch?v={VideoId}");
+    }
+
+    /// <summary>
+    /// Sem esta variavel o Python escreve na code page ANSI quando a saida esta
+    /// redirecionada, e titulos com ideogramas ou emoji chegam mutilados.
+    /// </summary>
+    [Fact]
+    public async Task GetMetadataAsync_ForcesYtDlpToWriteInUtf8()
+    {
+        ProcessRequest? request = null;
+
+        GivenYtDlpIsInstalled();
+        GivenYtDlpProduces(new ProcessResult(0, SuccessfulJson, string.Empty), captured => request = captured);
+
+        await CreateProvider().GetMetadataAsync(VideoUrl, CancellationToken.None);
+
+        request!.EnvironmentVariables.Should().NotBeNull();
+        request.EnvironmentVariables!["PYTHONIOENCODING"].Should().Be("utf-8");
     }
 
     [Fact]
@@ -125,8 +142,7 @@ public class YtDlpMetadataProviderTests
 
         _processRunner
             .Setup(runner => runner.RunAsync(
-                YtDlpPath,
-                It.IsAny<IReadOnlyList<string>>(),
+                It.IsAny<ProcessRequest>(),
                 It.IsAny<Action<string>>(),
                 It.IsAny<CancellationToken>()))
             .ThrowsAsync(new OperationCanceledException());
@@ -144,8 +160,7 @@ public class YtDlpMetadataProviderTests
 
         _processRunner
             .Setup(runner => runner.RunAsync(
-                YtDlpPath,
-                It.IsAny<IReadOnlyList<string>>(),
+                It.IsAny<ProcessRequest>(),
                 It.IsAny<Action<string>>(),
                 It.IsAny<CancellationToken>()))
             .ThrowsAsync(new IOException("acesso negado"));
