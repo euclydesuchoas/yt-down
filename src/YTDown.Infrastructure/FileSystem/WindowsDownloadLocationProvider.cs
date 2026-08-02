@@ -4,7 +4,7 @@ using YTDown.Application.Interfaces;
 namespace YTDown.Infrastructure.FileSystem;
 
 /// <summary>
-/// Devolve a pasta Downloads do usuario.
+/// Devolve a pasta escolhida pelo usuario, ou a pasta Downloads.
 /// </summary>
 /// <remarks>
 /// Nao existe <c>SpecialFolder.Downloads</c> no .NET, e supor
@@ -16,7 +16,26 @@ public sealed class WindowsDownloadLocationProvider : IDownloadLocationProvider
 {
     private static readonly Guid DownloadsFolderId = new("374DE290-123F-4565-9164-39C4925E467B");
 
-    public string GetDestinationDirectory() =>
+    private readonly ISettingsService _settings;
+
+    public WindowsDownloadLocationProvider(ISettingsService settings) => _settings = settings;
+
+    /// <remarks>
+    /// A pasta escolhida pode ter deixado de existir: pendrive removido, unidade
+    /// de rede fora do ar, pasta apagada. Nesse caso o download vai para
+    /// Downloads em vez de falhar, porque um arquivo em lugar diferente do
+    /// esperado ainda e melhor que nenhum arquivo.
+    /// </remarks>
+    public async Task<string> GetDestinationDirectoryAsync(CancellationToken cancellationToken)
+    {
+        var settings = await _settings.GetAsync(cancellationToken);
+
+        return settings.DestinationDirectory is { Length: > 0 } chosen && Directory.Exists(chosen)
+            ? chosen
+            : DownloadsDirectory();
+    }
+
+    private static string DownloadsDirectory() =>
         TryGetKnownFolderPath(DownloadsFolderId, out var path)
             ? path
             : Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads");

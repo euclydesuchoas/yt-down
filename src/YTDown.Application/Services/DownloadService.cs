@@ -36,10 +36,12 @@ public sealed class DownloadService : IDownloadService
             return Result<DownloadedFileDto>.Failure(ErrorCode.InvalidUrl);
         }
 
+        var destinationDirectory = await _downloadLocationProvider.GetDestinationDirectoryAsync(cancellationToken);
+
         var result = await _videoDownloader.DownloadAsync(
             videoUrl,
             options,
-            _downloadLocationProvider.GetDestinationDirectory(),
+            destinationDirectory,
             progress,
             cancellationToken);
 

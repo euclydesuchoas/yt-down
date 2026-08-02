@@ -4,11 +4,11 @@ namespace YTDown.Application.Interfaces;
 /// Diz onde os arquivos baixados devem ser gravados.
 /// </summary>
 /// <remarks>
-/// Existe para manter a Application longe do sistema de arquivos. Hoje devolve
-/// sempre a pasta Downloads do usuario; quando houver configuracao, so esta
-/// implementacao muda.
+/// Existe para manter a Application longe do sistema de arquivos. Devolve a
+/// pasta escolhida pelo usuario, ou a pasta Downloads enquanto nao houver
+/// escolha.
 /// </remarks>
 public interface IDownloadLocationProvider
 {
-    string GetDestinationDirectory();
+    Task<string> GetDestinationDirectoryAsync(CancellationToken cancellationToken);
 }

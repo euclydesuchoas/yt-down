@@ -23,8 +23,8 @@ public class DownloadServiceTests
 
     public DownloadServiceTests() =>
         _locationProvider
-            .Setup(provider => provider.GetDestinationDirectory())
-            .Returns(@"C:\Users\Euclydes\Downloads");
+            .Setup(provider => provider.GetDestinationDirectoryAsync(It.IsAny<CancellationToken>()))
+            .ReturnsAsync(@"C:\Users\Euclydes\Downloads");
 
     private DownloadService CreateService() =>
         new(_videoDownloader.Object, _locationProvider.Object, _history.Object, new FixedTimeProvider(Now));
