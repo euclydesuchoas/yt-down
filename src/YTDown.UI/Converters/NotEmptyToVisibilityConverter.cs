@@ -15,6 +15,7 @@ public sealed class NotEmptyToVisibilityConverter : IValueConverter
         {
             null => false,
             string text => !string.IsNullOrWhiteSpace(text),
+            System.Collections.ICollection collection => collection.Count > 0,
             _ => true
         };
 

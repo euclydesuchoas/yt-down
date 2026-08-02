@@ -37,7 +37,7 @@ internal static class DownloadProgressText
     {
         DownloadStage.DownloadingVideo => "Baixando o video",
         DownloadStage.DownloadingAudio => "Baixando o audio",
-        DownloadStage.Merging => "Finalizando",
+        DownloadStage.Finishing => "Finalizando",
         DownloadStage.Completed => "Concluido",
         _ => "Baixando"
     };

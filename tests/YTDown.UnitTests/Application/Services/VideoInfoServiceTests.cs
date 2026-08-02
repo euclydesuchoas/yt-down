@@ -96,5 +96,6 @@ public class VideoInfoServiceTests
         "Canal de teste",
         TimeSpan.FromMinutes(3),
         "https://i.ytimg.com/vi/UKcJqQqiXq0/maxresdefault.jpg",
-        $"https://www.youtube.com/watch?v={VideoId}");
+        $"https://www.youtube.com/watch?v={VideoId}",
+        [1080, 720, 480]);
 }

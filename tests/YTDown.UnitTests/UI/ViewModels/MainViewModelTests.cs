@@ -21,12 +21,17 @@ public class MainViewModelTests
     private static DownloadedFileDto AnyDownloadedFile =>
         new(@"C:\Users\Euclydes\Downloads\video.mp4", "video.mp4", 20_000_000);
 
-    private void GivenDownloadReturns(Result<DownloadedFileDto> result) =>
+    private void GivenDownloadReturns(
+        Result<DownloadedFileDto> result,
+        Action<DownloadOptionsDto>? captureOptions = null) =>
         _downloadService
             .Setup(service => service.DownloadAsync(
                 It.IsAny<string>(),
+                It.IsAny<DownloadOptionsDto>(),
                 It.IsAny<IProgress<DownloadProgressDto>>(),
                 It.IsAny<CancellationToken>()))
+            .Callback<string?, DownloadOptionsDto, IProgress<DownloadProgressDto>, CancellationToken>(
+                (_, options, _, _) => captureOptions?.Invoke(options))
             .ReturnsAsync(result);
 
     [Fact]
@@ -114,7 +119,8 @@ public class MainViewModelTests
     [Fact]
     public async Task SearchCommand_WhenItSucceeds_ShowsTheVideoWithAReadableDuration()
     {
-        var video = new VideoInfoDto("UKcJqQqiXq0", "Titulo", "Canal", TimeSpan.FromSeconds(96), null, ValidUrl);
+        var video = new VideoInfoDto(
+            "UKcJqQqiXq0", "Titulo", "Canal", TimeSpan.FromSeconds(96), null, ValidUrl, [1080, 720, 480]);
 
         _videoInfoService
             .Setup(service => service.GetVideoInfoAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
@@ -130,9 +136,79 @@ public class MainViewModelTests
     }
 
     [Fact]
+    public async Task SearchCommand_OffersTheQualitiesOfTheVideoAndPreSelectsTheBest()
+    {
+        var video = new VideoInfoDto(
+            "UKcJqQqiXq0", "Titulo", "Canal", TimeSpan.FromSeconds(96), null, ValidUrl, [1080, 720, 480]);
+
+        _videoInfoService
+            .Setup(service => service.GetVideoInfoAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Result<VideoInfoDto>.Success(video));
+
+        var viewModel = CreateViewModel();
+        viewModel.Url = ValidUrl;
+
+        await viewModel.SearchCommand.ExecuteAsync(null);
+
+        viewModel.AvailableQualities.Select(quality => quality.Label).Should().Equal("1080p", "720p", "480p");
+        viewModel.SelectedQuality!.Height.Should().Be(1080);
+    }
+
+    [Fact]
+    public async Task DownloadCommand_UsesTheChosenQuality()
+    {
+        DownloadOptionsDto? options = null;
+        GivenDownloadReturns(Result<DownloadedFileDto>.Success(AnyDownloadedFile), captured => options = captured);
+
+        var viewModel = CreateViewModel();
+        viewModel.Url = ValidUrl;
+        viewModel.SelectedQuality = new VideoQualityOption(720);
+
+        await viewModel.DownloadCommand.ExecuteAsync(null);
+
+        options!.Kind.Should().Be(MediaKind.Video);
+        options.MaximumHeight.Should().Be(720);
+    }
+
+    /// <summary>
+    /// Sem busca previa nao ha qualidades conhecidas, e o download deve usar a
+    /// melhor disponivel em vez de recusar.
+    /// </summary>
+    [Fact]
+    public async Task DownloadCommand_WithoutASearchFirst_AsksForTheBestAvailable()
+    {
+        DownloadOptionsDto? options = null;
+        GivenDownloadReturns(Result<DownloadedFileDto>.Success(AnyDownloadedFile), captured => options = captured);
+
+        var viewModel = CreateViewModel();
+        viewModel.Url = ValidUrl;
+
+        await viewModel.DownloadCommand.ExecuteAsync(null);
+
+        options!.MaximumHeight.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task DownloadCommand_WhenOnlyAudioWasAsked_IgnoresTheChosenQuality()
+    {
+        DownloadOptionsDto? options = null;
+        GivenDownloadReturns(Result<DownloadedFileDto>.Success(AnyDownloadedFile), captured => options = captured);
+
+        var viewModel = CreateViewModel();
+        viewModel.Url = ValidUrl;
+        viewModel.SelectedQuality = new VideoQualityOption(720);
+        viewModel.AudioOnly = true;
+
+        await viewModel.DownloadCommand.ExecuteAsync(null);
+
+        options!.Kind.Should().Be(MediaKind.AudioOnly);
+        options.MaximumHeight.Should().BeNull();
+    }
+
+    [Fact]
     public async Task SearchCommand_WithALiveStream_ShowsAoVivoInsteadOfZero()
     {
-        var liveStream = new VideoInfoDto("jfKfPfyJRdk", "Radio", "Canal", TimeSpan.Zero, null, ValidUrl);
+        var liveStream = new VideoInfoDto("jfKfPfyJRdk", "Radio", "Canal", TimeSpan.Zero, null, ValidUrl, []);
 
         _videoInfoService
             .Setup(service => service.GetVideoInfoAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))

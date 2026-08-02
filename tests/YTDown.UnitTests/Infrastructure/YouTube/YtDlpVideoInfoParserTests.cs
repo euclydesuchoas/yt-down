@@ -35,6 +35,29 @@ public class YtDlpVideoInfoParserTests
             "『無職転生Ⅲ ～異世界行ったら本気だす～』ノンクレジットED映像／EDテーマ：「祈り、終われば」中島美嘉");
     }
 
+    /// <summary>
+    /// Cada altura existe em avc1, vp9 e av01. Oferecer as tres seria oferecer
+    /// a mesma qualidade repetida; oferecer 1440p ou 2160p, que so existem em
+    /// vp9 e av01, seria prometer algo que nao sai em MP4 sem reconverter.
+    /// </summary>
+    [Fact]
+    public void TryParse_OffersOnlyTheHeightsThatExistInH264_FromLargestToSmallest()
+    {
+        var parsed = YtDlpVideoInfoParser.TryParse(ReadFixture("video-info.json"), out var videoInfo);
+
+        parsed.Should().BeTrue();
+        videoInfo!.AvailableHeights.Should().Equal(1080, 720, 480, 360, 240, 144);
+    }
+
+    [Fact]
+    public void TryParse_WithoutFormats_OffersNoHeight()
+    {
+        var parsed = YtDlpVideoInfoParser.TryParse(ReadFixture("legacy-uploader-only.json"), out var videoInfo);
+
+        parsed.Should().BeTrue();
+        videoInfo!.AvailableHeights.Should().BeEmpty();
+    }
+
     [Fact]
     public void TryParse_WithLiveStream_TreatsMissingDurationAsZero()
     {

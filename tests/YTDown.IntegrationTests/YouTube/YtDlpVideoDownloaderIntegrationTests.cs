@@ -58,6 +58,7 @@ public class YtDlpVideoDownloaderIntegrationTests : IDisposable
 
         var result = await CreateDownloader().DownloadAsync(
             VideoUrl.Create(ReferenceVideoUrl),
+            DownloadOptionsDto.BestVideo,
             _destinationDirectory,
             progress,
             cancellation.Token);
@@ -79,6 +80,52 @@ public class YtDlpVideoDownloaderIntegrationTests : IDisposable
     }
 
     [Fact]
+    public async Task DownloadAsync_ForAudioOnly_ProducesAnMp3AndPassesThroughTheFinishingStage()
+    {
+        var reported = new List<DownloadProgressDto>();
+        var progress = new SynchronousProgress(reported.Add);
+
+        using var cancellation = new CancellationTokenSource(TimeSpan.FromMinutes(5));
+
+        var result = await CreateDownloader().DownloadAsync(
+            VideoUrl.Create(ReferenceVideoUrl),
+            DownloadOptionsDto.AudioOnly,
+            _destinationDirectory,
+            progress,
+            cancellation.Token);
+
+        result.IsSuccess.Should().BeTrue(because: result.Diagnostics);
+        result.Value!.FilePath.Should().EndWith(".mp3");
+        File.Exists(result.Value.FilePath).Should().BeTrue();
+
+        reported.Select(entry => entry.Percentage).Should().BeInAscendingOrder();
+        // A conversao para MP3 nao reporta progresso, entao esta etapa so existe
+        // porque o fim do stream de audio e usado como marcador.
+        reported.Select(entry => entry.Stage).Should().Contain(DownloadStage.Finishing);
+        reported[^1].Percentage.Should().Be(100);
+
+        Directory.GetFiles(_destinationDirectory).Should().ContainSingle();
+    }
+
+    [Fact]
+    public async Task DownloadAsync_WithAQualityLimit_RespectsIt()
+    {
+        using var cancellation = new CancellationTokenSource(TimeSpan.FromMinutes(5));
+
+        var limited = await CreateDownloader().DownloadAsync(
+            VideoUrl.Create(ReferenceVideoUrl),
+            new DownloadOptionsDto(MediaKind.Video, MaximumHeight: 360),
+            _destinationDirectory,
+            new Progress<DownloadProgressDto>(),
+            cancellation.Token);
+
+        limited.IsSuccess.Should().BeTrue(because: limited.Diagnostics);
+
+        // O mesmo video em 1080p passa de 20 MB; em 360p fica bem abaixo disso.
+        limited.Value!.SizeInBytes.Should().BeLessThan(8_000_000);
+    }
+
+    [Fact]
     public async Task DownloadAsync_WhenCancelledMidway_StopsAndLeavesNoPartialFile()
     {
         using var cancellation = new CancellationTokenSource();
@@ -93,6 +140,7 @@ public class YtDlpVideoDownloaderIntegrationTests : IDisposable
 
         var result = await CreateDownloader().DownloadAsync(
             VideoUrl.Create(ReferenceVideoUrl),
+            DownloadOptionsDto.BestVideo,
             _destinationDirectory,
             progress,
             cancellation.Token);

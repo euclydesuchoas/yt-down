@@ -34,6 +34,20 @@ public sealed partial class MainViewModel : ObservableObject
     [ObservableProperty]
     private VideoInfoDto? _video;
 
+    /// <summary>
+    /// Qualidades do video consultado, da maior para a menor. Fica vazia ate
+    /// que uma busca seja feita, porque so o proprio video sabe o que oferece.
+    /// </summary>
+    [ObservableProperty]
+    private IReadOnlyList<VideoQualityOption> _availableQualities = [];
+
+    [ObservableProperty]
+    private VideoQualityOption? _selectedQuality;
+
+    /// <summary>Baixar somente a trilha sonora, convertida para MP3.</summary>
+    [ObservableProperty]
+    private bool _audioOnly;
+
     [ObservableProperty]
     private string? _errorMessage;
 
@@ -57,7 +71,17 @@ public sealed partial class MainViewModel : ObservableObject
 
     public string? ProgressText => Progress is null ? null : DownloadProgressText.For(Progress);
 
-    partial void OnVideoChanged(VideoInfoDto? value) => OnPropertyChanged(nameof(DurationText));
+    partial void OnVideoChanged(VideoInfoDto? value)
+    {
+        OnPropertyChanged(nameof(DurationText));
+
+        AvailableQualities = value is null
+            ? []
+            : [.. value.AvailableHeights.Select(height => new VideoQualityOption(height))];
+
+        // A maior qualidade e a escolha esperada por quem nao quer escolher.
+        SelectedQuality = AvailableQualities.FirstOrDefault();
+    }
 
     partial void OnProgressChanged(DownloadProgressDto? value) => OnPropertyChanged(nameof(ProgressText));
 
@@ -89,7 +113,7 @@ public sealed partial class MainViewModel : ObservableObject
         // volte para ela sem que o ViewModel precise tratar disso.
         var progress = new Progress<DownloadProgressDto>(value => Progress = value);
 
-        var result = await _downloadService.DownloadAsync(Url, progress, cancellationToken);
+        var result = await _downloadService.DownloadAsync(Url, BuildOptions(), progress, cancellationToken);
 
         Progress = null;
 
@@ -106,6 +130,15 @@ public sealed partial class MainViewModel : ObservableObject
 
     [RelayCommand(CanExecute = nameof(CanOpenContainingFolder))]
     private void OpenContainingFolder() => _fileExplorer.RevealFile(DownloadedFile!.FilePath);
+
+    /// <summary>
+    /// Sem busca previa nao ha qualidades conhecidas, e o download usa a melhor
+    /// disponivel: obrigar a buscar antes seria um passo a mais sem ganho.
+    /// </summary>
+    private DownloadOptionsDto BuildOptions() =>
+        AudioOnly
+            ? DownloadOptionsDto.AudioOnly
+            : new DownloadOptionsDto(MediaKind.Video, SelectedQuality?.Height);
 
     private void ResetResults()
     {
