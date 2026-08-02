@@ -33,51 +33,14 @@ public sealed class JsonDownloadHistoryStore : IDownloadHistoryStore
 
     public async Task<IReadOnlyList<DownloadHistoryEntryDto>> ReadAsync(CancellationToken cancellationToken)
     {
-        if (!File.Exists(_filePath))
-        {
-            return [];
-        }
+        var entries = await JsonFile.ReadAsync<List<DownloadHistoryEntryDto>>(
+            _filePath,
+            SerializerOptions,
+            cancellationToken);
 
-        try
-        {
-            await using var file = File.OpenRead(_filePath);
-
-            var entries = await JsonSerializer.DeserializeAsync<List<DownloadHistoryEntryDto>>(
-                file,
-                SerializerOptions,
-                cancellationToken);
-
-            return entries ?? [];
-        }
-        catch (JsonException)
-        {
-            // Historico ilegivel e um inconveniente, nao um impedimento: perder a
-            // lista e aceitavel, deixar o aplicativo sem abrir nao e. O proximo
-            // download reescreve o arquivo.
-            return [];
-        }
+        return entries ?? [];
     }
 
-    public async Task WriteAsync(
-        IReadOnlyList<DownloadHistoryEntryDto> entries,
-        CancellationToken cancellationToken)
-    {
-        var directory = Path.GetDirectoryName(_filePath);
-
-        if (!string.IsNullOrEmpty(directory))
-        {
-            Directory.CreateDirectory(directory);
-        }
-
-        // Escreve ao lado e so entao substitui. Gravar por cima deixaria o
-        // historico pela metade se a maquina caisse no meio da escrita.
-        var temporaryPath = _filePath + ".tmp";
-
-        await using (var file = File.Create(temporaryPath))
-        {
-            await JsonSerializer.SerializeAsync(file, entries, SerializerOptions, cancellationToken);
-        }
-
-        File.Move(temporaryPath, _filePath, overwrite: true);
-    }
+    public Task WriteAsync(IReadOnlyList<DownloadHistoryEntryDto> entries, CancellationToken cancellationToken) =>
+        JsonFile.WriteAsync(_filePath, entries, SerializerOptions, cancellationToken);
 }
