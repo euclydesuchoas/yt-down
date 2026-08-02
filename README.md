@@ -3,9 +3,9 @@
 Aplicativo desktop para Windows que baixa videos e audios do YouTube de forma
 simples.
 
-> **Estado atual:** em desenvolvimento. O aplicativo ja consulta um video e o
-> baixa em MP4, com progresso e cancelamento. Ainda nao ha selecao de
-> qualidade, download so de audio, historico nem configuracoes.
+> **Estado atual:** em desenvolvimento. O aplicativo ja consulta um video, baixa
+> em MP4 na qualidade escolhida ou extrai apenas o audio em MP3, com progresso e
+> cancelamento. Ainda nao ha historico nem configuracoes.
 
 ---
 
@@ -28,9 +28,12 @@ Enderecos aceitos incluem `youtube.com/watch?v=...`, `youtu.be/...`,
 `/shorts/...`, `/live/...`, com ou sem `https://`. Parametros de playlist e de
 tempo sao ignorados: apenas o video colado e considerado.
 
-O arquivo sai em MP4 com H.264, o formato que abre em qualquer player, celular
-ou aplicativo de mensagens. Como o YouTube nao oferece H.264 acima de 1080p,
-essa e a qualidade maxima por enquanto.
+Depois de **Buscar**, a lista de qualidades mostra o que aquele video realmente
+oferece. Marque **Baixar somente o audio** para receber um MP3 no lugar do video.
+
+O video sai em MP4 com H.264, o formato que abre em qualquer player, celular ou
+aplicativo de mensagens. Como o YouTube nao oferece H.264 acima de 1080p, essa e
+a qualidade maxima, mesmo em videos publicados em 4K.
 
 ---
 

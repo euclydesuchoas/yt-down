@@ -231,13 +231,20 @@ Video de referencia para testes: `https://www.youtube.com/watch?v=UKcJqQqiXq0`
 
 ## Limitacoes conhecidas
 
-- **Teto de 1080p**, consequencia de preferir H.264 para nao reconverter. Sem
-  selecao de qualidade ou de formato: sempre o melhor MP4 disponivel.
+- **Teto de 1080p**, consequencia de preferir H.264 para nao reconverter. As
+  qualidades oferecidas sao as reais do video, mas apenas as que existem em
+  H.264: um video em 4K aparece com 1080p no maximo.
 - **Nenhum runtime JavaScript embarcado.** O yt-dlp avisa que a extracao sem um
-  runtime esta depreciada e que alguns formatos podem faltar. Hoje o video de
-  referencia funciona normalmente, mas isso tende a piorar. Embarcar um runtime
-  significa mais uma dependencia grande no instalador. Decisao adiada
+  runtime esta depreciada e que alguns formatos podem faltar. Embarcar um
+  runtime significa mais uma dependencia grande no instalador. Decisao adiada
   conscientemente, para a fatia das ferramentas.
+
+  **Ja houve sintoma:** um teste de integracao falhou uma vez com
+  `ERROR: unable to download video data: HTTP Error 403: Forbidden` e passou na
+  execucao seguinte, sem qualquer alteracao. O 403 nesse ponto costuma indicar
+  URL cuja assinatura precisaria ser decodificada por JavaScript. Como e
+  intermitente, nao ha diagnostico conclusivo: se voltar com frequencia, esta e
+  a primeira hipotese a investigar.
 - O yt-dlp esta congelado na versao fixada. Quando o YouTube o quebrar, o
   aplicativo para de funcionar e o usuario nao tera como resolver.
 - Uma playlist colada e reduzida ao video atual, sem qualquer aviso na tela.
@@ -253,7 +260,7 @@ Video de referencia para testes: `https://www.youtube.com/watch?v=UKcJqQqiXq0`
 |---|---|
 | 1 (feita) | Consulta de metadados de ponta a ponta |
 | 2 (feita) | Download com progresso agregado, cancelamento e limpeza |
-| 3 | Selecao de qualidade e de somente audio |
+| 3 (feita) | Selecao de qualidade e download somente de audio em MP3 |
 | 4 | Ferramentas em `%LOCALAPPDATA%`, `yt-dlp -U` e runtime JavaScript |
 | 5+ | Historico, configuracoes, fila, tema, distribuicao |
 
