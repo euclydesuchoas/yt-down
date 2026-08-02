@@ -1,4 +1,5 @@
 using System.Windows;
+using Microsoft.Win32;
 using YTDown.UI.ViewModels;
 
 namespace YTDown.UI.Views;
@@ -40,6 +41,24 @@ public partial class MainWindow : Window
 
         history.Owner = this;
         history.ShowDialog();
+    }
+
+    /// <remarks>
+    /// O seletor de pastas e do Windows, e escolher pasta e assunto da janela: o
+    /// ViewModel recebe o caminho, nao a caixa de dialogo.
+    /// </remarks>
+    private async void OnChooseDestinationRequested(object sender, RoutedEventArgs e)
+    {
+        var dialog = new OpenFolderDialog
+        {
+            Title = "Escolha onde salvar este download",
+            InitialDirectory = _viewModel.SelectedDestination.Path ?? string.Empty
+        };
+
+        if (dialog.ShowDialog(this) == true)
+        {
+            await _viewModel.UseFolderAsync(dialog.FolderName);
+        }
     }
 
     /// <remarks>

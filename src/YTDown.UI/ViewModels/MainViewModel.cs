@@ -17,6 +17,7 @@ public sealed partial class MainViewModel : ObservableObject
     private readonly IFileExplorer _fileExplorer;
     private readonly IToolMaintenanceService _toolMaintenanceService;
     private readonly ISettingsService _settingsService;
+    private readonly IDownloadHistoryService _downloadHistory;
 
     private SettingsDto _settings = SettingsDto.Default;
 
@@ -25,13 +26,15 @@ public sealed partial class MainViewModel : ObservableObject
         IDownloadService downloadService,
         IFileExplorer fileExplorer,
         IToolMaintenanceService toolMaintenanceService,
-        ISettingsService settingsService)
+        ISettingsService settingsService,
+        IDownloadHistoryService downloadHistory)
     {
         _videoInfoService = videoInfoService;
         _downloadService = downloadService;
         _fileExplorer = fileExplorer;
         _toolMaintenanceService = toolMaintenanceService;
         _settingsService = settingsService;
+        _downloadHistory = downloadHistory;
     }
 
     /// <summary>
@@ -52,6 +55,7 @@ public sealed partial class MainViewModel : ObservableObject
     private async Task InitializeAsync(CancellationToken cancellationToken)
     {
         await RefreshSettingsAsync(cancellationToken);
+        await RefreshDestinationsAsync(cancellationToken);
 
         var status = new Progress<ToolMaintenanceStatus>(
             value => MaintenanceMessage = ToolMaintenanceText.For(value));
@@ -72,6 +76,49 @@ public sealed partial class MainViewModel : ObservableObject
         _settings = await _settingsService.GetAsync(cancellationToken);
 
         SelectedQuality = PreferredQuality();
+    }
+
+    /// <summary>
+    /// Quantas pastas recentes cabem na lista sem transforma-la em um segundo
+    /// historico.
+    /// </summary>
+    private const int RecentFolderCount = 5;
+
+    /// <summary>
+    /// Recarrega as pastas oferecidas, preservando a que esta escolhida.
+    /// </summary>
+    private async Task RefreshDestinationsAsync(CancellationToken cancellationToken)
+    {
+        var recent = await _downloadHistory.GetRecentFoldersAsync(RecentFolderCount, cancellationToken);
+        var chosen = SelectedDestination;
+
+        List<DestinationOption> options = [DestinationOption.Default];
+        options.AddRange(recent.Select(folder => new DestinationOption(folder)));
+
+        // Uma pasta recem-apontada no seletor ainda nao esta no historico, que so
+        // registra downloads concluidos. Sem isto ela sumiria da lista no instante
+        // seguinte ao de ser escolhida.
+        if (chosen.Path is { Length: > 0 } path && !recent.Contains(path, StringComparer.OrdinalIgnoreCase))
+        {
+            options.Add(chosen);
+        }
+
+        Destinations = options;
+        SelectedDestination = options.FirstOrDefault(option => option == chosen) ?? DestinationOption.Default;
+    }
+
+    /// <summary>
+    /// Passa a usar uma pasta que o usuario acabou de apontar no seletor.
+    /// </summary>
+    /// <remarks>
+    /// Quem escolhe a pasta e a janela, que conhece o seletor do Windows; o
+    /// ViewModel so recebe o resultado.
+    /// </remarks>
+    public async Task UseFolderAsync(string folder, CancellationToken cancellationToken = default)
+    {
+        SelectedDestination = new DestinationOption(folder);
+
+        await RefreshDestinationsAsync(cancellationToken);
     }
 
     [ObservableProperty]
@@ -95,6 +142,25 @@ public sealed partial class MainViewModel : ObservableObject
     /// <summary>Baixar somente a trilha sonora, convertida para MP3.</summary>
     [ObservableProperty]
     private bool _audioOnly;
+
+    /// <summary>
+    /// Pastas oferecidas: a padrao, sempre primeiro, seguida das usadas
+    /// recentemente.
+    /// </summary>
+    [ObservableProperty]
+    private IReadOnlyList<DestinationOption> _destinations = [DestinationOption.Default];
+
+    /// <summary>
+    /// Pasta deste download.
+    /// </summary>
+    /// <remarks>
+    /// Continua valendo entre um download e outro de proposito. Quem esta
+    /// separando doze musicas em uma pasta escolheria a mesma doze vezes, o que
+    /// e quase tao ruim quanto ir as configuracoes. Volta ao padrao ao fechar o
+    /// aplicativo, que e onde a preferencia duradoura mora.
+    /// </remarks>
+    [ObservableProperty]
+    private DestinationOption _selectedDestination = DestinationOption.Default;
 
     [ObservableProperty]
     private string? _errorMessage;
@@ -206,6 +272,10 @@ public sealed partial class MainViewModel : ObservableObject
         if (result.IsSuccess)
         {
             DownloadedFile = result.Value;
+
+            // A pasta usada agora esta no historico, e vira uma opcao para o
+            // proximo download.
+            await RefreshDestinationsAsync(CancellationToken.None);
             return;
         }
 
@@ -227,8 +297,11 @@ public sealed partial class MainViewModel : ObservableObject
     /// </remarks>
     private DownloadOptionsDto BuildOptions() =>
         AudioOnly
-            ? DownloadOptionsDto.AudioOnly
-            : new DownloadOptionsDto(MediaKind.Video, SelectedQuality?.Height ?? _settings.MaximumHeight);
+            ? new DownloadOptionsDto(MediaKind.AudioOnly, DestinationDirectory: SelectedDestination.Path)
+            : new DownloadOptionsDto(
+                MediaKind.Video,
+                SelectedQuality?.Height ?? _settings.MaximumHeight,
+                SelectedDestination.Path);
 
     private void ResetResults()
     {

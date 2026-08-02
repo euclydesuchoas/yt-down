@@ -16,8 +16,18 @@ public class MainViewModelTests
     private readonly Mock<IFileExplorer> _fileExplorer = new();
     private readonly Mock<IToolMaintenanceService> _toolMaintenanceService = new();
     private readonly Mock<ISettingsService> _settingsService = new();
+    private readonly Mock<IDownloadHistoryService> _downloadHistory = new();
 
-    public MainViewModelTests() => GivenSettings(SettingsDto.Default);
+    public MainViewModelTests()
+    {
+        GivenSettings(SettingsDto.Default);
+        GivenRecentFolders();
+    }
+
+    private void GivenRecentFolders(params string[] folders) =>
+        _downloadHistory
+            .Setup(history => history.GetRecentFoldersAsync(It.IsAny<int>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(folders);
 
     private void GivenSettings(SettingsDto settings) =>
         _settingsService
@@ -29,7 +39,8 @@ public class MainViewModelTests
             _downloadService.Object,
             _fileExplorer.Object,
             _toolMaintenanceService.Object,
-            _settingsService.Object);
+            _settingsService.Object,
+            _downloadHistory.Object);
 
     private static DownloadedFileDto AnyDownloadedFile =>
         new(@"C:\Users\Euclydes\Downloads\video.mp4", "video.mp4", 20_000_000);
@@ -352,6 +363,81 @@ public class MainViewModelTests
         await viewModel.SearchCommand.ExecuteAsync(null);
 
         viewModel.SelectedQuality!.Height.Should().Be(480);
+    }
+
+    [Fact]
+    public async Task Destinations_OfferTheDefaultFolderFirstAndThenTheRecentOnes()
+    {
+        GivenRecentFolders(@"D:\Musicas\Elvis", @"D:\Musicas\Roberto");
+
+        var viewModel = CreateViewModel();
+        await viewModel.InitializeCommand.ExecuteAsync(null);
+
+        viewModel.Destinations.Select(option => option.Path)
+            .Should().Equal(null, @"D:\Musicas\Elvis", @"D:\Musicas\Roberto");
+
+        viewModel.SelectedDestination.Should().Be(DestinationOption.Default);
+        viewModel.Destinations[0].Label.Should().Be("Pasta padrão");
+        viewModel.Destinations[1].Label.Should().Be("Elvis", because: "o caminho inteiro nao cabe na linha");
+    }
+
+    [Fact]
+    public async Task DownloadCommand_WithoutChoosingAFolder_LetsTheDefaultOneDecide()
+    {
+        DownloadOptionsDto? options = null;
+        GivenDownloadReturns(Result<DownloadedFileDto>.Success(AnyDownloadedFile), captured => options = captured);
+
+        var viewModel = await AfterSearchAsync();
+        await viewModel.DownloadCommand.ExecuteAsync(null);
+
+        options!.DestinationDirectory.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task DownloadCommand_UsesTheFolderChosenForThisDownload()
+    {
+        DownloadOptionsDto? options = null;
+        GivenDownloadReturns(Result<DownloadedFileDto>.Success(AnyDownloadedFile), captured => options = captured);
+
+        var viewModel = await AfterSearchAsync();
+        await viewModel.UseFolderAsync(@"D:\Musicas\Elvis");
+
+        await viewModel.DownloadCommand.ExecuteAsync(null);
+
+        options!.DestinationDirectory.Should().Be(@"D:\Musicas\Elvis");
+    }
+
+    /// <summary>
+    /// O historico so registra downloads concluidos, entao a pasta recem-apontada
+    /// ainda nao esta la. Sem entrar na lista, ela sumiria logo apos ser
+    /// escolhida.
+    /// </summary>
+    [Fact]
+    public async Task UseFolder_KeepsAFolderThatIsNotInTheHistoryYet()
+    {
+        var viewModel = CreateViewModel();
+        await viewModel.InitializeCommand.ExecuteAsync(null);
+
+        await viewModel.UseFolderAsync(@"D:\Musicas\Elvis");
+
+        viewModel.SelectedDestination.Path.Should().Be(@"D:\Musicas\Elvis");
+        viewModel.Destinations.Select(option => option.Path).Should().Contain(@"D:\Musicas\Elvis");
+    }
+
+    /// <summary>
+    /// Quem separa doze musicas em uma pasta escolheria a mesma doze vezes.
+    /// </summary>
+    [Fact]
+    public async Task TheChosenFolder_SurvivesFromOneDownloadToTheNext()
+    {
+        GivenDownloadReturns(Result<DownloadedFileDto>.Success(AnyDownloadedFile));
+
+        var viewModel = await AfterSearchAsync();
+        await viewModel.UseFolderAsync(@"D:\Musicas\Elvis");
+
+        await viewModel.DownloadCommand.ExecuteAsync(null);
+
+        viewModel.SelectedDestination.Path.Should().Be(@"D:\Musicas\Elvis");
     }
 
     [Fact]
