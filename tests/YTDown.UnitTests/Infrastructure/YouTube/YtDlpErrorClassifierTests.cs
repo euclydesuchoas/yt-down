@@ -36,6 +36,32 @@ public class YtDlpErrorClassifierTests
         YtDlpErrorClassifier.Classify(standardError).Should().Be(ErrorCode.RegionBlocked);
     }
 
+    /// <summary>
+    /// Mensagem real, capturada apos varios downloads seguidos do mesmo endereco
+    /// de rede. Note o apostrofo tipografico, que o marcador evita de proposito.
+    /// </summary>
+    [Fact]
+    public void Classify_WhenYouTubeAsksForVerification_ReturnsBotCheckRequired()
+    {
+        const string standardError =
+            "ERROR: [youtube] UKcJqQqiXq0: Sign in to confirm you’re not a bot. " +
+            "Use --cookies-from-browser or --cookies for the authentication.";
+
+        YtDlpErrorClassifier.Classify(standardError).Should().Be(ErrorCode.BotCheckRequired);
+    }
+
+    /// <summary>
+    /// As duas mensagens comecam igual: a de idade nao pode ser confundida com a
+    /// de verificacao.
+    /// </summary>
+    [Fact]
+    public void Classify_DistinguishesAgeRestrictionFromTheBotCheck()
+    {
+        YtDlpErrorClassifier
+            .Classify("ERROR: [youtube] abc: Sign in to confirm your age. This video may be inappropriate.")
+            .Should().Be(ErrorCode.AgeRestricted);
+    }
+
     [Theory]
     [InlineData("ERROR: Unable to download webpage: <urlopen error [Errno 11001] getaddrinfo failed>")]
     [InlineData("ERROR: Unable to download API page: The read operation timed out")]

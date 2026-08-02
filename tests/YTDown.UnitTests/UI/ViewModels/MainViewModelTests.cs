@@ -14,9 +14,13 @@ public class MainViewModelTests
     private readonly Mock<IVideoInfoService> _videoInfoService = new();
     private readonly Mock<IDownloadService> _downloadService = new();
     private readonly Mock<IFileExplorer> _fileExplorer = new();
+    private readonly Mock<IToolMaintenanceService> _toolMaintenanceService = new();
 
     private MainViewModel CreateViewModel() =>
-        new(_videoInfoService.Object, _downloadService.Object, _fileExplorer.Object);
+        new(_videoInfoService.Object,
+            _downloadService.Object,
+            _fileExplorer.Object,
+            _toolMaintenanceService.Object);
 
     private static DownloadedFileDto AnyDownloadedFile =>
         new(@"C:\Users\Euclydes\Downloads\video.mp4", "video.mp4", 20_000_000);

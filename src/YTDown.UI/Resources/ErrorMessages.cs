@@ -26,6 +26,9 @@ internal static class ErrorMessages
         ErrorCode.RegionBlocked =>
             "Este video nao esta disponivel no seu pais.",
 
+        ErrorCode.BotCheckRequired =>
+            "O YouTube pediu uma verificacao para este acesso. Espere alguns minutos antes de tentar de novo.",
+
         ErrorCode.NetworkError =>
             "Nao foi possivel conectar ao YouTube. Verifique sua conexao com a internet e tente de novo.",
 

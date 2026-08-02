@@ -30,7 +30,18 @@ public class YtDlpVideoDownloaderIntegrationTests : IDisposable
     }
 
     private static YtDlpVideoDownloader CreateDownloader() =>
-        new(new ProcessRunner(), new LocalToolLocator(FindToolsDirectory()));
+        new(new ProcessRunner(), CreateToolLocator());
+
+    /// <summary>
+    /// Nos testes as duas pastas sao a mesma: o repositorio nao separa a copia
+    /// do perfil da que acompanha a instalacao.
+    /// </summary>
+    private static ManagedToolLocator CreateToolLocator()
+    {
+        var tools = FindToolsDirectory();
+
+        return new ManagedToolLocator(new ToolLocations(tools, tools));
+    }
 
     private static string FindToolsDirectory()
     {

@@ -81,6 +81,13 @@
             <TextBlock Style="{StaticResource SubtleText}"
                        Margin="0,4,0,0"
                        Text="Cole o endereco do video do YouTube. O arquivo e salvo na sua pasta Downloads." />
+
+            <TextBlock Style="{StaticResource SubtleText}"
+                       Margin="0,6,0,0"
+                       FontSize="12"
+                       Foreground="#FF98A0AF"
+                       Text="{Binding MaintenanceMessage}"
+                       Visibility="{Binding MaintenanceMessage, Converter={StaticResource NotEmptyToVisibility}}" />
         </StackPanel>
 
         <Grid Grid.Row="1"

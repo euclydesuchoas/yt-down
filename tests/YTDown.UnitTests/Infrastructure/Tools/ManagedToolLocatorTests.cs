@@ -3,58 +3,98 @@ using YTDown.Infrastructure.Tools;
 
 namespace YTDown.UnitTests.Infrastructure.Tools;
 
-public class LocalToolLocatorTests : IDisposable
+public class ManagedToolLocatorTests : IDisposable
 {
-    private readonly string _toolsDirectory =
-        Path.Combine(Path.GetTempPath(), $"ytdown-tools-{Guid.NewGuid():N}");
+    private readonly string _root = Path.Combine(Path.GetTempPath(), $"ytdown-tools-{Guid.NewGuid():N}");
 
-    public LocalToolLocatorTests() => Directory.CreateDirectory(_toolsDirectory);
+    private string BundledDirectory => Path.Combine(_root, "bundled");
+
+    private string UserDirectory => Path.Combine(_root, "user");
+
+    public ManagedToolLocatorTests()
+    {
+        Directory.CreateDirectory(BundledDirectory);
+        Directory.CreateDirectory(UserDirectory);
+    }
 
     public void Dispose()
     {
-        if (Directory.Exists(_toolsDirectory))
+        if (Directory.Exists(_root))
         {
-            Directory.Delete(_toolsDirectory, recursive: true);
+            Directory.Delete(_root, recursive: true);
         }
 
         GC.SuppressFinalize(this);
     }
 
-    [Theory]
-    [InlineData(ExternalTool.YtDlp, "yt-dlp.exe")]
-    [InlineData(ExternalTool.FFmpeg, "ffmpeg.exe")]
-    public void TryLocate_WhenExecutableExists_ReturnsItsFullPath(ExternalTool tool, string executableName)
+    private ManagedToolLocator CreateLocator() => new(new ToolLocations(BundledDirectory, UserDirectory));
+
+    private static string Place(string directory, string fileName)
     {
-        var expectedPath = Path.Combine(_toolsDirectory, executableName);
-        File.WriteAllText(expectedPath, string.Empty);
+        var path = Path.Combine(directory, fileName);
+        File.WriteAllText(path, string.Empty);
 
-        var locator = new LocalToolLocator(_toolsDirectory);
+        return path;
+    }
 
-        var located = locator.TryLocate(tool, out var executablePath);
+    /// <summary>
+    /// A copia do perfil se mantem atualizada; a que acompanha a instalacao nao.
+    /// </summary>
+    [Fact]
+    public void TryLocate_ForYtDlp_PrefersTheUserCopyOverTheBundledOne()
+    {
+        Place(BundledDirectory, "yt-dlp.exe");
+        var expected = Place(UserDirectory, "yt-dlp.exe");
 
-        located.Should().BeTrue();
-        executablePath.Should().Be(expectedPath);
+        CreateLocator().TryLocate(ExternalTool.YtDlp, out var path).Should().BeTrue();
+
+        path.Should().Be(expected);
+    }
+
+    /// <summary>
+    /// Garante que um download funcione mesmo antes de a instalacao terminar.
+    /// </summary>
+    [Fact]
+    public void TryLocate_ForYtDlp_FallsBackToTheBundledCopy()
+    {
+        var expected = Place(BundledDirectory, "yt-dlp.exe");
+
+        CreateLocator().TryLocate(ExternalTool.YtDlp, out var path).Should().BeTrue();
+
+        path.Should().Be(expected);
+    }
+
+    /// <summary>
+    /// O FFmpeg nunca se atualiza, entao uma copia no perfil nao deve ser usada.
+    /// </summary>
+    [Fact]
+    public void TryLocate_ForFFmpeg_LooksOnlyAtTheBundledCopy()
+    {
+        Place(UserDirectory, "ffmpeg.exe");
+
+        CreateLocator().TryLocate(ExternalTool.FFmpeg, out var ignored).Should().BeFalse();
+        ignored.Should().BeNull();
+
+        var expected = Place(BundledDirectory, "ffmpeg.exe");
+
+        CreateLocator().TryLocate(ExternalTool.FFmpeg, out var found).Should().BeTrue();
+        found.Should().Be(expected);
     }
 
     [Fact]
-    public void TryLocate_WhenExecutableIsMissing_Fails()
+    public void TryLocate_WhenTheExecutableIsMissingEverywhere_Fails()
     {
-        var locator = new LocalToolLocator(_toolsDirectory);
-
-        var located = locator.TryLocate(ExternalTool.YtDlp, out var executablePath);
-
-        located.Should().BeFalse();
-        executablePath.Should().BeNull();
+        CreateLocator().TryLocate(ExternalTool.YtDlp, out var path).Should().BeFalse();
+        path.Should().BeNull();
     }
 
     [Fact]
-    public void TryLocate_WhenToolsDirectoryDoesNotExist_Fails()
+    public void TryLocate_WhenNoDirectoryExists_Fails()
     {
-        var locator = new LocalToolLocator(Path.Combine(_toolsDirectory, "inexistente"));
+        var locator = new ManagedToolLocator(
+            new ToolLocations(Path.Combine(_root, "inexistente"), Path.Combine(_root, "tambem-nao")));
 
-        var located = locator.TryLocate(ExternalTool.FFmpeg, out var executablePath);
-
-        located.Should().BeFalse();
-        executablePath.Should().BeNull();
+        locator.TryLocate(ExternalTool.YtDlp, out var path).Should().BeFalse();
+        path.Should().BeNull();
     }
 }

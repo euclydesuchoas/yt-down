@@ -34,6 +34,13 @@
       <Link>tools\ffmpeg.exe</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+
+    <!-- Acompanha a instalacao para que o aplicativo saiba qual versao do
+         yt-dlp ele traz, e so recopie quando essa versao mudar. -->
+    <Content Include="..\..\tools\tools.lock.json">
+      <Link>tools\tools.lock.json</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <Target Name="WarnAboutMissingExternalTools" BeforeTargets="Build">

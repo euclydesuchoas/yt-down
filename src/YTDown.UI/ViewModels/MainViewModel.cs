@@ -15,15 +15,41 @@ public sealed partial class MainViewModel : ObservableObject
     private readonly IVideoInfoService _videoInfoService;
     private readonly IDownloadService _downloadService;
     private readonly IFileExplorer _fileExplorer;
+    private readonly IToolMaintenanceService _toolMaintenanceService;
 
     public MainViewModel(
         IVideoInfoService videoInfoService,
         IDownloadService downloadService,
-        IFileExplorer fileExplorer)
+        IFileExplorer fileExplorer,
+        IToolMaintenanceService toolMaintenanceService)
     {
         _videoInfoService = videoInfoService;
         _downloadService = downloadService;
         _fileExplorer = fileExplorer;
+        _toolMaintenanceService = toolMaintenanceService;
+    }
+
+    /// <summary>
+    /// Aviso discreto sobre a preparacao das ferramentas. Vazio quando esta tudo
+    /// em ordem, para nao ocupar a tela com o que nao exige atencao.
+    /// </summary>
+    [ObservableProperty]
+    private string? _maintenanceMessage;
+
+    /// <summary>
+    /// Deixa o yt-dlp instalado em pasta gravavel e tenta atualiza-lo.
+    /// </summary>
+    /// <remarks>
+    /// Roda em paralelo com o uso da tela: enquanto nao termina, um download
+    /// ainda funciona com a copia que acompanha a instalacao.
+    /// </remarks>
+    [RelayCommand]
+    private async Task InitializeAsync(CancellationToken cancellationToken)
+    {
+        var status = new Progress<ToolMaintenanceStatus>(
+            value => MaintenanceMessage = ToolMaintenanceText.For(value));
+
+        await _toolMaintenanceService.PrepareAsync(status, cancellationToken);
     }
 
     [ObservableProperty]

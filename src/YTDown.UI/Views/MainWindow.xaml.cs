@@ -10,5 +10,10 @@ public partial class MainWindow : Window
         InitializeComponent();
 
         DataContext = viewModel;
+
+        // A preparacao das ferramentas comeca junto com a janela e corre em
+        // paralelo: bloquear a abertura para verificar atualizacao deixaria o
+        // aplicativo parecendo lento sem necessidade.
+        Loaded += (_, _) => viewModel.InitializeCommand.Execute(null);
     }
 }

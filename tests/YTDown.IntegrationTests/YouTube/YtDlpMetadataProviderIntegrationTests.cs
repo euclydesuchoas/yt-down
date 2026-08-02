@@ -20,8 +20,14 @@ public class YtDlpMetadataProviderIntegrationTests
 {
     private const string ReferenceVideoId = "UKcJqQqiXq0";
 
-    private static YtDlpMetadataProvider CreateProvider() =>
-        new(new ProcessRunner(), new LocalToolLocator(FindToolsDirectory()));
+    private static YtDlpMetadataProvider CreateProvider()
+    {
+        var tools = FindToolsDirectory();
+
+        // Nos testes as duas pastas sao a mesma: o repositorio nao separa a
+        // copia do perfil da que acompanha a instalacao.
+        return new YtDlpMetadataProvider(new ProcessRunner(), new ManagedToolLocator(new ToolLocations(tools, tools)));
+    }
 
     /// <summary>
     /// A pasta tools fica na raiz do repositorio, nao junto do binario de teste.
