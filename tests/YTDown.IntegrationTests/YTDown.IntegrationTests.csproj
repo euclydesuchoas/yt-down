@@ -15,8 +15,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\YTDown.Application\YTDown.Application.csproj" />
-    <ProjectReference Include="..\YTDown.Infrastructure\YTDown.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\YTDown.Application\YTDown.Application.csproj" />
+    <ProjectReference Include="..\..\src\YTDown.Infrastructure\YTDown.Infrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>

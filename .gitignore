@@ -361,3 +361,6 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+# Ferramentas externas (yt-dlp / ffmpeg) - baixadas pelo script de bootstrap,
+# nunca versionadas: sao binarios grandes e atualizados com frequencia.
+tools/*.exe

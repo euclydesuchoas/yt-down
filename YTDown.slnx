@@ -1,13 +1,13 @@
 <Solution>
   <Folder Name="/src/">
-    <Project Path="YTDown.Application/YTDown.Application.csproj" />
-    <Project Path="YTDown.Domain/YTDown.Domain.csproj" />
-    <Project Path="YTDown.Infrastructure/YTDown.Infrastructure.csproj" />
-    <Project Path="YTDown.UI/YTDown.UI.csproj" />
+    <Project Path="src/YTDown.Application/YTDown.Application.csproj" />
+    <Project Path="src/YTDown.Domain/YTDown.Domain.csproj" />
+    <Project Path="src/YTDown.Infrastructure/YTDown.Infrastructure.csproj" />
+    <Project Path="src/YTDown.UI/YTDown.UI.csproj" />
   </Folder>
   <Folder Name="/tests/">
-    <Project Path="YTDown.ArchitectureTests/YTDown.ArchitectureTests.csproj" />
-    <Project Path="YTDown.IntegrationTests/YTDown.IntegrationTests.csproj" />
-    <Project Path="YTDown.UnitTests/YTDown.UnitTests.csproj" />
+    <Project Path="tests/YTDown.ArchitectureTests/YTDown.ArchitectureTests.csproj" />
+    <Project Path="tests/YTDown.IntegrationTests/YTDown.IntegrationTests.csproj" />
+    <Project Path="tests/YTDown.UnitTests/YTDown.UnitTests.csproj" />
   </Folder>
 </Solution>
