@@ -8,6 +8,12 @@
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
+  <!-- A UI e o composition root: e o unico projeto que conhece o container concreto. -->
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
+  </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\YTDown.Application\YTDown.Application.csproj" />
     <ProjectReference Include="..\YTDown.Infrastructure\YTDown.Infrastructure.csproj" />

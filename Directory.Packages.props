@@ -1,0 +1,35 @@
+<Project>
+
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
+  </PropertyGroup>
+
+  <ItemGroup Label="Apresentacao">
+    <PackageVersion Include="CommunityToolkit.Mvvm" Version="8.4.2" />
+  </ItemGroup>
+
+  <ItemGroup Label="Injecao de dependencia">
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="10.0.10" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.10" />
+  </ItemGroup>
+
+  <!--
+    FluentAssertions esta fixado na linha 7.x de proposito: a partir da 8.0.0 o
+    pacote passou a exigir licenca comercial para uso nao open source. A 7.2.2 e
+    a ultima versao sob Apache 2.0.
+
+    NetArchTest.eNhancedEdition e o fork mantido do NetArchTest.Rules original,
+    que esta sem manutencao ativa.
+  -->
+  <ItemGroup Label="Testes">
+    <PackageVersion Include="coverlet.collector" Version="6.0.4" />
+    <PackageVersion Include="FluentAssertions" Version="7.2.2" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
+    <PackageVersion Include="Moq" Version="4.20.72" />
+    <PackageVersion Include="NetArchTest.eNhancedEdition" Version="1.4.5" />
+    <PackageVersion Include="xunit" Version="2.9.3" />
+    <PackageVersion Include="xunit.runner.visualstudio" Version="3.1.4" />
+  </ItemGroup>
+
+</Project>
