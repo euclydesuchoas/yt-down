@@ -16,17 +16,22 @@ public sealed partial class MainViewModel : ObservableObject
     private readonly IDownloadService _downloadService;
     private readonly IFileExplorer _fileExplorer;
     private readonly IToolMaintenanceService _toolMaintenanceService;
+    private readonly ISettingsService _settingsService;
+
+    private SettingsDto _settings = SettingsDto.Default;
 
     public MainViewModel(
         IVideoInfoService videoInfoService,
         IDownloadService downloadService,
         IFileExplorer fileExplorer,
-        IToolMaintenanceService toolMaintenanceService)
+        IToolMaintenanceService toolMaintenanceService,
+        ISettingsService settingsService)
     {
         _videoInfoService = videoInfoService;
         _downloadService = downloadService;
         _fileExplorer = fileExplorer;
         _toolMaintenanceService = toolMaintenanceService;
+        _settingsService = settingsService;
     }
 
     /// <summary>
@@ -46,10 +51,27 @@ public sealed partial class MainViewModel : ObservableObject
     [RelayCommand]
     private async Task InitializeAsync(CancellationToken cancellationToken)
     {
+        await RefreshSettingsAsync(cancellationToken);
+
         var status = new Progress<ToolMaintenanceStatus>(
             value => MaintenanceMessage = ToolMaintenanceText.For(value));
 
         await _toolMaintenanceService.PrepareAsync(status, cancellationToken);
+    }
+
+    /// <summary>
+    /// Rele as preferencias.
+    /// </summary>
+    /// <remarks>
+    /// Chamado tambem quando a tela de configuracoes fecha, para que a escolha
+    /// valha ja no proximo download, sem reabrir o aplicativo.
+    /// </remarks>
+    [RelayCommand]
+    private async Task RefreshSettingsAsync(CancellationToken cancellationToken)
+    {
+        _settings = await _settingsService.GetAsync(cancellationToken);
+
+        SelectedQuality = PreferredQuality();
     }
 
     [ObservableProperty]
@@ -105,9 +127,22 @@ public sealed partial class MainViewModel : ObservableObject
             ? []
             : [.. value.AvailableHeights.Select(height => new VideoQualityOption(height))];
 
-        // A maior qualidade e a escolha esperada por quem nao quer escolher.
-        SelectedQuality = AvailableQualities.FirstOrDefault();
+        SelectedQuality = PreferredQuality();
     }
+
+    /// <summary>
+    /// A qualidade ja marcada quando a lista aparece.
+    /// </summary>
+    /// <remarks>
+    /// O teto escolhido nas configuracoes e um limite, e nao uma exigencia: um
+    /// video que so exista abaixo dele continua sendo oferecido. Sem teto, a
+    /// maior e a escolha esperada por quem nao quer escolher.
+    /// </remarks>
+    private VideoQualityOption? PreferredQuality() =>
+        _settings.MaximumHeight is { } maximum
+            ? AvailableQualities.FirstOrDefault(quality => quality.Height <= maximum)
+              ?? AvailableQualities.LastOrDefault()
+            : AvailableQualities.FirstOrDefault();
 
     partial void OnProgressChanged(DownloadProgressDto? value) => OnPropertyChanged(nameof(ProgressText));
 
@@ -164,7 +199,7 @@ public sealed partial class MainViewModel : ObservableObject
     private DownloadOptionsDto BuildOptions() =>
         AudioOnly
             ? DownloadOptionsDto.AudioOnly
-            : new DownloadOptionsDto(MediaKind.Video, SelectedQuality?.Height);
+            : new DownloadOptionsDto(MediaKind.Video, SelectedQuality?.Height ?? _settings.MaximumHeight);
 
     private void ResetResults()
     {

@@ -15,12 +15,21 @@ public class MainViewModelTests
     private readonly Mock<IDownloadService> _downloadService = new();
     private readonly Mock<IFileExplorer> _fileExplorer = new();
     private readonly Mock<IToolMaintenanceService> _toolMaintenanceService = new();
+    private readonly Mock<ISettingsService> _settingsService = new();
+
+    public MainViewModelTests() => GivenSettings(SettingsDto.Default);
+
+    private void GivenSettings(SettingsDto settings) =>
+        _settingsService
+            .Setup(service => service.GetAsync(It.IsAny<CancellationToken>()))
+            .ReturnsAsync(settings);
 
     private MainViewModel CreateViewModel() =>
         new(_videoInfoService.Object,
             _downloadService.Object,
             _fileExplorer.Object,
-            _toolMaintenanceService.Object);
+            _toolMaintenanceService.Object,
+            _settingsService.Object);
 
     private static DownloadedFileDto AnyDownloadedFile =>
         new(@"C:\Users\Euclydes\Downloads\video.mp4", "video.mp4", 20_000_000);
@@ -37,6 +46,12 @@ public class MainViewModelTests
             .Callback<string?, DownloadOptionsDto, IProgress<DownloadProgressDto>, CancellationToken>(
                 (_, options, _, _) => captureOptions?.Invoke(options))
             .ReturnsAsync(result);
+
+    private void GivenSearchReturns(IReadOnlyList<int> availableHeights) =>
+        _videoInfoService
+            .Setup(service => service.GetVideoInfoAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Result<VideoInfoDto>.Success(new VideoInfoDto(
+                "UKcJqQqiXq0", "Titulo", "Canal", TimeSpan.FromSeconds(96), null, ValidUrl, availableHeights)));
 
     [Fact]
     public void Commands_AreDisabledWhileTheAddressIsEmpty()
@@ -224,6 +239,61 @@ public class MainViewModelTests
         await viewModel.SearchCommand.ExecuteAsync(null);
 
         viewModel.DurationText.Should().Be("Ao vivo");
+    }
+
+    /// <summary>
+    /// O teto escolhido nas configuracoes decide o que ja vem marcado, sem tirar
+    /// da lista o que o video oferece.
+    /// </summary>
+    [Fact]
+    public async Task SearchCommand_WithAQualityCeiling_PreSelectsTheBestThatFitsInIt()
+    {
+        GivenSettings(new SettingsDto(MaximumHeight: 720));
+        GivenSearchReturns([1080, 720, 480]);
+
+        var viewModel = CreateViewModel();
+        await viewModel.RefreshSettingsCommand.ExecuteAsync(null);
+        viewModel.Url = ValidUrl;
+
+        await viewModel.SearchCommand.ExecuteAsync(null);
+
+        viewModel.SelectedQuality!.Height.Should().Be(720);
+        viewModel.AvailableQualities.Select(quality => quality.Height).Should().Equal(1080, 720, 480);
+    }
+
+    /// <summary>
+    /// O teto e um limite, e nao uma exigencia: um video que so exista abaixo
+    /// dele continua sendo baixado.
+    /// </summary>
+    [Fact]
+    public async Task SearchCommand_WhenEveryQualityIsBelowTheCeiling_PreSelectsTheBestAvailable()
+    {
+        GivenSettings(new SettingsDto(MaximumHeight: 1080));
+        GivenSearchReturns([480, 360]);
+
+        var viewModel = CreateViewModel();
+        await viewModel.RefreshSettingsCommand.ExecuteAsync(null);
+        viewModel.Url = ValidUrl;
+
+        await viewModel.SearchCommand.ExecuteAsync(null);
+
+        viewModel.SelectedQuality!.Height.Should().Be(480);
+    }
+
+    [Fact]
+    public async Task DownloadCommand_WithoutASearchFirst_UsesTheQualityCeilingThatWasChosen()
+    {
+        GivenSettings(new SettingsDto(MaximumHeight: 720));
+        DownloadOptionsDto? options = null;
+        GivenDownloadReturns(Result<DownloadedFileDto>.Success(AnyDownloadedFile), captured => options = captured);
+
+        var viewModel = CreateViewModel();
+        await viewModel.RefreshSettingsCommand.ExecuteAsync(null);
+        viewModel.Url = ValidUrl;
+
+        await viewModel.DownloadCommand.ExecuteAsync(null);
+
+        options!.MaximumHeight.Should().Be(720);
     }
 
     [Fact]
