@@ -432,7 +432,18 @@ VerifiedAndReputablePolicyState   0 = desligado   1 = ligado   2 = avaliacao
 ```
 
 Desligar pela interface do Windows e, oficialmente, irreversivel. Nesta maquina
-o recurso esta em **0**.
+o recurso esta em **0**, e o dono consegue liga-lo e desliga-lo pelo registro.
+
+**Renomear o assembly zera a reputacao.** Ao ganhar metadados de distribuicao, o
+`AssemblyName` passou de `YTDown.UI` para `YTDown`. Para o Smart App Control o
+resultado nao e um arquivo conhecido que mudou, e sim um binario inedito, sem
+assinatura e sem historico: `YTDown.dll` foi bloqueado logo depois, uma vez, e o
+aplicativo morreu antes de a janela existir. Esperar isso a cada mudanca de nome
+ou de versao, aqui e na maquina de quem receber o instalador.
+
+Como a checagem consulta reputacao online, o sintoma e **intermitente e nao
+reproduzivel**: nao vale procurar defeito no codigo antes de descartar esta
+hipotese. Nao ha solucao tecnica sem assinar o executavel.
 
 ### O YouTube bloqueia depois de muitos downloads seguidos
 
