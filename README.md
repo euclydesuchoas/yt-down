@@ -21,15 +21,16 @@ Requisitos: [.NET 10 SDK](https://dotnet.microsoft.com/download) e Windows.
 dotnet run --project src/YTDown.UI
 ```
 
-Cole o endereco de um video do YouTube. **Buscar** mostra qual video foi
-reconhecido; **Baixar** salva o arquivo na sua pasta Downloads.
+Cole o endereco de um video do YouTube e clique em **Buscar**. O video
+reconhecido aparece na tela, junto das qualidades que ele oferece; escolha e
+clique em **Baixar** para salvar na sua pasta Downloads.
 
 Enderecos aceitos incluem `youtube.com/watch?v=...`, `youtu.be/...`,
 `/shorts/...`, `/live/...`, com ou sem `https://`. Parametros de playlist e de
 tempo sao ignorados: apenas o video colado e considerado.
 
-Depois de **Buscar**, a lista de qualidades mostra o que aquele video realmente
-oferece. Marque **Baixar somente o audio** para receber um MP3 no lugar do video.
+A lista de qualidades mostra o que aquele video realmente oferece. Marque
+**Baixar somente o audio** para receber um MP3 no lugar do video.
 
 O video sai em MP4 com H.264, o formato que abre em qualquer player, celular ou
 aplicativo de mensagens. Como o YouTube nao oferece H.264 acima de 1080p, essa e

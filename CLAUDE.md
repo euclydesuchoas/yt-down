@@ -91,7 +91,8 @@ Consulta de um video:
 6. O ViewModel exibe o video ou traduz o `ErrorCode` em frase pelo
    `ErrorMessages`
 
-Download de um video:
+Download de um video, que **so fica disponivel depois de uma busca
+bem-sucedida**:
 
 1. `MainViewModel.DownloadAsync` cria o `Progress<T>` na linha da interface, de
    modo que cada atualizacao volte para ela sozinha
@@ -229,6 +230,25 @@ subindo, porque ai o defeito e nosso.
 
 O limite e de cinquenta registros. Passando disso, a lista deixa de responder a
 pergunta que motiva abri-la e vira algo que ninguem le.
+
+### Buscar e um passo obrigatorio, e nao um atalho
+
+`DownloadCommand` exige `Video is not null`. Antes dava para baixar direto, o
+que parecia economizar um clique mas escondia duas coisas: **qual qualidade** o
+usuario ia receber, porque a lista so existe apos a consulta e o download
+aplicava o teto das configuracoes em silencio; e **se o endereco era mesmo o
+video pretendido**.
+
+O clique a mais custa pouco: a consulta de metadados acontece de qualquer forma
+durante o download. O que muda e o usuario ver o resultado dela antes.
+
+**Mexer no endereco descarta o video encontrado** (`OnUrlChanged`). Sem isso
+daria para buscar um video, colar outro endereco e baixar o segundo com o
+primeiro ainda na tela.
+
+A ordem das linhas da `MainWindow` conta essa historia: endereco, video
+encontrado, escolhas sobre ele, resultado. O botao Baixar vive na linha das
+escolhas, junto das decisoes que executa.
 
 ### As configuracoes ficam em memoria depois da primeira leitura
 
