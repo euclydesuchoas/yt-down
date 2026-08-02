@@ -19,6 +19,12 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\YTDown.Application\YTDown.Application.csproj" />
     <ProjectReference Include="..\..\src\YTDown.Domain\YTDown.Domain.csproj" />
+    <!--
+      A Infrastructure e testada aqui de proposito. O codigo mais fragil do
+      projeto e a leitura da saida do yt-dlp, e ela vive nesta camada: deixa-la
+      fora dos testes unitarios seria testar tudo menos o que costuma quebrar.
+    -->
+    <ProjectReference Include="..\..\src\YTDown.Infrastructure\YTDown.Infrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>
