@@ -24,6 +24,7 @@ public static class InfrastructureServiceCollectionExtensions
         services.AddSingleton<IVideoDownloader, YtDlpVideoDownloader>();
         services.AddSingleton<IDownloadLocationProvider, WindowsDownloadLocationProvider>();
         services.AddSingleton<IFileExplorer, WindowsFileExplorer>();
+        services.AddSingleton<IDownloadHistoryStore, JsonDownloadHistoryStore>();
 
         return services;
     }

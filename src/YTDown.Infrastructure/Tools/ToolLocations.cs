@@ -1,3 +1,5 @@
+using YTDown.Infrastructure.FileSystem;
+
 namespace YTDown.Infrastructure.Tools;
 
 /// <summary>
@@ -13,15 +15,11 @@ namespace YTDown.Infrastructure.Tools;
 public sealed class ToolLocations
 {
     private const string ToolsFolderName = "tools";
-    private const string ApplicationFolderName = "YTDown";
 
     public ToolLocations()
         : this(
             Path.Combine(AppContext.BaseDirectory, ToolsFolderName),
-            Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                ApplicationFolderName,
-                ToolsFolderName))
+            Path.Combine(UserDataLocation.Root, ToolsFolderName))
     {
     }
 
