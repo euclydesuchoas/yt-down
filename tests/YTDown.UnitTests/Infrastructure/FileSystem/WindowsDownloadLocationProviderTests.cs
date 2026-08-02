@@ -51,6 +51,18 @@ public class WindowsDownloadLocationProviderTests : IDisposable
         destination.Should().Be(_chosenDirectory);
     }
 
+    [Fact]
+    public void Exists_DistinguishesAFolderThatIsThereFromOneThatIsNot()
+    {
+        Directory.CreateDirectory(_chosenDirectory);
+
+        var provider = CreateProvider();
+
+        provider.Exists(_chosenDirectory).Should().BeTrue();
+        provider.Exists(Path.Combine(_chosenDirectory, "nao-existe")).Should().BeFalse();
+        provider.Exists("   ").Should().BeFalse();
+    }
+
     /// <summary>
     /// Pendrive removido, unidade de rede fora do ar, pasta apagada. Um arquivo
     /// em lugar diferente do esperado ainda e melhor que nenhum arquivo.

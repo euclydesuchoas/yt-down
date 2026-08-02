@@ -29,6 +29,9 @@ internal static class ErrorMessages
         ErrorCode.BotCheckRequired =>
             "O YouTube pediu uma verificação para este acesso. Espere alguns minutos antes de tentar de novo.",
 
+        ErrorCode.DestinationUnavailable =>
+            "A pasta escolhida não está mais disponível. Escolha outra pasta e tente de novo.",
+
         ErrorCode.NetworkError =>
             "Não foi possível conectar ao YouTube. Verifique sua conexão com a internet e tente de novo.",
 

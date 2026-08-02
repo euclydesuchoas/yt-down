@@ -21,10 +21,29 @@ public class DownloadServiceTests
     private readonly Mock<IDownloadLocationProvider> _locationProvider = new();
     private readonly Mock<IDownloadHistoryService> _history = new();
 
-    public DownloadServiceTests() =>
+    public DownloadServiceTests()
+    {
         _locationProvider
             .Setup(provider => provider.GetDestinationDirectoryAsync(It.IsAny<CancellationToken>()))
             .ReturnsAsync(@"C:\Users\Euclydes\Downloads");
+
+        _locationProvider.Setup(provider => provider.Exists(It.IsAny<string>())).Returns(true);
+    }
+
+    /// <summary>Pasta que o downloader recebeu de fato.</summary>
+    private string? _destinationUsed;
+
+    private void GivenDownloadRecordsTheDestination() =>
+        _videoDownloader
+            .Setup(downloader => downloader.DownloadAsync(
+                It.IsAny<VideoUrl>(),
+                It.IsAny<DownloadOptionsDto>(),
+                It.IsAny<string>(),
+                It.IsAny<IProgress<DownloadProgressDto>>(),
+                It.IsAny<CancellationToken>()))
+            .Callback<VideoUrl, DownloadOptionsDto, string, IProgress<DownloadProgressDto>, CancellationToken>(
+                (_, _, directory, _, _) => _destinationUsed = directory)
+            .ReturnsAsync(Result<DownloadedFileDto>.Success(AnyFile));
 
     private DownloadService CreateService() =>
         new(_videoDownloader.Object, _locationProvider.Object, _history.Object, new FixedTimeProvider(Now));
@@ -109,6 +128,48 @@ public class DownloadServiceTests
         var result = await DownloadAsync();
 
         result.IsSuccess.Should().BeFalse();
+        _history.VerifyNoOtherCalls();
+    }
+
+    [Fact]
+    public async Task DownloadAsync_WithoutAChosenFolder_SavesInTheDefaultOne()
+    {
+        GivenDownloadRecordsTheDestination();
+
+        await DownloadAsync();
+
+        _destinationUsed.Should().Be(@"C:\Users\Euclydes\Downloads");
+    }
+
+    [Fact]
+    public async Task DownloadAsync_SavesInTheFolderChosenForThisDownload()
+    {
+        GivenDownloadRecordsTheDestination();
+
+        await DownloadAsync(options: new DownloadOptionsDto(DestinationDirectory: @"D:\Musicas\Roberto Carlos"));
+
+        _destinationUsed.Should().Be(@"D:\Musicas\Roberto Carlos");
+        _locationProvider.Verify(
+            provider => provider.GetDestinationDirectoryAsync(It.IsAny<CancellationToken>()),
+            Times.Never,
+            failMessage: "a escolha explicita dispensa consultar o padrao");
+    }
+
+    /// <summary>
+    /// Pasta apagada, pendrive removido, unidade de rede fora do ar. Cair para a
+    /// pasta Downloads entregaria o arquivo longe de onde o usuario apontou, e
+    /// ele so descobriria ao procurar.
+    /// </summary>
+    [Fact]
+    public async Task DownloadAsync_WhenTheChosenFolderIsGone_FailsInsteadOfSavingElsewhere()
+    {
+        _locationProvider.Setup(provider => provider.Exists(@"E:\Pendrive")).Returns(false);
+
+        var result = await DownloadAsync(options: new DownloadOptionsDto(DestinationDirectory: @"E:\Pendrive"));
+
+        result.IsSuccess.Should().BeFalse();
+        result.Error.Should().Be(ErrorCode.DestinationUnavailable);
+        _videoDownloader.VerifyNoOtherCalls();
         _history.VerifyNoOtherCalls();
     }
 

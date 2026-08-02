@@ -11,4 +11,14 @@ namespace YTDown.Application.Interfaces;
 public interface IDownloadLocationProvider
 {
     Task<string> GetDestinationDirectoryAsync(CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Se a pasta ainda pode receber um download.
+    /// </summary>
+    /// <remarks>
+    /// Existe para que a Application saiba responder sobre uma pasta sem
+    /// conhecer o sistema de arquivos. Uma pasta escolhida a mao pode ter
+    /// desaparecido entre a escolha e o download.
+    /// </remarks>
+    bool Exists(string directory);
 }

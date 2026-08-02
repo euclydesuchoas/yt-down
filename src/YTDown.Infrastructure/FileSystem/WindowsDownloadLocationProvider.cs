@@ -35,6 +35,9 @@ public sealed class WindowsDownloadLocationProvider : IDownloadLocationProvider
             : DownloadsDirectory();
     }
 
+    public bool Exists(string directory) =>
+        !string.IsNullOrWhiteSpace(directory) && Directory.Exists(directory);
+
     private static string DownloadsDirectory() =>
         TryGetKnownFolderPath(DownloadsFolderId, out var path)
             ? path

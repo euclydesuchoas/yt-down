@@ -36,7 +36,24 @@ public sealed class DownloadService : IDownloadService
             return Result<DownloadedFileDto>.Failure(ErrorCode.InvalidUrl);
         }
 
-        var destinationDirectory = await _downloadLocationProvider.GetDestinationDirectoryAsync(cancellationToken);
+        string destinationDirectory;
+
+        if (options.DestinationDirectory is { Length: > 0 } chosen)
+        {
+            // Escolha explicita nao vira outra coisa em silencio. Cair para a
+            // pasta Downloads aqui entregaria o arquivo longe de onde o usuario
+            // acabou de apontar, e ele so descobriria ao procurar.
+            if (!_downloadLocationProvider.Exists(chosen))
+            {
+                return Result<DownloadedFileDto>.Failure(ErrorCode.DestinationUnavailable, chosen);
+            }
+
+            destinationDirectory = chosen;
+        }
+        else
+        {
+            destinationDirectory = await _downloadLocationProvider.GetDestinationDirectoryAsync(cancellationToken);
+        }
 
         var result = await _videoDownloader.DownloadAsync(
             videoUrl,

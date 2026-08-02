@@ -34,6 +34,14 @@ public enum ErrorCode
     /// <summary>Falha de rede ao contatar o YouTube.</summary>
     NetworkError,
 
+    /// <summary>A pasta escolhida para salvar nao existe mais.</summary>
+    /// <remarks>
+    /// Acontece com pasta apagada, pendrive removido ou unidade de rede fora do
+    /// ar. So vale para a pasta escolhida a mao: quando o destino e o padrao,
+    /// cair para a pasta Downloads e melhor que recusar o download.
+    /// </remarks>
+    DestinationUnavailable,
+
     /// <summary>A ferramenta externa nao foi encontrada na instalacao.</summary>
     ToolNotFound,
 
