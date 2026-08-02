@@ -1,5 +1,7 @@
 using System.Windows;
+using System.Windows.Input;
 using Microsoft.Win32;
+using YTDown.Domain.ValueObjects;
 using YTDown.UI.ViewModels;
 
 namespace YTDown.UI.Views;
@@ -42,6 +44,37 @@ public partial class MainWindow : Window
         history.Owner = this;
         history.ShowDialog();
     }
+
+    /// <summary>
+    /// Seleciona o nome inteiro ao receber o foco.
+    /// </summary>
+    /// <remarks>
+    /// O campo chega preenchido com o titulo do video, que pode estar em um
+    /// alfabeto que o usuario nem le. Deixar o cursor no meio desse texto
+    /// obrigaria a apagar caractere por caractere; selecionado, basta digitar.
+    /// </remarks>
+    private void OnFileNameFocused(object sender, KeyboardFocusChangedEventArgs e) => FileNameBox.SelectAll();
+
+    /// <remarks>
+    /// O clique do mouse posiciona o cursor e desfaria a selecao acima. Quando o
+    /// campo ainda nao tem o foco, o clique so o entrega.
+    /// </remarks>
+    private void OnFileNameClicked(object sender, MouseButtonEventArgs e)
+    {
+        if (!FileNameBox.IsKeyboardFocusWithin)
+        {
+            e.Handled = true;
+            FileNameBox.Focus();
+        }
+    }
+
+    /// <remarks>
+    /// Recusa a tecla no momento em que ela e digitada, em vez de alterar o
+    /// texto depois e mover o cursor de lugar. A limpeza definitiva continua
+    /// acontecendo antes do download, porque texto colado nao passa por aqui.
+    /// </remarks>
+    private void OnFileNameTyping(object sender, TextCompositionEventArgs e) =>
+        e.Handled = !e.Text.All(OutputFileName.IsAllowedCharacter);
 
     /// <remarks>
     /// O seletor de pastas e do Windows, e escolher pasta e assunto da janela: o

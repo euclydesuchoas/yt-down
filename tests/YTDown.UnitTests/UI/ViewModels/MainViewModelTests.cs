@@ -365,6 +365,56 @@ public class MainViewModelTests
         viewModel.SelectedQuality!.Height.Should().Be(480);
     }
 
+    /// <summary>
+    /// O campo mostra o nome que sera gravado, e nao uma promessa que o disco
+    /// recusaria.
+    /// </summary>
+    [Fact]
+    public async Task SearchCommand_SuggestsTheVideoTitleAlreadyCleanedAsTheFileName()
+    {
+        _videoInfoService
+            .Setup(service => service.GetVideoInfoAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Result<VideoInfoDto>.Success(new VideoInfoDto(
+                "UKcJqQqiXq0", @"AC/DC: ao vivo?", "Canal", TimeSpan.FromSeconds(96), null, ValidUrl, [1080])));
+
+        var viewModel = CreateViewModel();
+        viewModel.Url = ValidUrl;
+
+        await viewModel.SearchCommand.ExecuteAsync(null);
+
+        viewModel.FileName.Should().Be("ACDC ao vivo");
+    }
+
+    [Fact]
+    public async Task DownloadCommand_UsesTheNameThatIsOnTheScreen()
+    {
+        DownloadOptionsDto? options = null;
+        GivenDownloadReturns(Result<DownloadedFileDto>.Success(AnyDownloadedFile), captured => options = captured);
+
+        var viewModel = await AfterSearchAsync();
+        viewModel.FileName = "Minha musica";
+
+        await viewModel.DownloadCommand.ExecuteAsync(null);
+
+        options!.FileName.Should().Be("Minha musica");
+    }
+
+    /// <summary>
+    /// A extensao nao e digitada: ela e consequencia da escolha entre video e
+    /// audio.
+    /// </summary>
+    [Fact]
+    public async Task ExtensionText_FollowsTheChoiceBetweenVideoAndAudio()
+    {
+        var viewModel = await AfterSearchAsync();
+
+        viewModel.ExtensionText.Should().Be(".mp4");
+
+        viewModel.AudioOnly = true;
+
+        viewModel.ExtensionText.Should().Be(".mp3");
+    }
+
     [Fact]
     public async Task Destinations_OfferTheDefaultFolderFirstAndThenTheRecentOnes()
     {

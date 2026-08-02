@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using YTDown.Application.Common;
 using YTDown.Application.DTOs;
 using YTDown.Application.Interfaces;
+using YTDown.Domain.ValueObjects;
 using YTDown.UI.Resources;
 
 namespace YTDown.UI.ViewModels;
@@ -144,6 +145,25 @@ public sealed partial class MainViewModel : ObservableObject
     private bool _audioOnly;
 
     /// <summary>
+    /// Nome do arquivo, sem extensao.
+    /// </summary>
+    /// <remarks>
+    /// Comeca com o titulo do video ja limpo, para que o campo mostre o nome que
+    /// sera gravado, e nao uma promessa que o disco recusaria. Vazio volta a
+    /// valer o titulo.
+    /// </remarks>
+    [ObservableProperty]
+    private string _fileName = string.Empty;
+
+    /// <summary>
+    /// Extensao mostrada ao lado do campo. Nao e digitada: ela e consequencia da
+    /// escolha entre video e audio.
+    /// </summary>
+    public string ExtensionText => AudioOnly ? ".mp3" : ".mp4";
+
+    partial void OnAudioOnlyChanged(bool value) => OnPropertyChanged(nameof(ExtensionText));
+
+    /// <summary>
     /// Pastas oferecidas: a padrao, sempre primeiro, seguida das usadas
     /// recentemente.
     /// </summary>
@@ -197,6 +217,10 @@ public sealed partial class MainViewModel : ObservableObject
             : [.. value.AvailableHeights.Select(height => new VideoQualityOption(height))];
 
         SelectedQuality = PreferredQuality();
+
+        FileName = value is not null && OutputFileName.TryCreate(value.Title, out var suggested)
+            ? suggested.Value
+            : string.Empty;
     }
 
     /// <summary>
@@ -297,11 +321,15 @@ public sealed partial class MainViewModel : ObservableObject
     /// </remarks>
     private DownloadOptionsDto BuildOptions() =>
         AudioOnly
-            ? new DownloadOptionsDto(MediaKind.AudioOnly, DestinationDirectory: SelectedDestination.Path)
+            ? new DownloadOptionsDto(
+                MediaKind.AudioOnly,
+                DestinationDirectory: SelectedDestination.Path,
+                FileName: FileName)
             : new DownloadOptionsDto(
                 MediaKind.Video,
                 SelectedQuality?.Height ?? _settings.MaximumHeight,
-                SelectedDestination.Path);
+                SelectedDestination.Path,
+                FileName);
 
     private void ResetResults()
     {
