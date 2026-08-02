@@ -6,6 +6,27 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
+    <AssemblyName>YTDown</AssemblyName>
+  </PropertyGroup>
+
+  <!-- Identificacao que o Windows mostra nas propriedades do arquivo e no
+       gerenciador de tarefas. Sem isso o aplicativo aparece como "YTDown.UI". -->
+  <PropertyGroup>
+    <Version>0.1.0</Version>
+    <Product>YTDown</Product>
+    <AssemblyTitle>YTDown</AssemblyTitle>
+    <Description>Baixa videos e audios do YouTube.</Description>
+    <Authors>Euclydes Uchoas</Authors>
+    <Copyright>Euclydes Uchoas</Copyright>
+  </PropertyGroup>
+
+  <!--
+    Compilar antecipadamente troca tamanho por tempo de abertura. O publico deste
+    aplicativo julga qualidade pelo tempo ate a janela aparecer, e o pacote ja e
+    grande por causa do FFmpeg: os megabytes a mais pesam pouco no total.
+  -->
+  <PropertyGroup>
+    <PublishReadyToRun>true</PublishReadyToRun>
   </PropertyGroup>
 
   <!-- A UI e o composition root: e o unico projeto que conhece o container concreto. -->
