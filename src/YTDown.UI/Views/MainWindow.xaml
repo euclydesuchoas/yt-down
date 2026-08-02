@@ -40,14 +40,23 @@
                            Visibility="{Binding MaintenanceMessage, Converter={StaticResource NotEmptyToVisibility}}" />
             </StackPanel>
 
-            <Button Grid.Column="1"
-                    Margin="16,0,0,0"
-                    Height="34"
-                    Padding="16,0"
-                    VerticalAlignment="Top"
-                    Content="Historico"
-                    Style="{StaticResource SecondaryButton}"
-                    Click="OnHistoryRequested" />
+            <StackPanel Grid.Column="1"
+                        Orientation="Horizontal"
+                        Margin="16,0,0,0"
+                        VerticalAlignment="Top">
+                <Button Height="34"
+                        Padding="16,0"
+                        Content="Historico"
+                        Style="{StaticResource SecondaryButton}"
+                        Click="OnHistoryRequested" />
+
+                <Button Margin="8,0,0,0"
+                        Height="34"
+                        Padding="16,0"
+                        Content="Configuracoes"
+                        Style="{StaticResource SecondaryButton}"
+                        Click="OnSettingsRequested" />
+            </StackPanel>
         </Grid>
 
         <Grid Grid.Row="1"

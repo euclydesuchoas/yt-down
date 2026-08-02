@@ -1,0 +1,97 @@
+<Window x:Class="YTDown.UI.Views.SettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Configuracoes"
+        Width="600" SizeToContent="Height"
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterOwner"
+        Background="#FFF7F8FA"
+        FontFamily="Segoe UI">
+
+    <StackPanel Margin="28,24">
+        <TextBlock Text="Configuracoes" Style="{StaticResource HeadingText}" />
+        <TextBlock Style="{StaticResource SubtleText}"
+                   Margin="0,4,0,0"
+                   Text="Valem para os proximos downloads. Nada do que ja foi baixado muda." />
+
+        <Border Style="{StaticResource Card}" Margin="0,22,0,0">
+            <StackPanel>
+                <TextBlock Text="Onde salvar" FontSize="14" FontWeight="SemiBold" Foreground="#FF1B1F26" />
+
+                <Grid Margin="0,12,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <Border Grid.Column="0"
+                            Background="#FFF2F4F8"
+                            BorderBrush="#FFD5DBE5"
+                            BorderThickness="1"
+                            CornerRadius="6"
+                            Padding="12,0">
+                        <TextBlock Text="{Binding DestinationDescription}"
+                                   FontSize="13"
+                                   Height="34"
+                                   Foreground="#FF3B4252"
+                                   VerticalAlignment="Center"
+                                   TextTrimming="CharacterEllipsis"
+                                   ToolTip="{Binding DestinationDescription}" />
+                    </Border>
+
+                    <Button Grid.Column="1"
+                            Margin="8,0,0,0"
+                            Height="34"
+                            Padding="14,0"
+                            FontSize="13"
+                            Content="Escolher..."
+                            Style="{StaticResource SecondaryButton}"
+                            Click="OnChooseFolderRequested" />
+                </Grid>
+
+                <Button Margin="0,10,0,0"
+                        Height="28"
+                        Padding="12,0"
+                        FontSize="12"
+                        HorizontalAlignment="Left"
+                        Content="Usar a pasta Downloads"
+                        Style="{StaticResource SecondaryButton}"
+                        Command="{Binding UseDownloadsFolderCommand}" />
+            </StackPanel>
+        </Border>
+
+        <Border Style="{StaticResource Card}" Margin="0,14,0,0">
+            <StackPanel>
+                <TextBlock Text="Qualidade" FontSize="14" FontWeight="SemiBold" Foreground="#FF1B1F26" />
+
+                <TextBlock Style="{StaticResource SubtleText}"
+                           Margin="0,6,0,0"
+                           FontSize="12"
+                           Text="Um limite, e nao uma exigencia: video que so exista abaixo dele continua sendo baixado." />
+
+                <ComboBox Margin="0,12,0,0"
+                          Width="220"
+                          Height="32"
+                          HorizontalAlignment="Left"
+                          VerticalContentAlignment="Center"
+                          ItemsSource="{Binding QualityOptions}"
+                          SelectedItem="{Binding SelectedQuality}"
+                          DisplayMemberPath="Label" />
+            </StackPanel>
+        </Border>
+
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,22,0,0">
+            <Button Height="38"
+                    Content="Cancelar"
+                    Style="{StaticResource SecondaryButton}"
+                    IsCancel="True" />
+
+            <Button Margin="10,0,0,0"
+                    Height="38"
+                    Content="Salvar"
+                    Style="{StaticResource FlatButton}"
+                    IsDefault="True"
+                    Click="OnSaveRequested" />
+        </StackPanel>
+    </StackPanel>
+</Window>

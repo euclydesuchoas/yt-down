@@ -34,6 +34,10 @@ public partial class App : System.Windows.Application
         services.AddTransient<HistoryWindow>();
         services.AddSingleton<Func<HistoryWindow>>(provider => provider.GetRequiredService<HistoryWindow>);
 
+        services.AddTransient<SettingsViewModel>();
+        services.AddTransient<SettingsWindow>();
+        services.AddSingleton<Func<SettingsWindow>>(provider => provider.GetRequiredService<SettingsWindow>);
+
         _services = services.BuildServiceProvider();
     }
 

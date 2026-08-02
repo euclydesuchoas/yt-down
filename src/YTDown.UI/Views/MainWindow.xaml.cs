@@ -5,14 +5,21 @@ namespace YTDown.UI.Views;
 
 public partial class MainWindow : Window
 {
+    private readonly MainViewModel _viewModel;
     private readonly Func<HistoryWindow> _createHistoryWindow;
+    private readonly Func<SettingsWindow> _createSettingsWindow;
 
-    public MainWindow(MainViewModel viewModel, Func<HistoryWindow> createHistoryWindow)
+    public MainWindow(
+        MainViewModel viewModel,
+        Func<HistoryWindow> createHistoryWindow,
+        Func<SettingsWindow> createSettingsWindow)
     {
         InitializeComponent();
 
+        _viewModel = viewModel;
         DataContext = viewModel;
         _createHistoryWindow = createHistoryWindow;
+        _createSettingsWindow = createSettingsWindow;
 
         // A preparacao das ferramentas comeca junto com a janela e corre em
         // paralelo: bloquear a abertura para verificar atualizacao deixaria o
@@ -33,5 +40,21 @@ public partial class MainWindow : Window
 
         history.Owner = this;
         history.ShowDialog();
+    }
+
+    /// <remarks>
+    /// A tela principal rele as preferencias ao fechar a de configuracoes, para
+    /// que a escolha valha no proximo download sem reabrir o aplicativo.
+    /// </remarks>
+    private void OnSettingsRequested(object sender, RoutedEventArgs e)
+    {
+        var settings = _createSettingsWindow();
+
+        settings.Owner = this;
+
+        if (settings.ShowDialog() == true)
+        {
+            _viewModel.RefreshSettingsCommand.Execute(null);
+        }
     }
 }
