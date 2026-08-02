@@ -14,10 +14,15 @@ namespace YTDown.Application.DTOs;
 /// configuracoes: quem organiza os arquivos por assunto troca de pasta a cada
 /// download, e mandar essa pessoa as configuracoes toda vez seria atrito.
 /// </param>
+/// <param name="FileName">
+/// Nome escolhido para o arquivo, sem extensao. Ausente significa o titulo do
+/// video, que e o que o yt-dlp usaria sozinho.
+/// </param>
 public sealed record DownloadOptionsDto(
     MediaKind Kind = MediaKind.Video,
     int? MaximumHeight = null,
-    string? DestinationDirectory = null)
+    string? DestinationDirectory = null,
+    string? FileName = null)
 {
     public static DownloadOptionsDto BestVideo { get; } = new();
 

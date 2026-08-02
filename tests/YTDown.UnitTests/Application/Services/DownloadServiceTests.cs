@@ -173,6 +173,53 @@ public class DownloadServiceTests
         _history.VerifyNoOtherCalls();
     }
 
+    /// <summary>Opcoes que o downloader recebeu de fato.</summary>
+    private DownloadOptionsDto? _optionsUsed;
+
+    private void GivenDownloadRecordsTheOptions() =>
+        _videoDownloader
+            .Setup(downloader => downloader.DownloadAsync(
+                It.IsAny<VideoUrl>(),
+                It.IsAny<DownloadOptionsDto>(),
+                It.IsAny<string>(),
+                It.IsAny<IProgress<DownloadProgressDto>>(),
+                It.IsAny<CancellationToken>()))
+            .Callback<VideoUrl, DownloadOptionsDto, string, IProgress<DownloadProgressDto>, CancellationToken>(
+                (_, options, _, _, _) => _optionsUsed = options)
+            .ReturnsAsync(Result<DownloadedFileDto>.Success(AnyFile));
+
+    /// <summary>
+    /// Quem garante que o nome serve ao sistema e esta camada, por onde todo
+    /// download passa, e nao a tela.
+    /// </summary>
+    [Fact]
+    public async Task DownloadAsync_CleansTheChosenFileNameBeforeDownloading()
+    {
+        GivenDownloadRecordsTheOptions();
+
+        await DownloadAsync(options: new DownloadOptionsDto(FileName: @"AC/DC: ao vivo?"));
+
+        _optionsUsed!.FileName.Should().Be("ACDC ao vivo");
+    }
+
+    /// <summary>
+    /// Sem nome utilizavel, o titulo do video volta a valer em vez de o download
+    /// ser recusado.
+    /// </summary>
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData("///")]
+    [InlineData("NUL")]
+    public async Task DownloadAsync_WithoutAUsableName_LetsTheTitleDecide(string? chosen)
+    {
+        GivenDownloadRecordsTheOptions();
+
+        await DownloadAsync(options: new DownloadOptionsDto(FileName: chosen));
+
+        _optionsUsed!.FileName.Should().BeNull();
+    }
+
     /// <summary>
     /// Cancelar apaga tudo o que foi baixado: nao ha arquivo para lembrar.
     /// </summary>

@@ -55,9 +55,16 @@ public sealed class DownloadService : IDownloadService
             destinationDirectory = await _downloadLocationProvider.GetDestinationDirectoryAsync(cancellationToken);
         }
 
+        // O nome e limpo aqui, e nao na tela: a apresentacao pode ajudar o
+        // usuario enquanto ele digita, mas quem garante que o nome serve ao
+        // sistema e esta camada, por onde todo download passa.
+        var sanitized = OutputFileName.TryCreate(options.FileName, out var fileName)
+            ? options with { FileName = fileName.Value }
+            : options with { FileName = null };
+
         var result = await _videoDownloader.DownloadAsync(
             videoUrl,
-            options,
+            sanitized,
             destinationDirectory,
             progress,
             cancellationToken);

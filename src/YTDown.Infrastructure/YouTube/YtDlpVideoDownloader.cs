@@ -10,12 +10,6 @@ namespace YTDown.Infrastructure.YouTube;
 /// <inheritdoc cref="IVideoDownloader" />
 public sealed class YtDlpVideoDownloader : IVideoDownloader
 {
-    /// <summary>
-    /// O titulo entra no nome do arquivo, limitado para nao estourar o caminho
-    /// maximo do Windows.
-    /// </summary>
-    private const string OutputTemplate = "%(title).100s.%(ext)s";
-
     private readonly IProcessRunner _processRunner;
     private readonly IToolLocator _toolLocator;
 
@@ -140,7 +134,7 @@ public sealed class YtDlpVideoDownloader : IVideoDownloader
             "--print", YtDlpProgressParser.FinalFileTemplate,
             "--paths", $"home:{destinationDirectory}",
             "--paths", $"temp:{workDirectory}",
-            "-o", OutputTemplate,
+            "-o", YtDlpOutputTemplate.For(options.FileName, options.Kind, destinationDirectory),
             videoUrl.Value
         ]);
 
