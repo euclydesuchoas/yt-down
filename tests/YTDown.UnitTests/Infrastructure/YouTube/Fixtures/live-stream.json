@@ -1,0 +1,10 @@
+{
+  "_comment": "Transmissao ao vivo: o yt-dlp devolve duration nulo, porque ainda nao ha duracao definida.",
+  "id": "jfKfPfyJRdk",
+  "title": "lofi hip hop radio",
+  "channel": "Lofi Girl",
+  "duration": null,
+  "thumbnail": "https://i.ytimg.com/vi/jfKfPfyJRdk/maxresdefault.jpg",
+  "webpage_url": "https://www.youtube.com/watch?v=jfKfPfyJRdk",
+  "live_status": "is_live"
+}

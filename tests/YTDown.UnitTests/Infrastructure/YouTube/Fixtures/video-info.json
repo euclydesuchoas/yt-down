@@ -1,0 +1,14 @@
+{
+  "_comment": "Resposta real do yt-dlp 2026.07.04 para o video de referencia do projeto, reduzida aos campos usados. O array formats foi removido por ter centenas de entradas.",
+  "id": "UKcJqQqiXq0",
+  "title": "『無職転生Ⅲ ～異世界行ったら本気だす～』ノンクレジットED映像／EDテーマ：「祈り、終われば」中島美嘉",
+  "channel": "TOHO animation",
+  "uploader": "TOHO animation",
+  "uploader_id": "@TOHOanimation",
+  "duration": 96,
+  "thumbnail": "https://i.ytimg.com/vi/UKcJqQqiXq0/maxresdefault.jpg",
+  "webpage_url": "https://www.youtube.com/watch?v=UKcJqQqiXq0",
+  "live_status": "not_live",
+  "was_live": false,
+  "extractor": "youtube"
+}

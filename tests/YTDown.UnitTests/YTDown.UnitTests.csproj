@@ -31,4 +31,9 @@
     <Using Include="Xunit" />
   </ItemGroup>
 
+  <!-- Respostas reais do yt-dlp, gravadas para testar o parser sem rede. -->
+  <ItemGroup>
+    <None Update="Infrastructure\YouTube\Fixtures\*.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
 </Project>
