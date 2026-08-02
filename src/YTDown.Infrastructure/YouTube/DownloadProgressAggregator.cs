@@ -11,20 +11,43 @@ namespace YTDown.Infrastructure.YouTube;
 /// audio sao baixados em sequencia, e depois ficaria parada durante a juncao.
 ///
 /// As faixas vem da proporcao real de bytes: no video de referencia o audio e
-/// pouco mais de 7% do total baixado. A juncao nao reporta progresso algum,
-/// entao ocupa uma faixa curta e fixa no fim.
+/// pouco mais de 7% do total baixado. O trabalho do FFmpeg no fim nao reporta
+/// progresso algum, entao ocupa uma faixa curta e fixa.
 /// </remarks>
 public sealed class DownloadProgressAggregator
 {
     private const int VideoShare = 90;
     private const int AudioShare = 7;
-    private const int MergingPercentage = VideoShare + AudioShare;
+
+    /// <summary>Sem video para baixar, a trilha sozinha ocupa quase tudo.</summary>
+    private const int AudioOnlyShare = 95;
+
+    private readonly bool _audioOnly;
 
     private int _highestPercentage;
 
+    public DownloadProgressAggregator(MediaKind kind) => _audioOnly = kind == MediaKind.AudioOnly;
+
     public DownloadProgressDto ForStream(YtDlpProgressLine line)
     {
+        // O ultimo stream terminar e o unico aviso de que o FFmpeg comecou: as
+        // mensagens dos pos-processadores nao chegam, porque --print, exigido
+        // para saber o caminho final, implica --quiet.
+        if (line.IsFinished && (_audioOnly || !line.IsVideoStream))
+        {
+            return ForFinishing();
+        }
+
         var streamRatio = (double)line.DownloadedBytes / line.TotalBytes;
+
+        if (_audioOnly)
+        {
+            return Build(
+                (int)(streamRatio * AudioOnlyShare),
+                DownloadStage.DownloadingAudio,
+                line.BytesPerSecond,
+                line.TimeRemaining);
+        }
 
         var percentage = line.IsVideoStream
             ? streamRatio * VideoShare
@@ -37,11 +60,15 @@ public sealed class DownloadProgressAggregator
             line.TimeRemaining);
     }
 
-    public DownloadProgressDto ForMerging() =>
-        Build(MergingPercentage, DownloadStage.Merging, bytesPerSecond: null, timeRemaining: null);
-
     public DownloadProgressDto ForCompletion() =>
         Build(100, DownloadStage.Completed, bytesPerSecond: null, timeRemaining: null);
+
+    private DownloadProgressDto ForFinishing() =>
+        Build(
+            _audioOnly ? AudioOnlyShare : VideoShare + AudioShare,
+            DownloadStage.Finishing,
+            bytesPerSecond: null,
+            timeRemaining: null);
 
     /// <summary>
     /// Garante que o percentual nunca retroceda, mesmo quando um stream comeca

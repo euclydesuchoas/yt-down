@@ -30,7 +30,6 @@ public static class YtDlpProgressParser
     public const string FinalFileTemplate = "after_move:FINAL|%(filepath)j";
 
     public const string FinalFilePrefix = "FINAL|";
-    public const string MergingPrefix = "[Merger]";
 
     private const string ProgressPrefix = "PROG|";
     private const string Unknown = "NA";

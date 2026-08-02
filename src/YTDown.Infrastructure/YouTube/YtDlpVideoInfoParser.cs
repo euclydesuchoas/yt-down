@@ -58,10 +58,49 @@ public static class YtDlpVideoInfoParser
                 GetString(root, "channel") ?? GetString(root, "uploader") ?? string.Empty,
                 GetDuration(root),
                 GetString(root, "thumbnail"),
-                GetString(root, "webpage_url") ?? $"https://www.youtube.com/watch?v={videoId}");
+                GetString(root, "webpage_url") ?? $"https://www.youtube.com/watch?v={videoId}",
+                GetDeliverableHeights(root));
 
             return true;
         }
+    }
+
+    /// <summary>
+    /// Alturas que podem ser entregues, da maior para a menor.
+    /// </summary>
+    /// <remarks>
+    /// Somente as que existem em H.264, unico codec que o FFmpeg empacota em MP4
+    /// sem reconverter. Um video em 4K aparece com 1080p no maximo, porque acima
+    /// disso o YouTube so oferece VP9 e AV1: listar 2160p e entregar outra coisa
+    /// seria enganar o usuario.
+    /// </remarks>
+    private static IReadOnlyList<int> GetDeliverableHeights(JsonElement root)
+    {
+        if (!root.TryGetProperty("formats", out var formats) || formats.ValueKind != JsonValueKind.Array)
+        {
+            return [];
+        }
+
+        var heights = new SortedSet<int>();
+
+        foreach (var format in formats.EnumerateArray())
+        {
+            if (GetString(format, "vcodec") is not { } videoCodec ||
+                !videoCodec.StartsWith("avc1", StringComparison.OrdinalIgnoreCase))
+            {
+                continue;
+            }
+
+            if (format.TryGetProperty("height", out var height) &&
+                height.ValueKind == JsonValueKind.Number &&
+                height.TryGetInt32(out var value) &&
+                value > 0)
+            {
+                heights.Add(value);
+            }
+        }
+
+        return [.. heights.Reverse()];
     }
 
     private static string? GetString(JsonElement element, string propertyName) =>

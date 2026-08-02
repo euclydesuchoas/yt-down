@@ -11,15 +11,6 @@ namespace YTDown.Infrastructure.YouTube;
 public sealed class YtDlpVideoDownloader : IVideoDownloader
 {
     /// <summary>
-    /// Prefere H.264 com audio AAC, o que permite juntar sem reconverter e gera
-    /// um MP4 que abre em qualquer lugar. O YouTube nao serve H.264 acima de
-    /// 1080p, entao esta escolha tem esse teto por consequencia, e nao por
-    /// limitacao imposta aqui. As alternativas cobrem videos que so existem em
-    /// formato unico.
-    /// </summary>
-    private const string FormatSelector = "bv*[vcodec^=avc1]+ba[acodec^=mp4a]/b[ext=mp4]/b";
-
-    /// <summary>
     /// O titulo entra no nome do arquivo, limitado para nao estourar o caminho
     /// maximo do Windows.
     /// </summary>
@@ -36,6 +27,7 @@ public sealed class YtDlpVideoDownloader : IVideoDownloader
 
     public async Task<Result<DownloadedFileDto>> DownloadAsync(
         VideoUrl videoUrl,
+        DownloadOptionsDto options,
         string destinationDirectory,
         IProgress<DownloadProgressDto> progress,
         CancellationToken cancellationToken)
@@ -53,7 +45,7 @@ public sealed class YtDlpVideoDownloader : IVideoDownloader
         // limpeza e apagar a pasta inteira, sem precisar adivinhar nomes.
         var workDirectory = Path.Combine(destinationDirectory, $".ytdown-{Guid.NewGuid():N}");
 
-        var aggregator = new DownloadProgressAggregator();
+        var aggregator = new DownloadProgressAggregator(options.Kind);
         string? finalFilePath = null;
 
         void HandleOutputLine(string line)
@@ -65,10 +57,6 @@ public sealed class YtDlpVideoDownloader : IVideoDownloader
             else if (YtDlpProgressParser.TryParseFinalFilePath(line, out var path))
             {
                 finalFilePath = path;
-            }
-            else if (line.StartsWith(YtDlpProgressParser.MergingPrefix, StringComparison.Ordinal))
-            {
-                progress.Report(aggregator.ForMerging());
             }
         }
 
@@ -83,7 +71,7 @@ public sealed class YtDlpVideoDownloader : IVideoDownloader
                 processResult = await _processRunner.RunAsync(
                     new ProcessRequest(
                         ytDlpPath,
-                        BuildArguments(videoUrl, destinationDirectory, workDirectory, ffmpegPath),
+                        BuildArguments(videoUrl, options, destinationDirectory, workDirectory, ffmpegPath),
                         YtDlpEnvironment.Variables),
                     HandleOutputLine,
                     cancellationToken);
@@ -128,27 +116,57 @@ public sealed class YtDlpVideoDownloader : IVideoDownloader
 
     private static string[] BuildArguments(
         VideoUrl videoUrl,
+        DownloadOptionsDto options,
         string destinationDirectory,
         string workDirectory,
-        string ffmpegPath) =>
-    [
-        "-f", FormatSelector,
-        "--merge-output-format", "mp4",
-        "--ffmpeg-location", ffmpegPath,
-        "--no-playlist",
-        "--no-warnings",
-        // Sem isto o progresso vem com retorno de carro e nunca fecha a linha.
-        "--newline",
-        // --print implica --quiet, que silencia o progresso. Este argumento o
-        // traz de volta, e sem ele a barra so se moveria ao terminar.
-        "--progress",
-        "--progress-template", YtDlpProgressParser.ProgressTemplate,
-        "--print", YtDlpProgressParser.FinalFileTemplate,
-        "--paths", $"home:{destinationDirectory}",
-        "--paths", $"temp:{workDirectory}",
-        "-o", OutputTemplate,
-        videoUrl.Value
-    ];
+        string ffmpegPath)
+    {
+        List<string> arguments = ["-f", BuildFormatSelector(options)];
+
+        arguments.AddRange(options.Kind == MediaKind.AudioOnly
+            ? ["--extract-audio", "--audio-format", "mp3", "--audio-quality", "0"]
+            : ["--merge-output-format", "mp4"]);
+
+        arguments.AddRange([
+            "--ffmpeg-location", ffmpegPath,
+            "--no-playlist",
+            "--no-warnings",
+            // Sem isto o progresso vem com retorno de carro e nunca fecha a linha.
+            "--newline",
+            // --print implica --quiet, que silencia o progresso. Este argumento o
+            // traz de volta, e sem ele a barra so se moveria ao terminar.
+            "--progress",
+            "--progress-template", YtDlpProgressParser.ProgressTemplate,
+            "--print", YtDlpProgressParser.FinalFileTemplate,
+            "--paths", $"home:{destinationDirectory}",
+            "--paths", $"temp:{workDirectory}",
+            "-o", OutputTemplate,
+            videoUrl.Value
+        ]);
+
+        return [.. arguments];
+    }
+
+    /// <summary>
+    /// Monta a expressao de selecao de formato do yt-dlp.
+    /// </summary>
+    /// <remarks>
+    /// Para video, prefere H.264 com audio AAC: permite juntar sem reconverter e
+    /// gera um MP4 que abre em qualquer lugar. O teto de 1080p e consequencia
+    /// disso, ja que o YouTube nao serve H.264 acima dessa altura. As
+    /// alternativas cobrem videos que so existem em formato unico.
+    /// </remarks>
+    private static string BuildFormatSelector(DownloadOptionsDto options)
+    {
+        if (options.Kind == MediaKind.AudioOnly)
+        {
+            return "ba/b";
+        }
+
+        var height = options.MaximumHeight is { } maximum ? $"[height<={maximum}]" : string.Empty;
+
+        return $"bv*[vcodec^=avc1]{height}+ba[acodec^=mp4a]/b[ext=mp4]{height}/b{height}/b";
+    }
 
     /// <remarks>
     /// O FFmpeg pode levar um instante para soltar os arquivos depois de

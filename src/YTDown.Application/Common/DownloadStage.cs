@@ -13,6 +13,12 @@ public enum DownloadStage
 {
     DownloadingVideo,
     DownloadingAudio,
-    Merging,
+
+    /// <summary>
+    /// O download acabou e o FFmpeg ainda trabalha: unindo video e audio, ou
+    /// convertendo a trilha para MP3.
+    /// </summary>
+    Finishing,
+
     Completed
 }

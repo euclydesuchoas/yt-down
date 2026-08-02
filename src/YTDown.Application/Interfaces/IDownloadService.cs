@@ -11,6 +11,7 @@ public interface IDownloadService
     /// <param name="rawUrl">Texto exatamente como digitado ou colado pelo usuario.</param>
     Task<Result<DownloadedFileDto>> DownloadAsync(
         string? rawUrl,
+        DownloadOptionsDto options,
         IProgress<DownloadProgressDto> progress,
         CancellationToken cancellationToken);
 }

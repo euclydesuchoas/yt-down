@@ -15,6 +15,7 @@ public interface IVideoDownloader
 {
     Task<Result<DownloadedFileDto>> DownloadAsync(
         VideoUrl videoUrl,
+        DownloadOptionsDto options,
         string destinationDirectory,
         IProgress<DownloadProgressDto> progress,
         CancellationToken cancellationToken);

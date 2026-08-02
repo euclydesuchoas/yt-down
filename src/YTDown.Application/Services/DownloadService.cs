@@ -19,6 +19,7 @@ public sealed class DownloadService : IDownloadService
 
     public Task<Result<DownloadedFileDto>> DownloadAsync(
         string? rawUrl,
+        DownloadOptionsDto options,
         IProgress<DownloadProgressDto> progress,
         CancellationToken cancellationToken)
     {
@@ -29,6 +30,7 @@ public sealed class DownloadService : IDownloadService
 
         return _videoDownloader.DownloadAsync(
             videoUrl,
+            options,
             _downloadLocationProvider.GetDestinationDirectory(),
             progress,
             cancellationToken);
