@@ -1,7 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
+    <!-- Acompanha o alvo da UI para poder testar os ViewModels. -->
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
@@ -25,10 +27,13 @@
       fora dos testes unitarios seria testar tudo menos o que costuma quebrar.
     -->
     <ProjectReference Include="..\..\src\YTDown.Infrastructure\YTDown.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\YTDown.UI\YTDown.UI.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Using Include="Xunit" />
+    <!-- O conjunto implicito do WPF nao traz System.IO, usado pelos testes de arquivo. -->
+    <Using Include="System.IO" />
   </ItemGroup>
 
   <!-- Respostas reais do yt-dlp, gravadas para testar o parser sem rede. -->

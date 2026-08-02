@@ -4,6 +4,7 @@
              xmlns:converters="clr-namespace:YTDown.UI.Converters">
     <Application.Resources>
         <converters:NotEmptyToVisibilityConverter x:Key="NotEmptyToVisibility" />
+        <converters:InverseBooleanConverter x:Key="InverseBoolean" />
         <BooleanToVisibilityConverter x:Key="BooleanToVisibility" />
     </Application.Resources>
 </Application>
