@@ -67,7 +67,9 @@ docs/
   especificacao.md        brief original, historico, nao mantido
 scripts/
   bootstrap-tools.ps1     baixa yt-dlp e FFmpeg
-  publish.ps1             gera o pacote self-contained em dist/
+  publish.ps1             gera pasta, zip e instalador em dist/
+installer/
+  YTDown.iss              script do Inno Setup, compilado pelo publish.ps1
 tools/
   tools.lock.json         versoes fixadas + SHA256
   yt-dlp.exe, ffmpeg.exe  nao versionados
@@ -271,6 +273,30 @@ dos 97 MB do FFmpeg.
 O script confere que `tools/` saiu com o yt-dlp, o FFmpeg e o `tools.lock.json`.
 Sem isso, a falta so apareceria na maquina de quem recebeu o pacote.
 
+### O instalador nao pede administrador
+
+`installer/YTDown.iss`, compilado pelo Inno Setup 7 a partir do `publish.ps1`,
+que passa a versao e a pasta publicada. Saem 88 MB, menos que os 113 MB do zip,
+por causa da compressao solida.
+
+**`PrivilegesRequired=lowest`,** com destino em `%LOCALAPPDATA%\Programs\YTDown`.
+O aplicativo so escreve em `%LOCALAPPDATA%`, entao pedir UAC cobraria uma
+permissao que nada aqui usa — e o publico-alvo costuma nao te-la.
+
+**O desinstalador nao apaga `%LOCALAPPDATA%\YTDown`.** Aquela pasta guarda o
+historico, as configuracoes e o yt-dlp que ja se atualizou sozinho: e do
+usuario, nao da instalacao. Nao ha `[UninstallDelete]` apontando para la, de
+proposito. Ciclo verificado: instalar, executar, desinstalar, e os arquivos do
+usuario continuam intactos.
+
+**`AppId` e um GUID fixo** e nunca deve mudar: e por ele que uma instalacao nova
+reconhece a anterior e a substitui em vez de duplicar no Painel de Controle.
+
+**`UseSetupLdr=x64`** apresenta o instalador como executavel nativo de 64 bits e
+liga ASLR de alta entropia, o que ajuda com politicas que barram binarios sem
+reputacao. E marcado como experimental pelo Inno Setup, mas o ciclo completo foi
+verificado nesta maquina.
+
 ### FluentAssertions fixado em 7.x
 
 A partir da 8.0.0 o pacote exige licenca comercial para uso nao open source. A
@@ -339,9 +365,12 @@ Video de referencia para testes: `https://www.youtube.com/watch?v=UKcJqQqiXq0`
   aviso na tela. Falhar o download seria pior, mas o usuario pode estranhar.
 - O limite de cinquenta registros do historico continua fixo no codigo. E um
   botao de desenvolvedor numa tela feita para quem nao e.
-- **Nao ha instalador nem assinatura.** A entrega e um zip, e o Windows avisa
-  que o programa e de origem desconhecida. Assinar exige um certificado pago; um
-  instalador exige uma ferramenta que esta maquina ainda nao tem.
+- **Nada e assinado.** Nem o aplicativo, nem o instalador. O Windows avisa que o
+  programa e de origem desconhecida, e o Smart App Control pode barra-lo por
+  completo. Assinar exige um certificado pago, e a reputacao so se constroi com
+  downloads: e o unico problema aqui sem solucao tecnica.
+- **Gerar o instalador exige o Inno Setup** instalado na maquina que publica.
+  Sem ele o script gera apenas a pasta e o zip, e avisa.
 - **Sem icone proprio.** O executavel usa o icone padrao do .NET.
 - Sem tratador global de excecoes na UI.
 
@@ -358,8 +387,8 @@ Video de referencia para testes: `https://www.youtube.com/watch?v=UKcJqQqiXq0`
 | 5 | Runtime JavaScript, se o 403 e a verificacao anti-robo reincidirem |
 | 6 (feita) | Historico dos ultimos downloads, em janela propria |
 | 7 (feita) | Configuracoes de destino e de qualidade padrao |
-| 8 (parcial) | Pacote self-contained e zip; falta o instalador |
-| 9+ | Fila, tema |
+| 8 (feita) | Pacote self-contained, zip e instalador |
+| 9+ | Fila, tema, assinatura de codigo |
 
 ### Decisoes ja tomadas
 

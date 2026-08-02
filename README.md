@@ -63,12 +63,24 @@ temporariamente o seu endereco de rede. No dia a dia, prefira o filtro acima.
 ./scripts/publish.ps1
 ```
 
-Produz `dist/YTDown-<versao>-win-x64/` e o zip correspondente. O .NET vai dentro
-do pacote: quem receber extrai e executa `YTDown.exe`, sem instalar nada.
+Produz tres coisas em `dist/`:
 
-Nao e um instalador, e o executavel nao e assinado — o Windows vai avisar que o
-programa e de origem desconhecida, e a pessoa precisa escolher executar mesmo
-assim.
+| Arquivo | Para que serve |
+|---|---|
+| `YTDown-<versao>-setup.exe` | instalador, 88 MB |
+| `YTDown-<versao>-win-x64.zip` | para quem prefere nao instalar, 113 MB |
+| `YTDown-<versao>-win-x64/` | a pasta publicada, origem dos dois acima |
+
+O .NET vai dentro do pacote: nada precisa estar instalado na maquina de destino.
+
+O instalador **nao pede administrador** — instala para o usuario atual, em
+`%LOCALAPPDATA%\Programs\YTDown`. Desinstalar remove o aplicativo mas preserva
+`%LOCALAPPDATA%\YTDown`, onde ficam o historico e as configuracoes.
+
+O instalador exige o [Inno Setup](https://jrsoftware.org/isdl.php) 6 ou 7; sem
+ele, o script gera apenas a pasta e o zip. O executavel nao e assinado, entao o
+Windows avisa que o programa e de origem desconhecida e a pessoa precisa
+escolher executar mesmo assim.
 
 ---
 
