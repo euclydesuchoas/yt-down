@@ -1,7 +1,7 @@
 <Window x:Class="YTDown.UI.Views.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="YTDown — Baixe videos do YouTube"
+        Title="YTDown — Baixe vídeos do YouTube"
         Width="780" Height="620"
         MinWidth="660" MinHeight="540"
         WindowStartupLocation="CenterScreen"
@@ -31,7 +31,7 @@
                 <TextBlock Text="YTDown" Style="{StaticResource HeadingText}" />
                 <TextBlock Style="{StaticResource SubtleText}"
                            Margin="0,4,0,0"
-                           Text="Cole o endereco do video do YouTube. O arquivo e salvo na sua pasta Downloads." />
+                           Text="Cole o endereço do vídeo do YouTube. O arquivo é salvo na sua pasta Downloads." />
 
                 <TextBlock Style="{StaticResource SubtleText}"
                            Margin="0,6,0,0"
@@ -47,14 +47,14 @@
                         VerticalAlignment="Top">
                 <Button Height="34"
                         Padding="16,0"
-                        Content="Historico"
+                        Content="Histórico"
                         Style="{StaticResource SecondaryButton}"
                         Click="OnHistoryRequested" />
 
                 <Button Margin="8,0,0,0"
                         Height="34"
                         Padding="16,0"
-                        Content="Configuracoes"
+                        Content="Configurações"
                         Style="{StaticResource SecondaryButton}"
                         Click="OnSettingsRequested" />
             </StackPanel>
@@ -127,7 +127,7 @@
             <CheckBox Grid.Column="2"
                       Margin="18,0,0,0"
                       VerticalAlignment="Center"
-                      Content="Baixar somente o audio (MP3)"
+                      Content="Baixar somente o áudio (MP3)"
                       FontSize="13"
                       Foreground="#FF3B4252"
                       IsChecked="{Binding AudioOnly}" />
@@ -136,7 +136,7 @@
         <StackPanel Grid.Row="3"
                     Margin="0,18,0,0"
                     Visibility="{Binding SearchCommand.IsRunning, Converter={StaticResource BooleanToVisibility}}">
-            <TextBlock Style="{StaticResource SubtleText}" Text="Buscando informacoes do video..." />
+            <TextBlock Style="{StaticResource SubtleText}" Text="Buscando informações do vídeo..." />
             <ProgressBar IsIndeterminate="True" Height="4" Margin="0,8,0,0" BorderThickness="0" />
         </StackPanel>
 
@@ -202,7 +202,7 @@
                 </Grid.ColumnDefinitions>
 
                 <StackPanel Grid.Column="0" VerticalAlignment="Center">
-                    <TextBlock Text="Download concluido"
+                    <TextBlock Text="Download concluído"
                                FontSize="14"
                                FontWeight="SemiBold"
                                Foreground="#FF176034" />
@@ -262,13 +262,13 @@
             </Grid>
         </Border>
 
-        <!-- Discreto de proposito: identifica sem competir com o que a tela faz. -->
+        <!-- Discreto, mas legivel: o mesmo cinza dos textos de apoio da tela. -->
         <TextBlock Grid.Row="8"
                    Margin="0,18,0,0"
                    HorizontalAlignment="Right"
                    VerticalAlignment="Bottom"
-                   FontSize="11"
-                   Foreground="#FFA8AFBC"
+                   FontSize="12"
+                   Foreground="#FF6A7180"
                    Text="{Binding Credit}" />
     </Grid>
 </Window>

@@ -9,5 +9,5 @@ namespace YTDown.UI.ViewModels;
 /// </remarks>
 public sealed record DefaultQualityOption(int? Height)
 {
-    public string Label => Height is null ? "A melhor disponivel" : $"Ate {Height}p";
+    public string Label => Height is null ? "A melhor disponível" : $"Até {Height}p";
 }

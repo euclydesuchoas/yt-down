@@ -11,13 +11,13 @@ internal static class ToolMaintenanceText
     public static string? For(ToolMaintenanceStatus status) => status switch
     {
         ToolMaintenanceStatus.Installing => "Preparando os componentes...",
-        ToolMaintenanceStatus.CheckingForUpdate => "Verificando atualizacoes...",
+        ToolMaintenanceStatus.CheckingForUpdate => "Verificando atualizações...",
 
         // Ficar sem atualizar quase sempre significa estar sem internet. Dito
         // assim, informa sem assustar, e deixa claro que da para usar mesmo
         // assim.
         ToolMaintenanceStatus.UpdateUnavailable =>
-            "Nao foi possivel verificar atualizacoes. O aplicativo continua funcionando.",
+            "Não foi possível verificar atualizações. O aplicativo continua funcionando.",
 
         _ => null
     };

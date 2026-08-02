@@ -60,9 +60,9 @@ public class HistoryViewModelTests
     }
 
     [Theory]
-    [InlineData(1, "hoje as 19:00")]
-    [InlineData(21, "ontem as 23:00")]
-    [InlineData(72, "30/07/2026 as 20:00")]
+    [InlineData(1, "hoje às 19:00")]
+    [InlineData(21, "ontem às 23:00")]
+    [InlineData(72, "30/07/2026 às 20:00")]
     public async Task LoadCommand_SaysWhenTheDownloadHappenedInPlainWords(int hoursAgo, string expected)
     {
         GivenHistoryContains(AnEntry(hoursAgo: hoursAgo));
@@ -83,8 +83,8 @@ public class HistoryViewModelTests
 
         var description = viewModel.Items.Single().Description;
 
-        description.Should().Contain("Audio");
-        description.Should().NotContain("Video");
+        description.Should().Contain("Áudio");
+        description.Should().NotContain("Vídeo");
     }
 
     /// <summary>

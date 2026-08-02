@@ -20,8 +20,8 @@ internal static class DownloadHistoryText
 
     public static string KindOf(MediaKind kind) => kind switch
     {
-        MediaKind.AudioOnly => "Audio",
-        _ => "Video"
+        MediaKind.AudioOnly => "Áudio",
+        _ => "Vídeo"
     };
 
     /// <summary>
@@ -38,9 +38,9 @@ internal static class DownloadHistoryText
 
         return days switch
         {
-            0 => $"hoje as {completedAt:HH:mm}",
-            1 => $"ontem as {completedAt:HH:mm}",
-            _ => $"{completedAt:dd/MM/yyyy} as {completedAt:HH:mm}"
+            0 => $"hoje às {completedAt:HH:mm}",
+            1 => $"ontem às {completedAt:HH:mm}",
+            _ => $"{completedAt:dd/MM/yyyy} às {completedAt:HH:mm}"
         };
     }
 }

@@ -28,8 +28,8 @@ public partial class HistoryWindow : Window
     {
         var answer = MessageBox.Show(
             this,
-            "Esquecer todos os registros? Os arquivos ja baixados continuam onde estao.",
-            "Limpar historico",
+            "Esquecer todos os registros? Os arquivos já baixados continuam onde estão.",
+            "Limpar histórico",
             MessageBoxButton.YesNo,
             MessageBoxImage.Question);
 

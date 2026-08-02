@@ -35,10 +35,10 @@ internal static class DownloadProgressText
 
     private static string StageOf(DownloadStage stage) => stage switch
     {
-        DownloadStage.DownloadingVideo => "Baixando o video",
-        DownloadStage.DownloadingAudio => "Baixando o audio",
+        DownloadStage.DownloadingVideo => "Baixando o vídeo",
+        DownloadStage.DownloadingAudio => "Baixando o áudio",
         DownloadStage.Finishing => "Finalizando",
-        DownloadStage.Completed => "Concluido",
+        DownloadStage.Completed => "Concluído",
         _ => "Baixando"
     };
 

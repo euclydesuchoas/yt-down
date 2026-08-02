@@ -15,28 +15,28 @@ internal static class ErrorMessages
     public static string For(ErrorCode error) => error switch
     {
         ErrorCode.InvalidUrl =>
-            "Este endereco nao parece ser de um video do YouTube. Copie o endereco da barra do navegador e cole aqui.",
+            "Este endereço não parece ser de um vídeo do YouTube. Copie o endereço da barra do navegador e cole aqui.",
 
         ErrorCode.VideoUnavailable =>
-            "Este video nao esta disponivel. Ele pode ter sido removido ou ser privado.",
+            "Este vídeo não está disponível. Ele pode ter sido removido ou ser privado.",
 
         ErrorCode.AgeRestricted =>
-            "Este video tem restricao de idade e nao pode ser consultado.",
+            "Este vídeo tem restrição de idade e não pode ser consultado.",
 
         ErrorCode.RegionBlocked =>
-            "Este video nao esta disponivel no seu pais.",
+            "Este vídeo não está disponível no seu país.",
 
         ErrorCode.BotCheckRequired =>
-            "O YouTube pediu uma verificacao para este acesso. Espere alguns minutos antes de tentar de novo.",
+            "O YouTube pediu uma verificação para este acesso. Espere alguns minutos antes de tentar de novo.",
 
         ErrorCode.NetworkError =>
-            "Nao foi possivel conectar ao YouTube. Verifique sua conexao com a internet e tente de novo.",
+            "Não foi possível conectar ao YouTube. Verifique sua conexão com a internet e tente de novo.",
 
         ErrorCode.ToolNotFound =>
-            "Um componente necessario do YTDown nao foi encontrado. Reinstale o aplicativo.",
+            "Um componente necessário do YTDown não foi encontrado. Reinstale o aplicativo.",
 
         ErrorCode.ToolFailure =>
-            "Nao foi possivel obter as informacoes deste video. Tente de novo em alguns instantes.",
+            "Não foi possível obter as informações deste vídeo. Tente de novo em alguns instantes.",
 
         ErrorCode.Canceled =>
             "Consulta cancelada.",
