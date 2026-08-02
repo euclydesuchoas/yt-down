@@ -76,10 +76,10 @@ public sealed partial class MainViewModel : ObservableObject
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(SearchCommand))]
-    [NotifyCanExecuteChangedFor(nameof(DownloadCommand))]
     private string _url = string.Empty;
 
     [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(DownloadCommand))]
     private VideoInfoDto? _video;
 
     /// <summary>
@@ -149,7 +149,29 @@ public sealed partial class MainViewModel : ObservableObject
 
     partial void OnProgressChanged(DownloadProgressDto? value) => OnPropertyChanged(nameof(ProgressText));
 
+    /// <summary>
+    /// Mexeu no endereco, o resultado na tela deixa de valer.
+    /// </summary>
+    /// <remarks>
+    /// Sem isso seria possivel buscar um video, colar outro endereco e baixar o
+    /// segundo enquanto o primeiro continua na tela. Limpar tambem desabilita o
+    /// Baixar, o que obriga a buscar de novo.
+    /// </remarks>
+    partial void OnUrlChanged(string value)
+    {
+        if (Video is not null)
+        {
+            ResetResults();
+        }
+    }
+
     private bool CanUseUrl() => !string.IsNullOrWhiteSpace(Url);
+
+    /// <summary>
+    /// Baixar exige uma busca bem-sucedida: e ela que diz quais qualidades
+    /// existem e confirma que o endereco aponta para o video certo.
+    /// </summary>
+    private bool CanDownload() => Video is not null;
 
     [RelayCommand(CanExecute = nameof(CanUseUrl), IncludeCancelCommand = true)]
     private async Task SearchAsync(CancellationToken cancellationToken)
@@ -167,7 +189,7 @@ public sealed partial class MainViewModel : ObservableObject
         ShowFailure(result.Error.Value);
     }
 
-    [RelayCommand(CanExecute = nameof(CanUseUrl), IncludeCancelCommand = true)]
+    [RelayCommand(CanExecute = nameof(CanDownload), IncludeCancelCommand = true)]
     private async Task DownloadAsync(CancellationToken cancellationToken)
     {
         ErrorMessage = null;
@@ -196,9 +218,13 @@ public sealed partial class MainViewModel : ObservableObject
     private void OpenContainingFolder() => _fileExplorer.RevealFile(DownloadedFile!.FilePath);
 
     /// <summary>
-    /// Sem busca previa nao ha qualidades conhecidas, e o download usa a melhor
-    /// disponivel: obrigar a buscar antes seria um passo a mais sem ganho.
+    /// Traduz as escolhas da tela no que o download precisa saber.
     /// </summary>
+    /// <remarks>
+    /// A qualidade so fica nula quando o video nao declara altura nenhuma, o que
+    /// acontece em transmissoes ao vivo. Ai vale o teto das configuracoes, em
+    /// vez de nenhum limite.
+    /// </remarks>
     private DownloadOptionsDto BuildOptions() =>
         AudioOnly
             ? DownloadOptionsDto.AudioOnly

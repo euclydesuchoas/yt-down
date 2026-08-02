@@ -66,18 +66,83 @@ public class MainViewModelTests
         credit.Should().MatchRegex(@"YTDown \d+\.\d+\.\d+");
     }
 
+    /// <summary>
+    /// Prepara a tela no estado em que o usuario pode baixar: endereco colado e
+    /// busca concluida.
+    /// </summary>
+    private async Task<MainViewModel> AfterSearchAsync(IReadOnlyList<int>? availableHeights = null)
+    {
+        GivenSearchReturns(availableHeights ?? [1080, 720, 480]);
+
+        var viewModel = CreateViewModel();
+        await viewModel.RefreshSettingsCommand.ExecuteAsync(null);
+
+        viewModel.Url = ValidUrl;
+        await viewModel.SearchCommand.ExecuteAsync(null);
+
+        return viewModel;
+    }
+
     [Fact]
-    public void Commands_AreDisabledWhileTheAddressIsEmpty()
+    public void SearchCommand_IsDisabledWhileTheAddressIsEmpty()
     {
         var viewModel = CreateViewModel();
 
         viewModel.SearchCommand.CanExecute(null).Should().BeFalse();
-        viewModel.DownloadCommand.CanExecute(null).Should().BeFalse();
 
         viewModel.Url = ValidUrl;
 
         viewModel.SearchCommand.CanExecute(null).Should().BeTrue();
+    }
+
+    /// <summary>
+    /// Baixar sem buscar antes esconderia do usuario a qualidade que ele vai
+    /// receber, e nao confirmaria que o endereco aponta para o video certo.
+    /// </summary>
+    [Fact]
+    public async Task DownloadCommand_IsDisabledUntilASearchSucceeds()
+    {
+        GivenSearchReturns([1080, 720]);
+
+        var viewModel = CreateViewModel();
+        viewModel.Url = ValidUrl;
+
+        viewModel.DownloadCommand.CanExecute(null).Should().BeFalse();
+
+        await viewModel.SearchCommand.ExecuteAsync(null);
+
         viewModel.DownloadCommand.CanExecute(null).Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task DownloadCommand_WhenTheSearchFails_StaysDisabled()
+    {
+        _videoInfoService
+            .Setup(service => service.GetVideoInfoAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Result<VideoInfoDto>.Failure(ErrorCode.VideoUnavailable));
+
+        var viewModel = CreateViewModel();
+        viewModel.Url = ValidUrl;
+
+        await viewModel.SearchCommand.ExecuteAsync(null);
+
+        viewModel.DownloadCommand.CanExecute(null).Should().BeFalse();
+    }
+
+    /// <summary>
+    /// Sem isso seria possivel buscar um video, colar outro endereco e baixar o
+    /// segundo enquanto o primeiro continua na tela.
+    /// </summary>
+    [Fact]
+    public async Task ChangingTheAddress_DiscardsTheVideoThatWasFoundAndDisablesDownloading()
+    {
+        var viewModel = await AfterSearchAsync();
+
+        viewModel.Url = "https://www.youtube.com/watch?v=jfKfPfyJRdk";
+
+        viewModel.Video.Should().BeNull();
+        viewModel.AvailableQualities.Should().BeEmpty();
+        viewModel.DownloadCommand.CanExecute(null).Should().BeFalse();
     }
 
     [Fact]
@@ -85,8 +150,7 @@ public class MainViewModelTests
     {
         GivenDownloadReturns(Result<DownloadedFileDto>.Success(AnyDownloadedFile));
 
-        var viewModel = CreateViewModel();
-        viewModel.Url = ValidUrl;
+        var viewModel = await AfterSearchAsync();
 
         viewModel.OpenContainingFolderCommand.CanExecute(null).Should().BeFalse();
 
@@ -105,8 +169,7 @@ public class MainViewModelTests
             ErrorCode.VideoUnavailable,
             "ERROR: [youtube] UKcJqQqiXq0: Private video"));
 
-        var viewModel = CreateViewModel();
-        viewModel.Url = ValidUrl;
+        var viewModel = await AfterSearchAsync();
 
         await viewModel.DownloadCommand.ExecuteAsync(null);
 
@@ -125,8 +188,7 @@ public class MainViewModelTests
     {
         GivenDownloadReturns(Result<DownloadedFileDto>.Failure(ErrorCode.Canceled));
 
-        var viewModel = CreateViewModel();
-        viewModel.Url = ValidUrl;
+        var viewModel = await AfterSearchAsync();
 
         await viewModel.DownloadCommand.ExecuteAsync(null);
 
@@ -139,8 +201,7 @@ public class MainViewModelTests
     {
         GivenDownloadReturns(Result<DownloadedFileDto>.Success(AnyDownloadedFile));
 
-        var viewModel = CreateViewModel();
-        viewModel.Url = ValidUrl;
+        var viewModel = await AfterSearchAsync();
         await viewModel.DownloadCommand.ExecuteAsync(null);
 
         viewModel.OpenContainingFolderCommand.Execute(null);
@@ -192,8 +253,7 @@ public class MainViewModelTests
         DownloadOptionsDto? options = null;
         GivenDownloadReturns(Result<DownloadedFileDto>.Success(AnyDownloadedFile), captured => options = captured);
 
-        var viewModel = CreateViewModel();
-        viewModel.Url = ValidUrl;
+        var viewModel = await AfterSearchAsync();
         viewModel.SelectedQuality = new VideoQualityOption(720);
 
         await viewModel.DownloadCommand.ExecuteAsync(null);
@@ -203,21 +263,23 @@ public class MainViewModelTests
     }
 
     /// <summary>
-    /// Sem busca previa nao ha qualidades conhecidas, e o download deve usar a
-    /// melhor disponivel em vez de recusar.
+    /// Transmissao ao vivo nao declara altura nenhuma. Sem qualidade escolhida,
+    /// vale o teto das configuracoes em vez de nenhum limite.
     /// </summary>
     [Fact]
-    public async Task DownloadCommand_WithoutASearchFirst_AsksForTheBestAvailable()
+    public async Task DownloadCommand_WhenTheVideoDeclaresNoQuality_UsesTheCeilingFromTheSettings()
     {
+        GivenSettings(new SettingsDto(MaximumHeight: 720));
         DownloadOptionsDto? options = null;
         GivenDownloadReturns(Result<DownloadedFileDto>.Success(AnyDownloadedFile), captured => options = captured);
 
-        var viewModel = CreateViewModel();
-        viewModel.Url = ValidUrl;
+        var viewModel = await AfterSearchAsync([]);
+
+        viewModel.SelectedQuality.Should().BeNull();
 
         await viewModel.DownloadCommand.ExecuteAsync(null);
 
-        options!.MaximumHeight.Should().BeNull();
+        options!.MaximumHeight.Should().Be(720);
     }
 
     [Fact]
@@ -226,8 +288,7 @@ public class MainViewModelTests
         DownloadOptionsDto? options = null;
         GivenDownloadReturns(Result<DownloadedFileDto>.Success(AnyDownloadedFile), captured => options = captured);
 
-        var viewModel = CreateViewModel();
-        viewModel.Url = ValidUrl;
+        var viewModel = await AfterSearchAsync();
         viewModel.SelectedQuality = new VideoQualityOption(720);
         viewModel.AudioOnly = true;
 
@@ -294,33 +355,14 @@ public class MainViewModelTests
     }
 
     [Fact]
-    public async Task DownloadCommand_WithoutASearchFirst_UsesTheQualityCeilingThatWasChosen()
-    {
-        GivenSettings(new SettingsDto(MaximumHeight: 720));
-        DownloadOptionsDto? options = null;
-        GivenDownloadReturns(Result<DownloadedFileDto>.Success(AnyDownloadedFile), captured => options = captured);
-
-        var viewModel = CreateViewModel();
-        await viewModel.RefreshSettingsCommand.ExecuteAsync(null);
-        viewModel.Url = ValidUrl;
-
-        await viewModel.DownloadCommand.ExecuteAsync(null);
-
-        options!.MaximumHeight.Should().Be(720);
-    }
-
-    [Fact]
     public async Task SearchCommand_ClearsTheResultOfThePreviousDownload()
     {
         GivenDownloadReturns(Result<DownloadedFileDto>.Success(AnyDownloadedFile));
 
-        _videoInfoService
-            .Setup(service => service.GetVideoInfoAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(Result<VideoInfoDto>.Failure(ErrorCode.InvalidUrl));
-
-        var viewModel = CreateViewModel();
-        viewModel.Url = ValidUrl;
+        var viewModel = await AfterSearchAsync();
         await viewModel.DownloadCommand.ExecuteAsync(null);
+
+        viewModel.DownloadedFile.Should().NotBeNull();
 
         await viewModel.SearchCommand.ExecuteAsync(null);
 

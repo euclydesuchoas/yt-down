@@ -9,13 +9,26 @@
         FontFamily="Segoe UI">
 
     <Grid Margin="32,28">
+        <!--
+            A ordem das linhas conta a historia da tela: endereco, o video que
+            foi encontrado, as escolhas sobre ele e o resultado. Escolher antes
+            de ver o video seria decidir sobre algo que ainda nao apareceu.
+        -->
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
+            <!-- 1  endereco e Buscar -->
             <RowDefinition Height="Auto" />
+            <!-- 2  buscando... -->
             <RowDefinition Height="Auto" />
+            <!-- 3  erro -->
             <RowDefinition Height="Auto" />
+            <!-- 4  o video encontrado -->
             <RowDefinition Height="Auto" />
+            <!-- 5  qualidade, audio e Baixar -->
             <RowDefinition Height="Auto" />
+            <!-- 6  andamento -->
+            <RowDefinition Height="Auto" />
+            <!-- 7  concluido -->
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
@@ -66,7 +79,6 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
             <Border Grid.Column="0"
@@ -87,60 +99,18 @@
                     Margin="10,0,0,0"
                     Height="42"
                     Content="Buscar"
-                    Style="{StaticResource SecondaryButton}"
-                    Command="{Binding SearchCommand}" />
-
-            <Button Grid.Column="2"
-                    Margin="8,0,0,0"
-                    Height="42"
-                    Content="Baixar"
                     Style="{StaticResource FlatButton}"
-                    Command="{Binding DownloadCommand}" />
+                    Command="{Binding SearchCommand}" />
         </Grid>
 
-        <Grid Grid.Row="2"
-              Margin="0,14,0,0"
-              IsEnabled="{Binding DownloadCommand.IsRunning, Converter={StaticResource InverseBoolean}}">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-
-            <TextBlock Grid.Column="0"
-                       Text="Qualidade"
-                       Style="{StaticResource SubtleText}"
-                       VerticalAlignment="Center"
-                       Visibility="{Binding AvailableQualities, Converter={StaticResource NotEmptyToVisibility}}" />
-
-            <ComboBox Grid.Column="1"
-                      Margin="10,0,0,0"
-                      Width="120"
-                      Height="30"
-                      VerticalContentAlignment="Center"
-                      ItemsSource="{Binding AvailableQualities}"
-                      SelectedItem="{Binding SelectedQuality}"
-                      DisplayMemberPath="Label"
-                      IsEnabled="{Binding AudioOnly, Converter={StaticResource InverseBoolean}}"
-                      Visibility="{Binding AvailableQualities, Converter={StaticResource NotEmptyToVisibility}}" />
-
-            <CheckBox Grid.Column="2"
-                      Margin="18,0,0,0"
-                      VerticalAlignment="Center"
-                      Content="Baixar somente o áudio (MP3)"
-                      FontSize="13"
-                      Foreground="#FF3B4252"
-                      IsChecked="{Binding AudioOnly}" />
-        </Grid>
-
-        <StackPanel Grid.Row="3"
+        <StackPanel Grid.Row="2"
                     Margin="0,18,0,0"
                     Visibility="{Binding SearchCommand.IsRunning, Converter={StaticResource BooleanToVisibility}}">
             <TextBlock Style="{StaticResource SubtleText}" Text="Buscando informações do vídeo..." />
             <ProgressBar IsIndeterminate="True" Height="4" Margin="0,8,0,0" BorderThickness="0" />
         </StackPanel>
 
-        <Border Grid.Row="4"
+        <Border Grid.Row="6"
                 Margin="0,18,0,0"
                 Style="{StaticResource Card}"
                 Padding="16,14"
@@ -173,7 +143,7 @@
             </Grid>
         </Border>
 
-        <Border Grid.Row="5"
+        <Border Grid.Row="3"
                 Margin="0,18,0,0"
                 Padding="14,12"
                 Background="#FFFDECEC"
@@ -187,7 +157,7 @@
                        Foreground="#FF8C2020" />
         </Border>
 
-        <Border Grid.Row="6"
+        <Border Grid.Row="7"
                 Margin="0,18,0,0"
                 Padding="16,14"
                 Background="#FFEDF9F0"
@@ -223,7 +193,7 @@
             </Grid>
         </Border>
 
-        <Border Grid.Row="7"
+        <Border Grid.Row="4"
                 Margin="0,20,0,0"
                 VerticalAlignment="Top"
                 Style="{StaticResource Card}"
@@ -262,8 +232,58 @@
             </Grid>
         </Border>
 
+        <!--
+            So aparece depois da busca: escolher qualidade antes de saber quais
+            existem seria escolher no escuro, e e onde o botao Baixar vive agora,
+            junto das decisoes que ele executa.
+        -->
+        <Grid Grid.Row="5"
+              Margin="0,14,0,0"
+              IsEnabled="{Binding DownloadCommand.IsRunning, Converter={StaticResource InverseBoolean}}"
+              Visibility="{Binding Video, Converter={StaticResource NotEmptyToVisibility}}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Grid.Column="0"
+                       Text="Qualidade"
+                       Style="{StaticResource SubtleText}"
+                       VerticalAlignment="Center"
+                       Visibility="{Binding AvailableQualities, Converter={StaticResource NotEmptyToVisibility}}" />
+
+            <ComboBox Grid.Column="1"
+                      Margin="10,0,0,0"
+                      Width="120"
+                      Height="32"
+                      VerticalContentAlignment="Center"
+                      ItemsSource="{Binding AvailableQualities}"
+                      SelectedItem="{Binding SelectedQuality}"
+                      DisplayMemberPath="Label"
+                      IsEnabled="{Binding AudioOnly, Converter={StaticResource InverseBoolean}}"
+                      Visibility="{Binding AvailableQualities, Converter={StaticResource NotEmptyToVisibility}}" />
+
+            <CheckBox Grid.Column="2"
+                      Margin="18,0,0,0"
+                      VerticalAlignment="Center"
+                      Content="Baixar somente o áudio (MP3)"
+                      FontSize="13"
+                      Foreground="#FF3B4252"
+                      IsChecked="{Binding AudioOnly}" />
+
+            <Button Grid.Column="3"
+                    Margin="16,0,0,0"
+                    Height="38"
+                    Padding="26,0"
+                    Content="Baixar"
+                    Style="{StaticResource FlatButton}"
+                    Command="{Binding DownloadCommand}" />
+        </Grid>
+
         <!-- Discreto, mas legivel: o mesmo cinza dos textos de apoio da tela. -->
-        <TextBlock Grid.Row="8"
+        <TextBlock Grid.Row="9"
                    Margin="0,18,0,0"
                    HorizontalAlignment="Right"
                    VerticalAlignment="Bottom"
