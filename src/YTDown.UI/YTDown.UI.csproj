@@ -13,16 +13,26 @@
     <ProjectReference Include="..\YTDown.Infrastructure\YTDown.Infrastructure.csproj" />
   </ItemGroup>
 	
+  <!--
+    As ferramentas externas nao sao versionadas (ver scripts/bootstrap-tools.ps1).
+    A condicao Exists mantem o build funcionando em um clone limpo: a ausencia vira
+    um aviso no build e um erro claro em tempo de execucao, nunca uma falha de MSBuild.
+  -->
   <ItemGroup>
-    <Content Include="..\..\tools\yt-dlp.exe">
+    <Content Include="..\..\tools\yt-dlp.exe" Condition="Exists('..\..\tools\yt-dlp.exe')">
       <Link>tools\yt-dlp.exe</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
 
-    <Content Include="..\..\tools\ffmpeg.exe">
+    <Content Include="..\..\tools\ffmpeg.exe" Condition="Exists('..\..\tools\ffmpeg.exe')">
       <Link>tools\ffmpeg.exe</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+
+  <Target Name="WarnAboutMissingExternalTools" BeforeTargets="Build">
+    <Warning Condition="!Exists('..\..\tools\yt-dlp.exe') Or !Exists('..\..\tools\ffmpeg.exe')"
+             Text="Ferramentas externas ausentes em tools/. Execute: pwsh ./scripts/bootstrap-tools.ps1" />
+  </Target>
 
 </Project>
