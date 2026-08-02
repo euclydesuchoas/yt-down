@@ -20,6 +20,7 @@ public static class ApplicationServiceCollectionExtensions
         services.AddSingleton<IVideoInfoService, VideoInfoService>();
         services.AddSingleton<IDownloadService, DownloadService>();
         services.AddSingleton<IDownloadHistoryService, DownloadHistoryService>();
+        services.AddSingleton<ISettingsService, SettingsService>();
         services.AddSingleton<IToolMaintenanceService, ToolMaintenanceService>();
 
         return services;

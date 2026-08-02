@@ -25,6 +25,7 @@ public static class InfrastructureServiceCollectionExtensions
         services.AddSingleton<IDownloadLocationProvider, WindowsDownloadLocationProvider>();
         services.AddSingleton<IFileExplorer, WindowsFileExplorer>();
         services.AddSingleton<IDownloadHistoryStore, JsonDownloadHistoryStore>();
+        services.AddSingleton<ISettingsStore, JsonSettingsStore>();
 
         return services;
     }
