@@ -15,8 +15,11 @@ public static class ApplicationServiceCollectionExtensions
 {
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
+        services.AddSingleton(TimeProvider.System);
+
         services.AddSingleton<IVideoInfoService, VideoInfoService>();
         services.AddSingleton<IDownloadService, DownloadService>();
+        services.AddSingleton<IDownloadHistoryService, DownloadHistoryService>();
         services.AddSingleton<IToolMaintenanceService, ToolMaintenanceService>();
 
         return services;

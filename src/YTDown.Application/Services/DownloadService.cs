@@ -10,14 +10,22 @@ public sealed class DownloadService : IDownloadService
 {
     private readonly IVideoDownloader _videoDownloader;
     private readonly IDownloadLocationProvider _downloadLocationProvider;
+    private readonly IDownloadHistoryService _downloadHistory;
+    private readonly TimeProvider _timeProvider;
 
-    public DownloadService(IVideoDownloader videoDownloader, IDownloadLocationProvider downloadLocationProvider)
+    public DownloadService(
+        IVideoDownloader videoDownloader,
+        IDownloadLocationProvider downloadLocationProvider,
+        IDownloadHistoryService downloadHistory,
+        TimeProvider timeProvider)
     {
         _videoDownloader = videoDownloader;
         _downloadLocationProvider = downloadLocationProvider;
+        _downloadHistory = downloadHistory;
+        _timeProvider = timeProvider;
     }
 
-    public Task<Result<DownloadedFileDto>> DownloadAsync(
+    public async Task<Result<DownloadedFileDto>> DownloadAsync(
         string? rawUrl,
         DownloadOptionsDto options,
         IProgress<DownloadProgressDto> progress,
@@ -25,14 +33,40 @@ public sealed class DownloadService : IDownloadService
     {
         if (!VideoUrl.TryCreate(rawUrl, out var videoUrl))
         {
-            return Task.FromResult(Result<DownloadedFileDto>.Failure(ErrorCode.InvalidUrl));
+            return Result<DownloadedFileDto>.Failure(ErrorCode.InvalidUrl);
         }
 
-        return _videoDownloader.DownloadAsync(
+        var result = await _videoDownloader.DownloadAsync(
             videoUrl,
             options,
             _downloadLocationProvider.GetDestinationDirectory(),
             progress,
             cancellationToken);
+
+        if (result.IsSuccess)
+        {
+            await RecordAsync(videoUrl, options, result.Value);
+        }
+
+        return result;
     }
+
+    /// <summary>
+    /// Registra o download que acabou de terminar.
+    /// </summary>
+    /// <remarks>
+    /// Sem o token de cancelamento de proposito: o arquivo ja esta no disco, e
+    /// um cancelamento que chegue exatamente aqui deixaria o usuario com um
+    /// arquivo que o historico nao conhece.
+    /// </remarks>
+    private Task RecordAsync(VideoUrl videoUrl, DownloadOptionsDto options, DownloadedFileDto file) =>
+        _downloadHistory.RecordAsync(
+            new DownloadHistoryEntryDto(
+                videoUrl.Value,
+                file.FileName,
+                file.FilePath,
+                file.SizeInBytes,
+                options.Kind,
+                _timeProvider.GetLocalNow()),
+            CancellationToken.None);
 }
