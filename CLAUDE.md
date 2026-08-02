@@ -154,12 +154,24 @@ baixados por `scripts/bootstrap-tools.ps1`.
 O `YTDown.UI.csproj` referencia as ferramentas com `Condition="Exists(...)"`,
 para que um clone limpo compile mesmo sem elas.
 
-### IToolLocator existe desde o inicio
+### As duas ferramentas vivem em lugares diferentes
 
-A implementacao atual so procura em `tools/` ao lado do executavel. A abstracao
-existe porque o local definitivo ainda vai mudar: as ferramentas precisarao
-viver em pasta gravavel para se atualizarem sozinhas, o que nao acontece com o
-aplicativo instalado em Arquivos de Programas.
+O yt-dlp precisa **se sobrescrever** para se atualizar, e nao consegue quando o
+aplicativo esta em Arquivos de Programas. Por isso ele e copiado para
+`%LOCALAPPDATA%\YTDown\tools` na primeira execucao, e e essa copia que o
+`ManagedToolLocator` prefere.
+
+O FFmpeg **nunca se atualiza sozinho** e fica onde esta, junto do aplicativo:
+copiar cem megabytes na primeira execucao seria uma espera visivel sem ganho.
+
+O locator cai para a copia que acompanha a instalacao quando a do perfil ainda
+nao existe. E isso que permite a preparacao rodar em paralelo com a tela, sem
+que um download logo apos a abertura falhe.
+
+A recopia e decidida comparando a versao declarada em `tools/tools.lock.json`,
+que acompanha a instalacao, com um marcador gravado no perfil. Comparar com o
+arquivo em disco seria errado: ele costuma estar **mais novo**, por ter se
+atualizado sozinho, e sobrescreve-lo seria retroceder.
 
 ### Como o yt-dlp e conduzido durante o download
 
@@ -261,8 +273,9 @@ Video de referencia para testes: `https://www.youtube.com/watch?v=UKcJqQqiXq0`
 | 1 (feita) | Consulta de metadados de ponta a ponta |
 | 2 (feita) | Download com progresso agregado, cancelamento e limpeza |
 | 3 (feita) | Selecao de qualidade e download somente de audio em MP3 |
-| 4 | Ferramentas em `%LOCALAPPDATA%`, `yt-dlp -U` e runtime JavaScript |
-| 5+ | Historico, configuracoes, fila, tema, distribuicao |
+| 4 (feita) | Ferramentas em `%LOCALAPPDATA%` e atualizacao automatica do yt-dlp |
+| 5 | Runtime JavaScript, se o 403 e a verificacao anti-robo reincidirem |
+| 6+ | Historico, configuracoes, fila, tema, distribuicao |
 
 ### Decisoes ja tomadas
 
@@ -306,6 +319,25 @@ VerifiedAndReputablePolicyState   0 = desligado   1 = ligado   2 = avaliacao
 
 Desligar pela interface do Windows e, oficialmente, irreversivel. Nesta maquina
 o recurso esta em **0**.
+
+### O YouTube bloqueia depois de muitos downloads seguidos
+
+Rodar os testes de integracao repetidas vezes em pouco tempo faz o YouTube
+recusar o endereco de rede inteiro:
+
+```
+ERROR: [youtube] <id>: Sign in to confirm you're not a bot.
+Use --cookies-from-browser or --cookies for the authentication.
+```
+
+Nao e defeito do aplicativo: acontece igual chamando o yt-dlp direto pela linha
+de comando. Passa sozinho depois de um tempo. A suite de integracao faz quatro
+downloads reais por execucao, entao **nao a rode em laco**; use
+`--filter Category!=Integration` durante o desenvolvimento normal.
+
+Esse erro e classificado como `ErrorCode.BotCheckRequired`, e a mensagem ao
+usuario pede espera em vez de nova tentativa, porque insistir prolonga o
+bloqueio.
 
 ### Outros
 

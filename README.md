@@ -44,7 +44,9 @@ dotnet test                                        # tudo
 dotnet test --filter Category!=Integration         # sem rede
 ```
 
-Os testes de integracao executam o yt-dlp de verdade e exigem conexao.
+Os testes de integracao executam o yt-dlp de verdade e exigem conexao. Sao
+quatro downloads reais por execucao: rodar em laco faz o YouTube bloquear
+temporariamente o seu endereco de rede. No dia a dia, prefira o filtro acima.
 
 ---
 
