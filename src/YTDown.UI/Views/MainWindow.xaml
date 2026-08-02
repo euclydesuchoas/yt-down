@@ -31,9 +31,9 @@
             <RowDefinition Height="Auto" />
             <!-- 5  qualidade e audio -->
             <RowDefinition Height="Auto" />
-            <!-- 6  nome do arquivo -->
+            <!-- 6  pasta -->
             <RowDefinition Height="Auto" />
-            <!-- 7  pasta e Baixar -->
+            <!-- 7  nome do arquivo e Baixar -->
             <RowDefinition Height="Auto" />
             <!-- 8  andamento -->
             <RowDefinition Height="Auto" />
@@ -244,9 +244,8 @@
         </Border>
 
         <!--
-            So aparece depois da busca: escolher qualidade antes de saber quais
-            existem seria escolher no escuro, e e onde o botao Baixar vive agora,
-            junto das decisoes que ele executa.
+            As tres linhas de escolha so aparecem depois da busca: escolher
+            qualidade antes de saber quais existem seria escolher no escuro.
         -->
         <Grid Grid.Row="5"
               Margin="0,14,0,0"
@@ -284,62 +283,15 @@
                       IsChecked="{Binding AudioOnly}" />
         </Grid>
 
-        <!--
-            O nome vem do titulo do video, ja limpo, e nao do que o disco
-            recusaria. Fora do cartao de proposito: o cartao mostra o video, com
-            o titulo inteiro, e este campo mostra o arquivo.
-        -->
         <Grid Grid.Row="6"
               Margin="0,12,0,0"
               IsEnabled="{Binding DownloadCommand.IsRunning, Converter={StaticResource InverseBoolean}}"
               Visibility="{Binding Video, Converter={StaticResource NotEmptyToVisibility}}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" SharedSizeGroup="RotuloDaEscolha" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
-
-            <TextBlock Grid.Column="0"
-                       Text="Nome"
-                       Style="{StaticResource SubtleText}"
-                       VerticalAlignment="Center" />
-
-            <Border Grid.Column="1"
-                    Margin="10,0,0,0"
-                    Background="White"
-                    BorderBrush="#FFD5DBE5"
-                    BorderThickness="1"
-                    CornerRadius="6">
-                <TextBox x:Name="FileNameBox"
-                         Text="{Binding FileName, UpdateSourceTrigger=PropertyChanged}"
-                         BorderThickness="0"
-                         Background="Transparent"
-                         FontSize="13"
-                         Height="32"
-                         Padding="10,0"
-                         VerticalContentAlignment="Center"
-                         GotKeyboardFocus="OnFileNameFocused"
-                         PreviewMouseLeftButtonDown="OnFileNameClicked"
-                         PreviewTextInput="OnFileNameTyping" />
-            </Border>
-
-            <TextBlock Grid.Column="2"
-                       Margin="8,0,0,0"
-                       Text="{Binding ExtensionText}"
-                       Style="{StaticResource SubtleText}"
-                       VerticalAlignment="Center" />
-        </Grid>
-
-        <Grid Grid.Row="7"
-              Margin="0,12,0,0"
-              IsEnabled="{Binding DownloadCommand.IsRunning, Converter={StaticResource InverseBoolean}}"
-              Visibility="{Binding Video, Converter={StaticResource NotEmptyToVisibility}}">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" SharedSizeGroup="RotuloDaEscolha" />
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
             <TextBlock Grid.Column="0"
@@ -377,8 +329,58 @@
                     Content="Escolher..."
                     Style="{StaticResource SecondaryButton}"
                     Click="OnChooseDestinationRequested" />
+        </Grid>
 
-            <Button Grid.Column="4"
+        <!--
+            Ultima linha antes de baixar, seguindo a ordem que o "Salvar como" do
+            Windows consagrou: primeiro a pasta, depois o nome, colado no botao.
+
+            O nome fica fora do cartao de proposito: o cartao mostra o video, com
+            o titulo inteiro, e este campo mostra o arquivo, cortado em cem
+            caracteres. Sao coisas diferentes que se pareceriam demais juntas.
+        -->
+        <Grid Grid.Row="7"
+              Margin="0,12,0,0"
+              IsEnabled="{Binding DownloadCommand.IsRunning, Converter={StaticResource InverseBoolean}}"
+              Visibility="{Binding Video, Converter={StaticResource NotEmptyToVisibility}}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" SharedSizeGroup="RotuloDaEscolha" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Grid.Column="0"
+                       Text="Nome"
+                       Style="{StaticResource SubtleText}"
+                       VerticalAlignment="Center" />
+
+            <Border Grid.Column="1"
+                    Margin="10,0,0,0"
+                    Background="White"
+                    BorderBrush="#FFD5DBE5"
+                    BorderThickness="1"
+                    CornerRadius="6">
+                <TextBox x:Name="FileNameBox"
+                         Text="{Binding FileName, UpdateSourceTrigger=PropertyChanged}"
+                         BorderThickness="0"
+                         Background="Transparent"
+                         FontSize="13"
+                         Height="32"
+                         Padding="10,0"
+                         VerticalContentAlignment="Center"
+                         GotKeyboardFocus="OnFileNameFocused"
+                         PreviewMouseLeftButtonDown="OnFileNameClicked"
+                         PreviewTextInput="OnFileNameTyping" />
+            </Border>
+
+            <TextBlock Grid.Column="2"
+                       Margin="8,0,0,0"
+                       Text="{Binding ExtensionText}"
+                       Style="{StaticResource SubtleText}"
+                       VerticalAlignment="Center" />
+
+            <Button Grid.Column="3"
                     Margin="16,0,0,0"
                     Height="38"
                     Padding="26,0"
