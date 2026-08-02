@@ -20,7 +20,10 @@
     Onde gravar. Por padrao dist/, na raiz do repositorio.
 
 .PARAMETER SkipZip
-    Gera apenas a pasta, sem compactar.
+    Nao compacta a pasta publicada.
+
+.PARAMETER SkipInstaller
+    Nao gera o instalador, mesmo com o Inno Setup presente.
 
 .EXAMPLE
     ./scripts/publish.ps1
@@ -29,7 +32,8 @@
 param(
     [string] $Configuration = 'Release',
     [string] $OutputDirectory,
-    [switch] $SkipZip
+    [switch] $SkipZip,
+    [switch] $SkipInstaller
 )
 
 Set-StrictMode -Version Latest
@@ -46,6 +50,23 @@ if (-not $OutputDirectory) {
 # O identificador fixa 64 bits: o FFmpeg e o yt-dlp empacotados sao dessa
 # arquitetura, e um Windows de 32 bits nao executaria nem um nem outro.
 $runtimeIdentifier = 'win-x64'
+
+function Find-InnoSetupCompiler {
+    $candidates = @(
+        (Join-Path $env:ProgramFiles 'Inno Setup 7\ISCC.exe'),
+        (Join-Path ${env:ProgramFiles(x86)} 'Inno Setup 7\ISCC.exe'),
+        (Join-Path $env:ProgramFiles 'Inno Setup 6\ISCC.exe'),
+        (Join-Path ${env:ProgramFiles(x86)} 'Inno Setup 6\ISCC.exe'))
+
+    foreach ($candidate in $candidates) {
+        if (Test-Path -LiteralPath $candidate) { return $candidate }
+    }
+
+    $onPath = Get-Command 'iscc' -ErrorAction SilentlyContinue
+    if ($onPath) { return $onPath.Source }
+
+    return $null
+}
 
 function Get-ProjectVersion {
     $content = Get-Content -LiteralPath $projectPath -Raw
@@ -124,6 +145,36 @@ if (-not $SkipZip) {
     Write-Host "[ok]          $archivePath ($archiveInMegabytes MB)"
 }
 
+if (-not $SkipInstaller) {
+    $compilerPath = Find-InnoSetupCompiler
+
+    if (-not $compilerPath) {
+        Write-Host '[instalador]  Inno Setup nao encontrado; apenas a pasta e o zip foram gerados.'
+    }
+    else {
+        Write-Host '[instalador]  compilando (compressao solida no maximo, costuma demorar)...'
+
+        $scriptPath = Join-Path $repositoryRoot 'installer/YTDown.iss'
+
+        & $compilerPath `
+            "/DAppVersion=$version" `
+            "/DPublishedDirectory=$stagingDirectory" `
+            "/DOutputDirectory=$OutputDirectory" `
+            $scriptPath | Out-Host
+
+        if ($LASTEXITCODE -ne 0) {
+            throw "A compilacao do instalador falhou com codigo $LASTEXITCODE."
+        }
+
+        $installerPath = Join-Path $OutputDirectory "YTDown-$version-setup.exe"
+        $installerInMegabytes = [math]::Round(((Get-Item -LiteralPath $installerPath).Length / 1MB), 1)
+
+        Write-Host "[ok]          $installerPath ($installerInMegabytes MB)"
+    }
+}
+
 Write-Host ''
-Write-Host 'Quem receber o pacote extrai e executa YTDown.exe. Nada precisa ser instalado.'
-Write-Host 'O Windows vai avisar que o programa e de origem desconhecida: o executavel nao e assinado.'
+Write-Host 'O instalador nao pede administrador: instala para o usuario atual.'
+Write-Host 'O zip serve a quem preferir nao instalar nada: extrair e executar YTDown.exe.'
+Write-Host 'Nos dois casos o Windows avisa que o programa e de origem desconhecida,'
+Write-Host 'porque o executavel nao e assinado.'
