@@ -521,8 +521,14 @@ HKLM\SYSTEM\CurrentControlSet\Control\CI\Policy
 VerifiedAndReputablePolicyState   0 = desligado   1 = ligado   2 = avaliação
 ```
 
-Desligar pela interface do Windows é, oficialmente, irreversível. Nesta máquina
-o recurso está em **0**, e o dono consegue ligá-lo e desligá-lo pelo registro.
+Desligar pela interface do Windows é, oficialmente, irreversível. Pelo registro
+o dono consegue ligar e desligar à vontade, e é o que ele faz: **0 enquanto
+desenvolve, 1 no resto do tempo**, para não abrir mão da proteção fora das
+sessões de trabalho.
+
+Ou seja, encontrá-lo **ligado** é o caso comum, não a exceção. Se os testes
+falharem com o erro acima, o valor no registro é a primeira coisa a conferir —
+antes de procurar qualquer defeito no código.
 
 **Renomear o assembly zera a reputação.** Ao ganhar metadados de distribuição, o
 `AssemblyName` passou de `YTDown.UI` para `YTDown`. Para o Smart App Control o
