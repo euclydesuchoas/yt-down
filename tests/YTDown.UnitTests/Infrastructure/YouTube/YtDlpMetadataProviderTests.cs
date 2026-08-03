@@ -127,7 +127,7 @@ public class YtDlpMetadataProviderTests
     public async Task GetMetadataAsync_WhenOutputCannotBeParsed_ReturnsToolFailure()
     {
         GivenYtDlpIsInstalled();
-        GivenYtDlpProduces(new ProcessResult(0, "isso nao e json", string.Empty));
+        GivenYtDlpProduces(new ProcessResult(0, "isso não é json", string.Empty));
 
         var result = await CreateProvider().GetMetadataAsync(VideoUrl, CancellationToken.None);
 

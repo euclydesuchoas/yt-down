@@ -81,7 +81,7 @@ public sealed class DownloadService : IDownloadService
     /// Registra o download que acabou de terminar.
     /// </summary>
     /// <remarks>
-    /// Sem o token de cancelamento de proposito: o arquivo já esta no disco, e
+    /// Sem o token de cancelamento de propósito: o arquivo já está no disco, e
     /// um cancelamento que chegue exatamente aqui deixaria o usuário com um
     /// arquivo que o histórico não conhece.
     /// </remarks>

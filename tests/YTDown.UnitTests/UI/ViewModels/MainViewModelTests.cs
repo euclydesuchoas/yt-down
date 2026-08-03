@@ -186,7 +186,7 @@ public class MainViewModelTests
 
         viewModel.DownloadedFile.Should().BeNull();
         viewModel.ErrorMessage.Should().NotBeNullOrWhiteSpace();
-        viewModel.ErrorMessage.Should().NotContain("youtube]", because: "saida de ferramenta nunca chega a tela");
+        viewModel.ErrorMessage.Should().NotContain("youtube]", because: "saída de ferramenta nunca chega à tela");
         viewModel.ErrorMessage.Should().NotContain("ERROR");
     }
 
@@ -428,7 +428,7 @@ public class MainViewModelTests
 
         viewModel.SelectedDestination.Should().Be(DestinationOption.Default);
         viewModel.Destinations[0].Label.Should().Be("Pasta padrão");
-        viewModel.Destinations[1].Label.Should().Be("Elvis", because: "o caminho inteiro nao cabe na linha");
+        viewModel.Destinations[1].Label.Should().Be("Elvis", because: "o caminho inteiro não cabe na linha");
     }
 
     [Fact]

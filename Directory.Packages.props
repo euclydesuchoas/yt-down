@@ -5,11 +5,11 @@
     <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
   </PropertyGroup>
 
-  <ItemGroup Label="Apresentacao">
+  <ItemGroup Label="Apresentação">
     <PackageVersion Include="CommunityToolkit.Mvvm" Version="8.4.2" />
   </ItemGroup>
 
-  <ItemGroup Label="Injecao de dependencia">
+  <ItemGroup Label="Injeção de dependência">
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="10.0.10" />
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.10" />
   </ItemGroup>
@@ -20,7 +20,7 @@
     a última versão sob Apache 2.0.
 
     NetArchTest.eNhancedEdition e o fork mantido do NetArchTest.Rules original,
-    que esta sem manutencao ativa.
+    que está sem manutenção ativa.
   -->
   <ItemGroup Label="Testes">
     <PackageVersion Include="coverlet.collector" Version="6.0.4" />

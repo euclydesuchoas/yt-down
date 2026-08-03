@@ -3,7 +3,7 @@ using YTDown.Application.Common;
 namespace YTDown.Application.DTOs;
 
 /// <summary>
-/// Um download concluido, como fica registrado para consulta posterior.
+/// Um download concluído, como fica registrado para consulta posterior.
 /// </summary>
 /// <remarks>
 /// Guarda apenas o que se sabe no momento em que o download termina. Título e

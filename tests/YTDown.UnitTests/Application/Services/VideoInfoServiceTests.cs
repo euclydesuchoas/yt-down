@@ -61,7 +61,7 @@ public class VideoInfoServiceTests
     {
         _metadataProvider
             .Setup(provider => provider.GetMetadataAsync(It.IsAny<VideoUrl>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(Result<VideoInfoDto>.Failure(ErrorCode.VideoUnavailable, "detalhe tecnico"));
+            .ReturnsAsync(Result<VideoInfoDto>.Failure(ErrorCode.VideoUnavailable, "detalhe técnico"));
 
         var service = CreateService();
 
@@ -69,7 +69,7 @@ public class VideoInfoServiceTests
 
         result.IsSuccess.Should().BeFalse();
         result.Error.Should().Be(ErrorCode.VideoUnavailable);
-        result.Diagnostics.Should().Be("detalhe tecnico");
+        result.Diagnostics.Should().Be("detalhe técnico");
     }
 
     [Fact]

@@ -1,5 +1,5 @@
 {
-  "_comment": "Resposta real do yt-dlp 2026.07.04 para o video de referencia do projeto, reduzida aos campos usados. O array formats foi removido por ter centenas de entradas.",
+  "_comment": "Resposta real do yt-dlp 2026.07.04 para o vídeo de referência do projeto, reduzida aos campos usados. O array formats foi removido por ter centenas de entradas.",
   "id": "UKcJqQqiXq0",
   "title": "『無職転生Ⅲ ～異世界行ったら本気だす～』ノンクレジットED映像／EDテーマ：「祈り、終われば」中島美嘉",
   "channel": "TOHO animation",
@@ -11,7 +11,7 @@
   "live_status": "not_live",
   "was_live": false,
   "extractor": "youtube",
-  "_formats_comment": "Amostra real: cada altura existe em avc1, vp9 e av01. Apenas as avc1 devem ser oferecidas, porque so elas vao para MP4 sem reconverter.",
+  "_formats_comment": "Amostra real: cada altura existe em avc1, vp9 e av01. Apenas as avc1 devem ser oferecidas, porque só elas vão para MP4 sem reconverter.",
   "formats": [
     { "format_id": "140", "vcodec": "none", "acodec": "mp4a.40.2" },
     { "format_id": "251", "vcodec": "none", "acodec": "opus" },

@@ -8,7 +8,7 @@ namespace YTDown.Application.DependencyInjection;
 /// Registra os serviços da camada Application.
 /// </summary>
 /// <remarks>
-/// Cada camada expoe seu próprio registro, para que o composition root não
+/// Cada camada expõe seu próprio registro, para que o composition root não
 /// precise conhecer as implementações concretas de nenhuma delas.
 /// </remarks>
 public static class ApplicationServiceCollectionExtensions

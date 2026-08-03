@@ -121,7 +121,7 @@ public class SettingsServiceTests
     {
         _store
             .Setup(store => store.ReadAsync(It.IsAny<CancellationToken>()))
-            .ThrowsAsync(new InvalidOperationException("defeito de programacao"));
+            .ThrowsAsync(new InvalidOperationException("defeito de programação"));
 
         var read = async () => await CreateService().GetAsync(CancellationToken.None);
 

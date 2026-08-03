@@ -184,7 +184,7 @@ public class DownloadHistoryServiceTests
     [Fact]
     public async Task GetRecentAsync_WhenSomethingElseBreaks_LetsItSurface()
     {
-        _store.FailWith = new InvalidOperationException("defeito de programacao");
+        _store.FailWith = new InvalidOperationException("defeito de programação");
 
         var read = async () => await CreateService().GetRecentAsync(CancellationToken.None);
 

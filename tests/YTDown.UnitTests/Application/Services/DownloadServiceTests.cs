@@ -152,7 +152,7 @@ public class DownloadServiceTests
         _locationProvider.Verify(
             provider => provider.GetDestinationDirectoryAsync(It.IsAny<CancellationToken>()),
             Times.Never,
-            failMessage: "a escolha explicita dispensa consultar o padrao");
+            failMessage: "a escolha explícita dispensa consultar o padrão");
     }
 
     /// <summary>

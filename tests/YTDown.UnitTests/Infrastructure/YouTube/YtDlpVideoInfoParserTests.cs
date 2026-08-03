@@ -91,7 +91,7 @@ public class YtDlpVideoInfoParserTests
     [InlineData(null)]
     [InlineData("")]
     [InlineData("   ")]
-    [InlineData("nao e json")]
+    [InlineData("não é json")]
     [InlineData("{ \"id\": \"UKcJqQqiXq0\" ")]
     [InlineData("[]")]
     [InlineData("\"apenas um texto\"")]

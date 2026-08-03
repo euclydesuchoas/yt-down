@@ -29,7 +29,7 @@ public partial class App : System.Windows.Application
         services.AddSingleton<MainWindow>();
 
         // O histórico é uma janela por abertura, e não uma só reaproveitada: a
-        // lista precisa chegar recem-lida do disco.
+        // lista precisa chegar recém-lida do disco.
         services.AddTransient<HistoryViewModel>();
         services.AddTransient<HistoryWindow>();
         services.AddSingleton<Func<HistoryWindow>>(provider => provider.GetRequiredService<HistoryWindow>);

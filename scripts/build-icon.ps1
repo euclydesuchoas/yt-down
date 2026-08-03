@@ -1,6 +1,6 @@
 ﻿<#
 .SYNOPSIS
-    Gera assets/ytdown.ico, o icone do aplicativo.
+    Gera assets/ytdown.ico, o ícone do aplicativo.
 
 .DESCRIPTION
     O ícone é desenhado por código, e não editado em uma ferramenta gráfica, para
@@ -137,7 +137,7 @@ function ConvertTo-Dib {
 
     $writer.Flush()
 
-    # A virgula impede o PowerShell de desenrolar o array em elementos soltos, o
+    # A vírgula impede o PowerShell de desenrolar o array em elementos soltos, o
     # que faria o chamador receber uma coleção de objetos em vez de bytes.
     return , $stream.ToArray()
 }

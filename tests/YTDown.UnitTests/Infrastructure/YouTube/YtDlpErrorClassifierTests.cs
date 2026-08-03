@@ -75,7 +75,7 @@ public class YtDlpErrorClassifierTests
     [InlineData(null)]
     [InlineData("")]
     [InlineData("   ")]
-    [InlineData("ERROR: algo totalmente novo que ainda nao sabemos classificar")]
+    [InlineData("ERROR: algo totalmente novo que ainda não sabemos classificar")]
     public void Classify_WithUnrecognizedOutput_ReturnsToolFailure(string? standardError)
     {
         YtDlpErrorClassifier.Classify(standardError).Should().Be(ErrorCode.ToolFailure);

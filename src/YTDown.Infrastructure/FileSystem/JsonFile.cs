@@ -17,7 +17,7 @@ internal static class JsonFile
     /// ser interpretado.
     /// </summary>
     /// <remarks>
-    /// Arquivo corrompido não levanta exceção de proposito: perder o que estava
+    /// Arquivo corrompido não levanta exceção de propósito: perder o que estava
     /// guardado é aceitável, deixar o aplicativo sem abrir não é. Quem chama
     /// decide o que colocar no lugar.
     /// </remarks>

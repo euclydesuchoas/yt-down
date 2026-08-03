@@ -110,7 +110,7 @@ public class YtDlpProgressParserTests
     [Theory]
     [InlineData("FINAL|")]
     [InlineData("FINAL|   ")]
-    [InlineData("FINAL|nao e json")]
+    [InlineData("FINAL|não é json")]
     [InlineData("FINAL|\"\"")]
     [InlineData("outra coisa")]
     public void TryParseFinalFilePath_WithoutAUsablePath_Fails(string line)

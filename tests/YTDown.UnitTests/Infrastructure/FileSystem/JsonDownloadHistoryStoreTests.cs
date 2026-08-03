@@ -91,7 +91,7 @@ public class JsonDownloadHistoryStoreTests : IDisposable
     [Fact]
     public async Task WriteAsync_KeepsCharactersThatAreNotAscii()
     {
-        const string fileName = "ドキドキ - cancao da manha.mp4";
+        const string fileName = "ドキドキ - canção da manhã.mp4";
 
         await CreateStore().WriteAsync([AnEntry(fileName)], CancellationToken.None);
 
@@ -107,7 +107,7 @@ public class JsonDownloadHistoryStoreTests : IDisposable
     public async Task ReadAsync_WithACorruptedFile_ReturnsNothingInsteadOfFailing()
     {
         Directory.CreateDirectory(_root);
-        await File.WriteAllTextAsync(FilePath, "{ isto nao e json");
+        await File.WriteAllTextAsync(FilePath, "{ isto não é json");
 
         var entries = await CreateStore().ReadAsync(CancellationToken.None);
 

@@ -68,7 +68,7 @@ public static class YtDlpOutputTemplate
         }
 
         // Novecentos e noventa e oito arquivos com o mesmo nome não acontece,
-        // mas um laco sem saída acontece.
+        // mas um laço sem saída acontece.
         return $"{name} ({Guid.NewGuid():N})";
     }
 }
