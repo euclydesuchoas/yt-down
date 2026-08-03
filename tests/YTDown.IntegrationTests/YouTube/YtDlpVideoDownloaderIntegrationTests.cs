@@ -9,7 +9,7 @@ using YTDown.Infrastructure.YouTube;
 namespace YTDown.IntegrationTests.YouTube;
 
 /// <summary>
-/// Baixa o video de referencia de verdade, com o yt-dlp e o FFmpeg reais.
+/// Baixa o vídeo de referência de verdade, com o yt-dlp e o FFmpeg reais.
 /// </summary>
 [Trait("Category", "Integration")]
 public class YtDlpVideoDownloaderIntegrationTests : IDisposable
@@ -33,8 +33,8 @@ public class YtDlpVideoDownloaderIntegrationTests : IDisposable
         new(new ProcessRunner(), CreateToolLocator());
 
     /// <summary>
-    /// Nos testes as duas pastas sao a mesma: o repositorio nao separa a copia
-    /// do perfil da que acompanha a instalacao.
+    /// Nos testes as duas pastas são a mesma: o repositório não separa a cópia
+    /// do perfil da que acompanha a instalação.
     /// </summary>
     private static ManagedToolLocator CreateToolLocator()
     {
@@ -56,7 +56,7 @@ public class YtDlpVideoDownloaderIntegrationTests : IDisposable
         }
 
         throw new InvalidOperationException(
-            "Pasta tools nao encontrada. Execute scripts/bootstrap-tools.ps1 antes dos testes de integracao.");
+            "Pasta tools não encontrada. Execute scripts/bootstrap-tools.ps1 antes dos testes de integração.");
     }
 
     [Fact]
@@ -86,7 +86,7 @@ public class YtDlpVideoDownloaderIntegrationTests : IDisposable
         reported.Select(entry => entry.Stage).Should().Contain(DownloadStage.DownloadingVideo);
         reported.Select(entry => entry.Stage).Should().Contain(DownloadStage.Completed);
 
-        // O yt-dlp remove os proprios arquivos parciais quando termina bem.
+        // O yt-dlp remove os próprios arquivos parciais quando termina bem.
         Directory.GetFiles(_destinationDirectory).Should().ContainSingle();
     }
 
@@ -110,8 +110,8 @@ public class YtDlpVideoDownloaderIntegrationTests : IDisposable
         File.Exists(result.Value.FilePath).Should().BeTrue();
 
         reported.Select(entry => entry.Percentage).Should().BeInAscendingOrder();
-        // A conversao para MP3 nao reporta progresso, entao esta etapa so existe
-        // porque o fim do stream de audio e usado como marcador.
+        // A conversão para MP3 não reporta progresso, então esta etapa só existe
+        // porque o fim do stream de áudio é usado como marcador.
         reported.Select(entry => entry.Stage).Should().Contain(DownloadStage.Finishing);
         reported[^1].Percentage.Should().Be(100);
 
@@ -132,7 +132,7 @@ public class YtDlpVideoDownloaderIntegrationTests : IDisposable
 
         limited.IsSuccess.Should().BeTrue(because: limited.Diagnostics);
 
-        // O mesmo video em 1080p passa de 20 MB; em 360p fica bem abaixo disso.
+        // O mesmo vídeo em 1080p passa de 20 MB; em 360p fica bem abaixo disso.
         limited.Value!.SizeInBytes.Should().BeLessThan(8_000_000);
     }
 
@@ -164,8 +164,8 @@ public class YtDlpVideoDownloaderIntegrationTests : IDisposable
     }
 
     /// <summary>
-    /// Entrega no mesmo instante e na mesma ordem, ao contrario de Progress,
-    /// que reagenda cada notificacao.
+    /// Entrega no mesmo instante e na mesma ordem, ao contrário de Progress,
+    /// que reagenda cada notificação.
     /// </summary>
     private sealed class SynchronousProgress : IProgress<DownloadProgressDto>
     {

@@ -3,12 +3,12 @@ using YTDown.Application.Common;
 namespace YTDown.UI.Resources;
 
 /// <summary>
-/// Traduz um motivo de falha em uma frase para o usuario.
+/// Traduz um motivo de falha em uma frase para o usuário.
 /// </summary>
 /// <remarks>
 /// Cada mensagem diz o que aconteceu e, quando existe, o que fazer a seguir.
-/// O publico do aplicativo nao sabe o que e yt-dlp, entao nenhuma saida tecnica
-/// aparece na tela: ela fica em Diagnostics, para depuracao.
+/// O público do aplicativo não sabe o que é yt-dlp, então nenhuma saída técnica
+/// aparece na tela: ela fica em Diagnostics, para depuração.
 /// </remarks>
 internal static class ErrorMessages
 {

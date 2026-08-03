@@ -3,13 +3,13 @@ using System.Diagnostics.CodeAnalysis;
 namespace YTDown.Infrastructure.Tools;
 
 /// <summary>
-/// Descobre onde esta o executavel de uma ferramenta externa.
+/// Descobre onde está o executável de uma ferramenta externa.
 /// </summary>
 /// <remarks>
-/// Existe como abstracao desde o inicio porque o local definitivo das
-/// ferramentas ainda vai mudar: elas precisarao viver em uma pasta gravavel
-/// para poderem se atualizar sozinhas, o que nao acontece quando o aplicativo
-/// esta instalado em Arquivos de Programas.
+/// Existe como abstração desde o início porque o local definitivo das
+/// ferramentas ainda vai mudar: elas precisarão viver em uma pasta gravável
+/// para poderem se atualizar sozinhas, o que não acontece quando o aplicativo
+/// está instalado em Arquivos de Programas.
 /// </remarks>
 public interface IToolLocator
 {

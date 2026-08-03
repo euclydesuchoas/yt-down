@@ -4,22 +4,22 @@ using YTDown.Application.DTOs;
 namespace YTDown.Infrastructure.YouTube;
 
 /// <summary>
-/// Transforma o progresso de cada stream em um unico percentual.
+/// Transforma o progresso de cada stream em um único percentual.
 /// </summary>
 /// <remarks>
-/// Sem isto o usuario veria a barra ir a 100% e voltar a zero, porque video e
-/// audio sao baixados em sequencia, e depois ficaria parada durante a juncao.
+/// Sem isto o usuário veria a barra ir a 100% e voltar a zero, porque vídeo e
+/// áudio são baixados em sequência, e depois ficaria parada durante a junção.
 ///
-/// As faixas vem da proporcao real de bytes: no video de referencia o audio e
-/// pouco mais de 7% do total baixado. O trabalho do FFmpeg no fim nao reporta
-/// progresso algum, entao ocupa uma faixa curta e fixa.
+/// As faixas vêm da proporção real de bytes: no vídeo de referência o áudio é
+/// pouco mais de 7% do total baixado. O trabalho do FFmpeg no fim não reporta
+/// progresso algum, então ocupa uma faixa curta e fixa.
 /// </remarks>
 public sealed class DownloadProgressAggregator
 {
     private const int VideoShare = 90;
     private const int AudioShare = 7;
 
-    /// <summary>Sem video para baixar, a trilha sozinha ocupa quase tudo.</summary>
+    /// <summary>Sem vídeo para baixar, a trilha sozinha ocupa quase tudo.</summary>
     private const int AudioOnlyShare = 95;
 
     private readonly bool _audioOnly;
@@ -30,8 +30,8 @@ public sealed class DownloadProgressAggregator
 
     public DownloadProgressDto ForStream(YtDlpProgressLine line)
     {
-        // O ultimo stream terminar e o unico aviso de que o FFmpeg comecou: as
-        // mensagens dos pos-processadores nao chegam, porque --print, exigido
+        // O último stream terminar é o único aviso de que o FFmpeg começou: as
+        // mensagens dos pos-processadores não chegam, porque --print, exigido
         // para saber o caminho final, implica --quiet.
         if (line.IsFinished && (_audioOnly || !line.IsVideoStream))
         {
@@ -71,7 +71,7 @@ public sealed class DownloadProgressAggregator
             timeRemaining: null);
 
     /// <summary>
-    /// Garante que o percentual nunca retroceda, mesmo quando um stream comeca
+    /// Garante que o percentual nunca retroceda, mesmo quando um stream começa
     /// do zero depois de outro ter terminado.
     /// </summary>
     private DownloadProgressDto Build(int percentage, DownloadStage stage, double? bytesPerSecond, TimeSpan? timeRemaining)

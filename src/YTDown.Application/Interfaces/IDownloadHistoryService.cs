@@ -3,22 +3,22 @@ using YTDown.Application.DTOs;
 namespace YTDown.Application.Interfaces;
 
 /// <summary>
-/// O que o aplicativo ja baixou.
+/// O que o aplicativo já baixou.
 /// </summary>
 public interface IDownloadHistoryService
 {
     /// <summary>
-    /// Os downloads mais recentes, do ultimo para o primeiro.
+    /// Os downloads mais recentes, do último para o primeiro.
     /// </summary>
     Task<IReadOnlyList<DownloadHistoryEntryDto>> GetRecentAsync(CancellationToken cancellationToken);
 
     /// <summary>
-    /// As pastas usadas mais recentemente, sem repeticao e da mais recente para
+    /// As pastas usadas mais recentemente, sem repetição e da mais recente para
     /// a mais antiga.
     /// </summary>
     /// <remarks>
-    /// Sai do proprio historico, que ja guarda o caminho completo de cada
-    /// arquivo: as pastas que aparecem la sao exatamente as que o usuario vem
+    /// Sai do próprio histórico, que já guarda o caminho completo de cada
+    /// arquivo: as pastas que aparecem lá são exatamente as que o usuário vem
     /// usando. Guardar essa lista em separado seria manter uma segunda verdade
     /// sobre o mesmo fato.
     /// </remarks>

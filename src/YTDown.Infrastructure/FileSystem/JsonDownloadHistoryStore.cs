@@ -7,10 +7,10 @@ namespace YTDown.Infrastructure.FileSystem;
 
 /// <inheritdoc cref="IDownloadHistoryStore" />
 /// <remarks>
-/// JSON e nao um banco: sao poucas dezenas de registros, lidos de uma vez so.
-/// Um banco embarcado traria arquivo de esquema, migracao e mais uma dependencia
-/// grande no instalador para resolver um problema que este aplicativo nao tem.
-/// Em texto, o arquivo tambem pode ser lido e corrigido a mao quando preciso.
+/// JSON e não um banco: são poucas dezenas de registros, lidos de uma vez só.
+/// Um banco embarcado traria arquivo de esquema, migração e mais uma dependência
+/// grande no instalador para resolver um problema que este aplicativo não tem.
+/// Em texto, o arquivo também pode ser lido e corrigido à mão quando preciso.
 /// </remarks>
 public sealed class JsonDownloadHistoryStore : IDownloadHistoryStore
 {

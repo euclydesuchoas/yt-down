@@ -4,11 +4,11 @@ using YTDown.UI.Resources;
 namespace YTDown.UI.ViewModels;
 
 /// <summary>
-/// Uma linha do historico, pronta para leitura.
+/// Uma linha do histórico, pronta para leitura.
 /// </summary>
 /// <remarks>
 /// O registro guardado tem bytes e um instante; a tela precisa de "18,6 MB" e
-/// "hoje as 14:32". A conversao acontece aqui, uma vez, e nao a cada exibicao.
+/// "hoje às 14:32". A conversão acontece aqui, uma vez, e não a cada exibição.
 /// </remarks>
 public sealed class DownloadHistoryItem
 {
@@ -26,6 +26,6 @@ public sealed class DownloadHistoryItem
 
     public string FileName => Entry.FileName;
 
-    /// <summary>Quando, o que e quanto, em uma linha so.</summary>
+    /// <summary>Quando, o que e quanto, em uma linha só.</summary>
     public string Description { get; }
 }

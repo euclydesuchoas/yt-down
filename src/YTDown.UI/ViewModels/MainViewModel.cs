@@ -9,7 +9,7 @@ using YTDown.UI.Resources;
 namespace YTDown.UI.ViewModels;
 
 /// <summary>
-/// Tela unica do aplicativo: recebe um endereco, mostra o video e o baixa.
+/// Tela única do aplicativo: recebe um endereço, mostra o vídeo e o baixa.
 /// </summary>
 public sealed partial class MainViewModel : ObservableObject
 {
@@ -39,18 +39,18 @@ public sealed partial class MainViewModel : ObservableObject
     }
 
     /// <summary>
-    /// Aviso discreto sobre a preparacao das ferramentas. Vazio quando esta tudo
-    /// em ordem, para nao ocupar a tela com o que nao exige atencao.
+    /// Aviso discreto sobre a preparação das ferramentas. Vazio quando está tudo
+    /// em ordem, para não ocupar a tela com o que não exige atenção.
     /// </summary>
     [ObservableProperty]
     private string? _maintenanceMessage;
 
     /// <summary>
-    /// Deixa o yt-dlp instalado em pasta gravavel e tenta atualiza-lo.
+    /// Deixa o yt-dlp instalado em pasta gravável e tenta atualizá-lo.
     /// </summary>
     /// <remarks>
-    /// Roda em paralelo com o uso da tela: enquanto nao termina, um download
-    /// ainda funciona com a copia que acompanha a instalacao.
+    /// Roda em paralelo com o uso da tela: enquanto não termina, um download
+    /// ainda funciona com a cópia que acompanha a instalação.
     /// </remarks>
     [RelayCommand]
     private async Task InitializeAsync(CancellationToken cancellationToken)
@@ -65,11 +65,11 @@ public sealed partial class MainViewModel : ObservableObject
     }
 
     /// <summary>
-    /// Rele as preferencias.
+    /// Relê as preferências.
     /// </summary>
     /// <remarks>
-    /// Chamado tambem quando a tela de configuracoes fecha, para que a escolha
-    /// valha ja no proximo download, sem reabrir o aplicativo.
+    /// Chamado também quando a tela de configurações fecha, para que a escolha
+    /// valha já no próximo download, sem reabrir o aplicativo.
     /// </remarks>
     [RelayCommand]
     private async Task RefreshSettingsAsync(CancellationToken cancellationToken)
@@ -81,12 +81,12 @@ public sealed partial class MainViewModel : ObservableObject
 
     /// <summary>
     /// Quantas pastas recentes cabem na lista sem transforma-la em um segundo
-    /// historico.
+    /// histórico.
     /// </summary>
     private const int RecentFolderCount = 5;
 
     /// <summary>
-    /// Recarrega as pastas oferecidas, preservando a que esta escolhida.
+    /// Recarrega as pastas oferecidas, preservando a que está escolhida.
     /// </summary>
     private async Task RefreshDestinationsAsync(CancellationToken cancellationToken)
     {
@@ -96,8 +96,8 @@ public sealed partial class MainViewModel : ObservableObject
         List<DestinationOption> options = [DestinationOption.Default];
         options.AddRange(recent.Select(folder => new DestinationOption(folder)));
 
-        // Uma pasta recem-apontada no seletor ainda nao esta no historico, que so
-        // registra downloads concluidos. Sem isto ela sumiria da lista no instante
+        // Uma pasta recém-apontada no seletor ainda não está no histórico, que só
+        // registra downloads concluídos. Sem isto ela sumiria da lista no instante
         // seguinte ao de ser escolhida.
         if (chosen.Path is { Length: > 0 } path && !recent.Contains(path, StringComparer.OrdinalIgnoreCase))
         {
@@ -109,11 +109,11 @@ public sealed partial class MainViewModel : ObservableObject
     }
 
     /// <summary>
-    /// Passa a usar uma pasta que o usuario acabou de apontar no seletor.
+    /// Passa a usar uma pasta que o usuário acabou de apontar no seletor.
     /// </summary>
     /// <remarks>
-    /// Quem escolhe a pasta e a janela, que conhece o seletor do Windows; o
-    /// ViewModel so recebe o resultado.
+    /// Quem escolhe a pasta é a janela, que conhece o seletor do Windows; o
+    /// ViewModel só recebe o resultado.
     /// </remarks>
     public async Task UseFolderAsync(string folder, CancellationToken cancellationToken = default)
     {
@@ -131,8 +131,8 @@ public sealed partial class MainViewModel : ObservableObject
     private VideoInfoDto? _video;
 
     /// <summary>
-    /// Qualidades do video consultado, da maior para a menor. Fica vazia ate
-    /// que uma busca seja feita, porque so o proprio video sabe o que oferece.
+    /// Qualidades do vídeo consultado, da maior para a menor. Fica vazia até
+    /// que uma busca seja feita, porque só o próprio vídeo sabe o que oferece.
     /// </summary>
     [ObservableProperty]
     private IReadOnlyList<VideoQualityOption> _availableQualities = [];
@@ -145,26 +145,26 @@ public sealed partial class MainViewModel : ObservableObject
     private bool _audioOnly;
 
     /// <summary>
-    /// Nome do arquivo, sem extensao.
+    /// Nome do arquivo, sem extensão.
     /// </summary>
     /// <remarks>
-    /// Comeca com o titulo do video ja limpo, para que o campo mostre o nome que
-    /// sera gravado, e nao uma promessa que o disco recusaria. Vazio volta a
-    /// valer o titulo.
+    /// Começa com o título do vídeo já limpo, para que o campo mostre o nome que
+    /// será gravado, e não uma promessa que o disco recusaria. Vazio volta a
+    /// valer o título.
     /// </remarks>
     [ObservableProperty]
     private string _fileName = string.Empty;
 
     /// <summary>
-    /// Extensao mostrada ao lado do campo. Nao e digitada: ela e consequencia da
-    /// escolha entre video e audio.
+    /// Extensão mostrada ao lado do campo. Não é digitada: ela é consequência da
+    /// escolha entre vídeo e áudio.
     /// </summary>
     public string ExtensionText => AudioOnly ? ".mp3" : ".mp4";
 
     partial void OnAudioOnlyChanged(bool value) => OnPropertyChanged(nameof(ExtensionText));
 
     /// <summary>
-    /// Pastas oferecidas: a padrao, sempre primeiro, seguida das usadas
+    /// Pastas oferecidas: a padrão, sempre primeiro, seguida das usadas
     /// recentemente.
     /// </summary>
     [ObservableProperty]
@@ -174,10 +174,10 @@ public sealed partial class MainViewModel : ObservableObject
     /// Pasta deste download.
     /// </summary>
     /// <remarks>
-    /// Continua valendo entre um download e outro de proposito. Quem esta
-    /// separando doze musicas em uma pasta escolheria a mesma doze vezes, o que
-    /// e quase tao ruim quanto ir as configuracoes. Volta ao padrao ao fechar o
-    /// aplicativo, que e onde a preferencia duradoura mora.
+    /// Continua valendo entre um download e outro de propósito. Quem está
+    /// separando doze músicas em uma pasta escolheria a mesma doze vezes, o que
+    /// é quase tão ruim quanto ir às configurações. Volta ao padrão ao fechar o
+    /// aplicativo, que é onde a preferência duradoura mora.
     /// </remarks>
     [ObservableProperty]
     private DestinationOption _selectedDestination = DestinationOption.Default;
@@ -193,7 +193,7 @@ public sealed partial class MainViewModel : ObservableObject
     private DownloadedFileDto? _downloadedFile;
 
     /// <summary>
-    /// Duracao pronta para leitura. Transmissoes ao vivo chegam com duracao zero.
+    /// Duração pronta para leitura. Transmissões ao vivo chegam com duração zero.
     /// </summary>
     public string? DurationText => Video switch
     {
@@ -205,7 +205,7 @@ public sealed partial class MainViewModel : ObservableObject
 
     public string? ProgressText => Progress is null ? null : DownloadProgressText.For(Progress);
 
-    /// <summary>Autoria e versao, no rodape da janela.</summary>
+    /// <summary>Autoria e versão, no rodapé da janela.</summary>
     public string Credit => ApplicationInfo.Credit;
 
     partial void OnVideoChanged(VideoInfoDto? value)
@@ -224,12 +224,12 @@ public sealed partial class MainViewModel : ObservableObject
     }
 
     /// <summary>
-    /// A qualidade ja marcada quando a lista aparece.
+    /// A qualidade já marcada quando a lista aparece.
     /// </summary>
     /// <remarks>
-    /// O teto escolhido nas configuracoes e um limite, e nao uma exigencia: um
-    /// video que so exista abaixo dele continua sendo oferecido. Sem teto, a
-    /// maior e a escolha esperada por quem nao quer escolher.
+    /// O teto escolhido nas configurações é um limite, e não uma exigência: um
+    /// vídeo que só exista abaixo dele continua sendo oferecido. Sem teto, a
+    /// maior é a escolha esperada por quem não quer escolher.
     /// </remarks>
     private VideoQualityOption? PreferredQuality() =>
         _settings.MaximumHeight is { } maximum
@@ -240,11 +240,11 @@ public sealed partial class MainViewModel : ObservableObject
     partial void OnProgressChanged(DownloadProgressDto? value) => OnPropertyChanged(nameof(ProgressText));
 
     /// <summary>
-    /// Mexeu no endereco, o resultado na tela deixa de valer.
+    /// Mexeu no endereço, o resultado na tela deixa de valer.
     /// </summary>
     /// <remarks>
-    /// Sem isso seria possivel buscar um video, colar outro endereco e baixar o
-    /// segundo enquanto o primeiro continua na tela. Limpar tambem desabilita o
+    /// Sem isso seria possível buscar um vídeo, colar outro endereço e baixar o
+    /// segundo enquanto o primeiro continua na tela. Limpar também desabilita o
     /// Baixar, o que obriga a buscar de novo.
     /// </remarks>
     partial void OnUrlChanged(string value)
@@ -258,8 +258,8 @@ public sealed partial class MainViewModel : ObservableObject
     private bool CanUseUrl() => !string.IsNullOrWhiteSpace(Url);
 
     /// <summary>
-    /// Baixar exige uma busca bem-sucedida: e ela que diz quais qualidades
-    /// existem e confirma que o endereco aponta para o video certo.
+    /// Baixar exige uma busca bem-sucedida: é ela que diz quais qualidades
+    /// existem e confirma que o endereço aponta para o vídeo certo.
     /// </summary>
     private bool CanDownload() => Video is not null;
 
@@ -285,7 +285,7 @@ public sealed partial class MainViewModel : ObservableObject
         ErrorMessage = null;
         DownloadedFile = null;
 
-        // Construido aqui, na linha da interface, para que cada atualizacao
+        // Construído aqui, na linha da interface, para que cada atualização
         // volte para ela sem que o ViewModel precise tratar disso.
         var progress = new Progress<DownloadProgressDto>(value => Progress = value);
 
@@ -297,8 +297,8 @@ public sealed partial class MainViewModel : ObservableObject
         {
             DownloadedFile = result.Value;
 
-            // A pasta usada agora esta no historico, e vira uma opcao para o
-            // proximo download.
+            // A pasta usada agora está no histórico, e vira uma opção para o
+            // próximo download.
             await RefreshDestinationsAsync(CancellationToken.None);
             return;
         }
@@ -315,8 +315,8 @@ public sealed partial class MainViewModel : ObservableObject
     /// Traduz as escolhas da tela no que o download precisa saber.
     /// </summary>
     /// <remarks>
-    /// A qualidade so fica nula quando o video nao declara altura nenhuma, o que
-    /// acontece em transmissoes ao vivo. Ai vale o teto das configuracoes, em
+    /// A qualidade só fica nula quando o vídeo não declara altura nenhuma, o que
+    /// acontece em transmissões ao vivo. Aí vale o teto das configurações, em
     /// vez de nenhum limite.
     /// </remarks>
     private DownloadOptionsDto BuildOptions() =>
@@ -340,7 +340,7 @@ public sealed partial class MainViewModel : ObservableObject
     }
 
     /// <summary>
-    /// Cancelar foi uma escolha do usuario, nao uma falha: nada a comunicar.
+    /// Cancelar foi uma escolha do usuário, não uma falha: nada a comunicar.
     /// </summary>
     private void ShowFailure(ErrorCode error)
     {

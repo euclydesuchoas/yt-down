@@ -3,13 +3,13 @@ using YTDown.Application.DTOs;
 namespace YTDown.Application.Interfaces;
 
 /// <summary>
-/// As preferencias do usuario.
+/// As preferências do usuário.
 /// </summary>
 public interface ISettingsService
 {
     /// <summary>
-    /// As configuracoes em vigor. Nunca <c>null</c>: sem nada gravado, valem os
-    /// padroes.
+    /// As configurações em vigor. Nunca <c>null</c>: sem nada gravado, valem os
+    /// padrões.
     /// </summary>
     Task<SettingsDto> GetAsync(CancellationToken cancellationToken);
 

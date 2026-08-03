@@ -4,13 +4,13 @@ using YTDown.Application.Interfaces;
 namespace YTDown.Infrastructure.FileSystem;
 
 /// <summary>
-/// Devolve a pasta escolhida pelo usuario, ou a pasta Downloads.
+/// Devolve a pasta escolhida pelo usuário, ou a pasta Downloads.
 /// </summary>
 /// <remarks>
-/// Nao existe <c>SpecialFolder.Downloads</c> no .NET, e supor
+/// Não existe <c>SpecialFolder.Downloads</c> no .NET, e supor
 /// <c>%USERPROFILE%\Downloads</c> ignora que a pasta pode ter sido movida para
-/// outro disco ou para o OneDrive, o que e comum. Por isso a consulta vai ao
-/// Windows, com essa suposicao apenas como ultimo recurso.
+/// outro disco ou para o OneDrive, o que é comum. Por isso a consulta vai ao
+/// Windows, com essa suposição apenas como último recurso.
 /// </remarks>
 public sealed class WindowsDownloadLocationProvider : IDownloadLocationProvider
 {
@@ -24,7 +24,7 @@ public sealed class WindowsDownloadLocationProvider : IDownloadLocationProvider
     /// A pasta escolhida pode ter deixado de existir: pendrive removido, unidade
     /// de rede fora do ar, pasta apagada. Nesse caso o download vai para
     /// Downloads em vez de falhar, porque um arquivo em lugar diferente do
-    /// esperado ainda e melhor que nenhum arquivo.
+    /// esperado ainda é melhor que nenhum arquivo.
     /// </remarks>
     public async Task<string> GetDestinationDirectoryAsync(CancellationToken cancellationToken)
     {

@@ -5,16 +5,16 @@ namespace YTDown.Infrastructure.Processes;
 /// </summary>
 /// <remarks>
 /// Mantido sem qualquer conhecimento de yt-dlp ou FFmpeg: quem sabe montar os
-/// argumentos e interpretar a saida sao as classes especificas de cada
+/// argumentos e interpretar a saída são as classes específicas de cada
 /// ferramenta, que assim podem ser testadas sem iniciar processo nenhum.
 /// </remarks>
 public interface IProcessRunner
 {
     /// <param name="onStandardOutputLine">
-    /// Recebe cada linha assim que ela e emitida, em ordem. Necessario para
-    /// acompanhar progresso, que perde o sentido se so chegar no fim.
-    /// E um delegate, e nao IProgress, justamente para preservar a ordem: as
-    /// implementacoes de IProgress podem entregar fora de ordem.
+    /// Recebe cada linha assim que ela é emitida, em ordem. Necessário para
+    /// acompanhar progresso, que perde o sentido se só chegar no fim.
+    /// É um delegate, e não IProgress, justamente para preservar a ordem: as
+    /// implementações de IProgress podem entregar fora de ordem.
     /// </param>
     Task<ProcessResult> RunAsync(
         ProcessRequest request,

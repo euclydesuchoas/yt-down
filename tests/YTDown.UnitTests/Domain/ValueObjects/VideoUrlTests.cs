@@ -6,7 +6,7 @@ namespace YTDown.UnitTests.Domain.ValueObjects;
 
 public class VideoUrlTests
 {
-    /// <summary>Video de referencia usado nos testes do projeto.</summary>
+    /// <summary>Vídeo de referência usado nos testes do projeto.</summary>
     private const string VideoId = "UKcJqQqiXq0";
 
     private const string CanonicalUrl = $"https://www.youtube.com/watch?v={VideoId}";
@@ -72,7 +72,7 @@ public class VideoUrlTests
     [InlineData(null)]
     [InlineData("")]
     [InlineData("   ")]
-    [InlineData("isso nao e uma url")]
+    [InlineData("isso não é uma url")]
     [InlineData("https://vimeo.com/123456789")]
     [InlineData("https://www.dailymotion.com/video/UKcJqQqiXq0")]
     [InlineData("ftp://www.youtube.com/watch?v=UKcJqQqiXq0")]
@@ -110,8 +110,8 @@ public class VideoUrlTests
     }
 
     /// <summary>
-    /// Um identificador solto e recusado de proposito: qualquer palavra de 11
-    /// caracteres validos passaria na verificacao, e o erro so apareceria bem
+    /// Um identificador solto é recusado de propósito: qualquer palavra de 11
+    /// caracteres válidos passaria na verificação, e o erro só apareceria bem
     /// mais tarde, como uma falha confusa do yt-dlp.
     /// </summary>
     [Fact]

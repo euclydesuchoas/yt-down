@@ -4,20 +4,20 @@ namespace YTDown.UI.ViewModels;
 /// Uma pasta oferecida na hora de baixar.
 /// </summary>
 /// <param name="Path">
-/// Caminho escolhido, ou <c>null</c> para a pasta padrao das configuracoes.
+/// Caminho escolhido, ou <c>null</c> para a pasta padrão das configurações.
 /// </param>
 public sealed record DestinationOption(string? Path)
 {
     /// <remarks>
-    /// O tipo do nulo e explicito porque <c>new(null)</c> serve tanto ao
-    /// construtor do registro quanto ao de copia.
+    /// O tipo do nulo é explícito porque <c>new(null)</c> serve tanto ao
+    /// construtor do registro quanto ao de cópia.
     /// </remarks>
     public static DestinationOption Default { get; } = new((string?)null);
 
     /// <summary>
-    /// So o nome da pasta, porque o caminho inteiro nao cabe na linha e a pessoa
-    /// reconhece "Roberto Carlos" mais rapido do que le a unidade e as pastas
-    /// ate chegar nele. O caminho completo fica na dica da lista.
+    /// Só o nome da pasta, porque o caminho inteiro não cabe na linha e a pessoa
+    /// reconhece "Roberto Carlos" mais rápido do que lê a unidade e as pastas
+    /// até chegar nele. O caminho completo fica na dica da lista.
     /// </summary>
     public string Label => Path is null
         ? "Pasta padrão"

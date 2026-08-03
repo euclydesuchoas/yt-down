@@ -6,14 +6,14 @@ namespace YTDown.Application.Interfaces;
 public interface IToolMaintenanceService
 {
     /// <param name="onStatusChanged">
-    /// Recebe uma descricao curta do que esta acontecendo, para que a tela possa
+    /// Recebe uma descrição curta do que está acontecendo, para que a tela possa
     /// informar em vez de parecer travada.
     /// </param>
     Task PrepareAsync(IProgress<ToolMaintenanceStatus> onStatusChanged, CancellationToken cancellationToken);
 }
 
 /// <summary>
-/// O que a manutencao das ferramentas esta fazendo.
+/// O que a manutenção das ferramentas está fazendo.
 /// </summary>
 public enum ToolMaintenanceStatus
 {
@@ -22,8 +22,8 @@ public enum ToolMaintenanceStatus
     Ready,
 
     /// <summary>
-    /// A atualizacao falhou, mas o aplicativo continua utilizavel com a versao
-    /// que ja possui.
+    /// A atualização falhou, mas o aplicativo continua utilizável com a versão
+    /// que já possui.
     /// </summary>
     UpdateUnavailable
 }

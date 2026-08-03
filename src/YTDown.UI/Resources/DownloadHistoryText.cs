@@ -3,7 +3,7 @@ using YTDown.Application.Common;
 namespace YTDown.UI.Resources;
 
 /// <summary>
-/// Descreve um registro do historico em linguagem comum.
+/// Descreve um registro do histórico em linguagem comum.
 /// </summary>
 internal static class DownloadHistoryText
 {
@@ -28,9 +28,9 @@ internal static class DownloadHistoryText
     /// Quando o download terminou.
     /// </summary>
     /// <remarks>
-    /// Quem abre o historico procura o que baixou ha pouco, entao os dias
-    /// recentes aparecem pelo nome: uma data por extenso obrigaria o usuario a
-    /// conferir o calendario para saber se foi hoje.
+    /// Quem abre o histórico procura o que baixou há pouco, então os dias
+    /// recentes aparecem pelo nome: uma data por extenso obrigaria o usuário a
+    /// conferir o calendário para saber se foi hoje.
     /// </remarks>
     public static string WhenOf(DateTimeOffset completedAt, DateTimeOffset now)
     {

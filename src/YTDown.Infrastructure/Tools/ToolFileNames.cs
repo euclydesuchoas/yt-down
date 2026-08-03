@@ -1,7 +1,7 @@
 namespace YTDown.Infrastructure.Tools;
 
 /// <summary>
-/// Nome do executavel de cada ferramenta.
+/// Nome do executável de cada ferramenta.
 /// </summary>
 public static class ToolFileNames
 {

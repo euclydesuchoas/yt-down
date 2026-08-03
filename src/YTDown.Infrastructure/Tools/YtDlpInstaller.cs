@@ -30,7 +30,7 @@ public sealed class YtDlpInstaller : IToolInstaller
         {
             return Result<bool>.Failure(
                 ErrorCode.ToolNotFound,
-                $"{fileName} nao acompanha esta instalacao.");
+                $"{fileName} não acompanha esta instalação.");
         }
 
         try
@@ -63,9 +63,9 @@ public sealed class YtDlpInstaller : IToolInstaller
     }
 
     /// <remarks>
-    /// A comparacao e com a versao que acompanha a instalacao, e nao com a que
-    /// esta no disco: o yt-dlp instalado costuma estar mais novo, por ter se
-    /// atualizado sozinho, e sobrescreve-lo seria retroceder.
+    /// A comparação é com a versão que acompanha a instalação, e não com a que
+    /// está no disco: o yt-dlp instalado costuma estar mais novo, por ter se
+    /// atualizado sozinho, e sobrescrevê-lo seria retroceder.
     /// </remarks>
     private bool IsAlreadyInstalled(string destination, string? bundledVersion)
     {
@@ -86,9 +86,9 @@ public sealed class YtDlpInstaller : IToolInstaller
     }
 
     /// <summary>
-    /// Versao declarada no manifesto que acompanha a instalacao.
+    /// Versão declarada no manifesto que acompanha a instalação.
     /// </summary>
-    /// <returns>Nulo quando o manifesto nao esta presente ou nao pode ser lido.</returns>
+    /// <returns>Nulo quando o manifesto não está presente ou não pode ser lido.</returns>
     private string? ReadBundledVersion()
     {
         var manifestPath = Path.Combine(_locations.BundledDirectory, ManifestFileName);

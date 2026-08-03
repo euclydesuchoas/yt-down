@@ -5,7 +5,7 @@ using YTDown.Application.Interfaces;
 namespace YTDown.UI.ViewModels;
 
 /// <summary>
-/// A lista do que ja foi baixado.
+/// A lista do que já foi baixado.
 /// </summary>
 public sealed partial class HistoryViewModel : ObservableObject
 {
@@ -40,21 +40,21 @@ public sealed partial class HistoryViewModel : ObservableObject
     }
 
     /// <summary>
-    /// Abre a pasta do arquivo, e nao o arquivo: o usuario costuma querer
+    /// Abre a pasta do arquivo, e não o arquivo: o usuário costuma querer
     /// mover, copiar ou renomear o que baixou.
     /// </summary>
     [RelayCommand]
     private void OpenContainingFolder(DownloadHistoryItem item) => _fileExplorer.RevealFile(item.Entry.FilePath);
 
     /// <summary>
-    /// Esquece os registros. Nenhum arquivo baixado e apagado.
+    /// Esquece os registros. Nenhum arquivo baixado é apagado.
     /// </summary>
     [RelayCommand]
     private async Task ClearAsync(CancellationToken cancellationToken)
     {
         await _downloadHistory.ClearAsync(cancellationToken);
 
-        // Recarrega em vez de esvaziar a lista na mao: se a gravacao falhou, a
+        // Recarrega em vez de esvaziar a lista na mão: se a gravação falhou, a
         // tela mostra o que de fato sobrou.
         await LoadAsync(cancellationToken);
     }

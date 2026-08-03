@@ -24,18 +24,18 @@ public partial class MainWindow : Window
         _createHistoryWindow = createHistoryWindow;
         _createSettingsWindow = createSettingsWindow;
 
-        // A preparacao das ferramentas comeca junto com a janela e corre em
-        // paralelo: bloquear a abertura para verificar atualizacao deixaria o
+        // A preparação das ferramentas começa junto com a janela e corre em
+        // paralelo: bloquear a abertura para verificar atualização deixaria o
         // aplicativo parecendo lento sem necessidade.
         Loaded += (_, _) => viewModel.InitializeCommand.Execute(null);
     }
 
     /// <summary>
-    /// Abre o historico.
+    /// Abre o histórico.
     /// </summary>
     /// <remarks>
-    /// Uma janela nova a cada abertura, para que a lista chegue recem-lida: o
-    /// download que acabou de terminar precisa estar la.
+    /// Uma janela nova a cada abertura, para que a lista chegue recém-lida: o
+    /// download que acabou de terminar precisa estar lá.
     /// </remarks>
     private void OnHistoryRequested(object sender, RoutedEventArgs e)
     {
@@ -49,15 +49,15 @@ public partial class MainWindow : Window
     /// Seleciona o nome inteiro ao receber o foco.
     /// </summary>
     /// <remarks>
-    /// O campo chega preenchido com o titulo do video, que pode estar em um
-    /// alfabeto que o usuario nem le. Deixar o cursor no meio desse texto
+    /// O campo chega preenchido com o título do vídeo, que pode estar em um
+    /// alfabeto que o usuário nem lê. Deixar o cursor no meio desse texto
     /// obrigaria a apagar caractere por caractere; selecionado, basta digitar.
     /// </remarks>
     private void OnFileNameFocused(object sender, KeyboardFocusChangedEventArgs e) => FileNameBox.SelectAll();
 
     /// <remarks>
-    /// O clique do mouse posiciona o cursor e desfaria a selecao acima. Quando o
-    /// campo ainda nao tem o foco, o clique so o entrega.
+    /// O clique do mouse posiciona o cursor e desfaria a seleção acima. Quando o
+    /// campo ainda não tem o foco, o clique só o entrega.
     /// </remarks>
     private void OnFileNameClicked(object sender, MouseButtonEventArgs e)
     {
@@ -69,16 +69,16 @@ public partial class MainWindow : Window
     }
 
     /// <remarks>
-    /// Recusa a tecla no momento em que ela e digitada, em vez de alterar o
+    /// Recusa a tecla no momento em que ela é digitada, em vez de alterar o
     /// texto depois e mover o cursor de lugar. A limpeza definitiva continua
-    /// acontecendo antes do download, porque texto colado nao passa por aqui.
+    /// acontecendo antes do download, porque texto colado não passa por aqui.
     /// </remarks>
     private void OnFileNameTyping(object sender, TextCompositionEventArgs e) =>
         e.Handled = !e.Text.All(OutputFileName.IsAllowedCharacter);
 
     /// <remarks>
-    /// O seletor de pastas e do Windows, e escolher pasta e assunto da janela: o
-    /// ViewModel recebe o caminho, nao a caixa de dialogo.
+    /// O seletor de pastas é do Windows, e escolher pasta é assunto da janela: o
+    /// ViewModel recebe o caminho, não a caixa de diálogo.
     /// </remarks>
     private async void OnChooseDestinationRequested(object sender, RoutedEventArgs e)
     {
@@ -95,8 +95,8 @@ public partial class MainWindow : Window
     }
 
     /// <remarks>
-    /// A tela principal rele as preferencias ao fechar a de configuracoes, para
-    /// que a escolha valha no proximo download sem reabrir o aplicativo.
+    /// A tela principal relê as preferências ao fechar a de configurações, para
+    /// que a escolha valha no próximo download sem reabrir o aplicativo.
     /// </remarks>
     private void OnSettingsRequested(object sender, RoutedEventArgs e)
     {

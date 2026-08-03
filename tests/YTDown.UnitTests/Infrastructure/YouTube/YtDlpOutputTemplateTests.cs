@@ -42,8 +42,8 @@ public class YtDlpOutputTemplateTests : IDisposable
     }
 
     /// <summary>
-    /// O <c>%</c> abre um campo no template do yt-dlp. Sem duplicar, "100%" e
-    /// "%(title)s" seriam lidos como instrucao em vez de texto.
+    /// O <c>%</c> abre um campo no template do yt-dlp. Sem duplicar, "100%" é
+    /// "%(title)s" seriam lidos como instrução em vez de texto.
     /// </summary>
     [Theory]
     [InlineData("Desconto de 100%", "Desconto de 100%%.%(ext)s")]
@@ -54,8 +54,8 @@ public class YtDlpOutputTemplateTests : IDisposable
     }
 
     /// <summary>
-    /// O yt-dlp encontra o arquivo ja gravado, pula o download e termina com
-    /// sucesso informando o caminho: o usuario receberia o arquivo antigo
+    /// O yt-dlp encontra o arquivo já gravado, pula o download e termina com
+    /// sucesso informando o caminho: o usuário receberia o arquivo antigo
     /// achando que baixou o novo.
     /// </summary>
     [Fact]
@@ -77,7 +77,7 @@ public class YtDlpOutputTemplateTests : IDisposable
     }
 
     /// <summary>
-    /// A colisao e por extensao: um MP3 nao disputa o nome com um MP4.
+    /// A colisão é por extensão: um MP3 não disputa o nome com um MP4.
     /// </summary>
     [Fact]
     public void For_LooksOnlyAtTheExtensionItIsAboutToWrite()

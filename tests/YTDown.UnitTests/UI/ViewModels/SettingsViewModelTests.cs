@@ -43,8 +43,8 @@ public class SettingsViewModelTests
     }
 
     /// <summary>
-    /// Uma altura gravada que nao esteja entre as oferecidas nao pode deixar a
-    /// lista sem selecao nenhuma.
+    /// Uma altura gravada que não esteja entre as oferecidas não pode deixar a
+    /// lista sem seleção nenhuma.
     /// </summary>
     [Fact]
     public async Task LoadCommand_WithAQualityThatIsNotOffered_FallsBackToTheBestAvailable()
@@ -94,7 +94,7 @@ public class SettingsViewModelTests
     }
 
     /// <summary>
-    /// Sem pasta escolhida nao ha o que desfazer.
+    /// Sem pasta escolhida não há o que desfazer.
     /// </summary>
     [Fact]
     public async Task UseDownloadsFolderCommand_IsDisabledWhenTheDownloadsFolderIsAlreadyTheDestination()

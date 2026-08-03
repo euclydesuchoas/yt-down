@@ -25,7 +25,7 @@ public sealed class YtDlpMetadataProvider : IVideoMetadataProvider
         {
             return Result<VideoInfoDto>.Failure(
                 ErrorCode.ToolNotFound,
-                "yt-dlp.exe nao foi encontrado na pasta tools.");
+                "yt-dlp.exe não foi encontrado na pasta tools.");
         }
 
         ProcessResult processResult;
@@ -43,9 +43,9 @@ public sealed class YtDlpMetadataProvider : IVideoMetadataProvider
         }
         catch (Exception exception)
         {
-            // Este e o limite entre o aplicativo e o sistema operacional: qualquer
+            // Este é o limite entre o aplicativo e o sistema operacional: qualquer
             // falha ao iniciar ou ler o processo vira um resultado tipado, para que
-            // o usuario receba uma mensagem em vez de o aplicativo encerrar.
+            // o usuário receba uma mensagem em vez de o aplicativo encerrar.
             return Result<VideoInfoDto>.Failure(ErrorCode.Unexpected, exception.ToString());
         }
 
@@ -60,7 +60,7 @@ public sealed class YtDlpMetadataProvider : IVideoMetadataProvider
         {
             return Result<VideoInfoDto>.Failure(
                 ErrorCode.ToolFailure,
-                "A resposta do yt-dlp nao pode ser interpretada.");
+                "A resposta do yt-dlp não pôde ser interpretada.");
         }
 
         return Result<VideoInfoDto>.Success(videoInfo);
@@ -69,7 +69,7 @@ public sealed class YtDlpMetadataProvider : IVideoMetadataProvider
     private static string[] BuildArguments(VideoUrl videoUrl) =>
     [
         "--dump-single-json",
-        // A URL ja chega normalizada, mas a restricao explicita protege contra
+        // A URL já chega normalizada, mas a restrição explícita protege contra
         // qualquer forma de playlist que passe a ser aceita no futuro.
         "--no-playlist",
         "--no-warnings",

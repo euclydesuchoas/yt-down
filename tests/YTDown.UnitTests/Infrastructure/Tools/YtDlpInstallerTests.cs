@@ -68,8 +68,8 @@ public class YtDlpInstallerTests : IDisposable
     }
 
     /// <summary>
-    /// O yt-dlp instalado costuma estar mais novo que o da instalacao, por ter
-    /// se atualizado sozinho. Sobrescreve-lo a cada abertura seria retroceder.
+    /// O yt-dlp instalado costuma estar mais novo que o da instalação, por ter
+    /// se atualizado sozinho. Sobrescrevê-lo a cada abertura seria retroceder.
     /// </summary>
     [Fact]
     public async Task EnsureInstalledAsync_DoesNotOverwriteAnExecutableThatUpdatedItself()
@@ -86,8 +86,8 @@ public class YtDlpInstallerTests : IDisposable
     }
 
     /// <summary>
-    /// Quando o aplicativo passa a trazer outra versao, ela deve substituir a
-    /// que esta instalada.
+    /// Quando o aplicativo passa a trazer outra versão, ela deve substituir a
+    /// que está instalada.
     /// </summary>
     [Fact]
     public async Task EnsureInstalledAsync_WhenTheBundledVersionChanges_CopiesAgain()

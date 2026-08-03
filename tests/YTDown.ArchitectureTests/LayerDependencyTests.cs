@@ -8,11 +8,11 @@ using YTDown.Infrastructure.Processes;
 namespace YTDown.ArchitectureTests;
 
 /// <summary>
-/// Fixa a direcao das dependencias entre as camadas.
+/// Fixa a direção das dependências entre as camadas.
 /// </summary>
 /// <remarks>
-/// Um using acidental basta para inverter uma dependencia sem quebrar o build.
-/// Estes testes transformam isso em falha visivel.
+/// Um using acidental basta para inverter uma dependência sem quebrar o build.
+/// Estes testes transformam isso em falha visível.
 /// </remarks>
 public class LayerDependencyTests
 {
@@ -85,7 +85,7 @@ public class LayerDependencyTests
     }
 
     /// <summary>
-    /// A apresentacao nunca executa ferramenta externa: toda execucao passa pela
+    /// A apresentação nunca executa ferramenta externa: toda execução passa pela
     /// Application e termina na Infrastructure.
     /// </summary>
     [Fact]
@@ -103,9 +103,9 @@ public class LayerDependencyTests
     /// Controle positivo das regras acima.
     /// </summary>
     /// <remarks>
-    /// Uma regra que nunca acusa nada passa mesmo quando a deteccao esta quebrada.
-    /// Esta verificacao afirma uma dependencia que sabidamente existe: se ela
-    /// parar de ser detectada, os testes de proibicao viraram decoracao.
+    /// Uma regra que nunca acusa nada passa mesmo quando a detecção está quebrada.
+    /// Esta verificação afirma uma dependência que sabidamente existe: se ela
+    /// parar de ser detectada, os testes de proibição viraram decoração.
     /// </remarks>
     [Fact]
     public void DependencyDetection_ActuallySeesAnExistingDependency()
@@ -121,7 +121,7 @@ public class LayerDependencyTests
     }
 
     /// <summary>
-    /// Monta a explicacao da falha, dizendo qual tipo violou a regra e por que.
+    /// Monta a explicação da falha, dizendo qual tipo violou a regra e por que.
     /// </summary>
     private static string Describe(TestResult result) =>
         result.FailingTypes is null or []

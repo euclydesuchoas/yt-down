@@ -8,7 +8,7 @@ using YTDown.Infrastructure.YouTube;
 namespace YTDown.Infrastructure.DependencyInjection;
 
 /// <summary>
-/// Registra as integracoes externas.
+/// Registra as integrações externas.
 /// </summary>
 public static class InfrastructureServiceCollectionExtensions
 {

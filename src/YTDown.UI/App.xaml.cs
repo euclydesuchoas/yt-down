@@ -11,8 +11,8 @@ namespace YTDown.UI;
 /// Composition root do aplicativo.
 /// </summary>
 /// <remarks>
-/// Cada camada registra os proprios servicos, entao aqui basta compor as
-/// camadas e abrir a janela. Nenhuma implementacao concreta e citada.
+/// Cada camada registra os próprios serviços, então aqui basta compor as
+/// camadas e abrir a janela. Nenhuma implementação concreta é citada.
 /// </remarks>
 public partial class App : System.Windows.Application
 {
@@ -28,7 +28,7 @@ public partial class App : System.Windows.Application
         services.AddSingleton<MainViewModel>();
         services.AddSingleton<MainWindow>();
 
-        // O historico e uma janela por abertura, e nao uma so reaproveitada: a
+        // O histórico é uma janela por abertura, e não uma só reaproveitada: a
         // lista precisa chegar recem-lida do disco.
         services.AddTransient<HistoryViewModel>();
         services.AddTransient<HistoryWindow>();

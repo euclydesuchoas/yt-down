@@ -5,10 +5,10 @@ using YTDown.Application.DTOs;
 namespace YTDown.Infrastructure.YouTube;
 
 /// <summary>
-/// Le a resposta JSON do yt-dlp.
+/// Lê a resposta JSON do yt-dlp.
 /// </summary>
 /// <remarks>
-/// Sem estado e sem dependencias de proposito: e a parte que mais tende a
+/// Sem estado e sem dependências de propósito: é a parte que mais tende a
 /// quebrar quando o yt-dlp muda, e assim pode ser testada contra respostas
 /// reais gravadas, sem rede e sem processo externo.
 /// </remarks>
@@ -54,7 +54,7 @@ public static class YtDlpVideoInfoParser
             videoInfo = new VideoInfoDto(
                 videoId,
                 title,
-                // channel e o nome de exibicao; uploader e o reserva para respostas antigas.
+                // channel é o nome de exibição; uploader é o reserva para respostas antigas.
                 GetString(root, "channel") ?? GetString(root, "uploader") ?? string.Empty,
                 GetDuration(root),
                 GetString(root, "thumbnail"),
@@ -69,10 +69,10 @@ public static class YtDlpVideoInfoParser
     /// Alturas que podem ser entregues, da maior para a menor.
     /// </summary>
     /// <remarks>
-    /// Somente as que existem em H.264, unico codec que o FFmpeg empacota em MP4
-    /// sem reconverter. Um video em 4K aparece com 1080p no maximo, porque acima
-    /// disso o YouTube so oferece VP9 e AV1: listar 2160p e entregar outra coisa
-    /// seria enganar o usuario.
+    /// Somente as que existem em H.264, único codec que o FFmpeg empacota em MP4
+    /// sem reconverter. Um vídeo em 4K aparece com 1080p no máximo, porque acima
+    /// disso o YouTube só oferece VP9 e AV1: listar 2160p e entregar outra coisa
+    /// seria enganar o usuário.
     /// </remarks>
     private static IReadOnlyList<int> GetDeliverableHeights(JsonElement root)
     {
@@ -109,7 +109,7 @@ public static class YtDlpVideoInfoParser
             : null;
 
     /// <summary>
-    /// Transmissoes ao vivo nao tem duracao definida e chegam com <c>duration</c> nulo.
+    /// Transmissões ao vivo não têm duração definida e chegam com <c>duration</c> nulo.
     /// </summary>
     private static TimeSpan GetDuration(JsonElement root) =>
         root.TryGetProperty("duration", out var duration) && duration.ValueKind == JsonValueKind.Number

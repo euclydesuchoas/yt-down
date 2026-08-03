@@ -16,8 +16,8 @@ public sealed class ProcessRunner : IProcessRunner
             FileName = request.ExecutablePath,
             RedirectStandardOutput = true,
             RedirectStandardError = true,
-            // Titulos de video trazem acentos, ideogramas e emoji. Isto resolve
-            // apenas a leitura; instruir o programa a *escrever* em UTF-8 e
+            // Títulos de vídeo trazem acentos, ideogramas e emoji. Isto resolve
+            // apenas a leitura; instruir o programa a *escrever* em UTF-8 é
             // responsabilidade de quem o conhece, via EnvironmentVariables.
             StandardOutputEncoding = Encoding.UTF8,
             StandardErrorEncoding = Encoding.UTF8,
@@ -26,7 +26,7 @@ public sealed class ProcessRunner : IProcessRunner
         };
 
         // ArgumentList escapa cada argumento individualmente, evitando os problemas
-        // de aspas de uma linha de comando montada por concatenacao.
+        // de aspas de uma linha de comando montada por concatenação.
         foreach (var argument in request.Arguments)
         {
             startInfo.ArgumentList.Add(argument);
@@ -43,7 +43,7 @@ public sealed class ProcessRunner : IProcessRunner
         using var process = new Process { StartInfo = startInfo };
         process.Start();
 
-        // As duas saidas sao lidas em paralelo: um buffer cheio trava o processo filho.
+        // As duas saídas são lidas em paralelo: um buffer cheio trava o processo filho.
         var standardOutput = ReadLinesAsync(process.StandardOutput, onStandardOutputLine, cancellationToken);
         var standardError = ReadLinesAsync(process.StandardError, onLine: null, cancellationToken);
 
@@ -78,7 +78,7 @@ public sealed class ProcessRunner : IProcessRunner
 
     /// <remarks>
     /// O yt-dlp inicia o FFmpeg como processo filho. Encerrar apenas o processo
-    /// pai deixaria o FFmpeg rodando e segurando o arquivo de saida.
+    /// pai deixaria o FFmpeg rodando e segurando o arquivo de saída.
     /// </remarks>
     private static void TerminateProcessTree(Process process)
     {
@@ -91,7 +91,7 @@ public sealed class ProcessRunner : IProcessRunner
         }
         catch (InvalidOperationException)
         {
-            // O processo terminou sozinho entre a verificacao e o encerramento.
+            // O processo terminou sozinho entre a verificação e o encerramento.
         }
     }
 }

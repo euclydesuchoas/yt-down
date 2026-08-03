@@ -20,7 +20,7 @@ public class VideoInfoServiceTests
     [InlineData(null)]
     [InlineData("")]
     [InlineData("   ")]
-    [InlineData("isso nao e uma url")]
+    [InlineData("isso não é uma url")]
     [InlineData("https://vimeo.com/123456789")]
     public async Task GetVideoInfoAsync_WithInvalidUrl_FailsWithoutCallingTheProvider(string? rawUrl)
     {
@@ -92,7 +92,7 @@ public class VideoInfoServiceTests
 
     private static VideoInfoDto CreateVideoInfo() => new(
         VideoId,
-        "Titulo do video",
+        "Título do vídeo",
         "Canal de teste",
         TimeSpan.FromMinutes(3),
         "https://i.ytimg.com/vi/UKcJqQqiXq0/maxresdefault.jpg",

@@ -38,7 +38,7 @@ public class ManagedToolLocatorTests : IDisposable
     }
 
     /// <summary>
-    /// A copia do perfil se mantem atualizada; a que acompanha a instalacao nao.
+    /// A cópia do perfil se mantém atualizada; a que acompanha a instalação não.
     /// </summary>
     [Fact]
     public void TryLocate_ForYtDlp_PrefersTheUserCopyOverTheBundledOne()
@@ -52,7 +52,7 @@ public class ManagedToolLocatorTests : IDisposable
     }
 
     /// <summary>
-    /// Garante que um download funcione mesmo antes de a instalacao terminar.
+    /// Garante que um download funcione mesmo antes de a instalação terminar.
     /// </summary>
     [Fact]
     public void TryLocate_ForYtDlp_FallsBackToTheBundledCopy()
@@ -65,7 +65,7 @@ public class ManagedToolLocatorTests : IDisposable
     }
 
     /// <summary>
-    /// O FFmpeg nunca se atualiza, entao uma copia no perfil nao deve ser usada.
+    /// O FFmpeg nunca se atualiza, então uma cópia no perfil não deve ser usada.
     /// </summary>
     [Fact]
     public void TryLocate_ForFFmpeg_LooksOnlyAtTheBundledCopy()

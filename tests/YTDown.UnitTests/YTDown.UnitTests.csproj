@@ -22,9 +22,9 @@
     <ProjectReference Include="..\..\src\YTDown.Application\YTDown.Application.csproj" />
     <ProjectReference Include="..\..\src\YTDown.Domain\YTDown.Domain.csproj" />
     <!--
-      A Infrastructure e testada aqui de proposito. O codigo mais fragil do
-      projeto e a leitura da saida do yt-dlp, e ela vive nesta camada: deixa-la
-      fora dos testes unitarios seria testar tudo menos o que costuma quebrar.
+      A Infrastructure é testada aqui de propósito. O código mais frágil do
+      projeto é a leitura da saída do yt-dlp, e ela vive nesta camada: deixá-la
+      fora dos testes unitários seria testar tudo menos o que costuma quebrar.
     -->
     <ProjectReference Include="..\..\src\YTDown.Infrastructure\YTDown.Infrastructure.csproj" />
     <ProjectReference Include="..\..\src\YTDown.UI\YTDown.UI.csproj" />
@@ -32,7 +32,7 @@
 
   <ItemGroup>
     <Using Include="Xunit" />
-    <!-- O conjunto implicito do WPF nao traz System.IO, usado pelos testes de arquivo. -->
+    <!-- O conjunto implícito do WPF não traz System.IO, usado pelos testes de arquivo. -->
     <Using Include="System.IO" />
   </ItemGroup>
 

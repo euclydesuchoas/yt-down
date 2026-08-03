@@ -91,8 +91,8 @@ public class YtDlpMetadataProviderTests
     }
 
     /// <summary>
-    /// Sem esta variavel o Python escreve na code page ANSI quando a saida esta
-    /// redirecionada, e titulos com ideogramas ou emoji chegam mutilados.
+    /// Sem esta variável o Python escreve na code page ANSI quando a saída está
+    /// redirecionada, e títulos com ideogramas ou emoji chegam mutilados.
     /// </summary>
     [Fact]
     public async Task GetMetadataAsync_ForcesYtDlpToWriteInUtf8()

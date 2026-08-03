@@ -88,7 +88,7 @@ public class HistoryViewModelTests
     }
 
     /// <summary>
-    /// Bytes nao dizem nada a quem abre o historico.
+    /// Bytes não dizem nada a quem abre o histórico.
     /// </summary>
     [Theory]
     [InlineData(20_000_000L, "19,1 MB")]
@@ -96,8 +96,8 @@ public class HistoryViewModelTests
     [InlineData(3_000_000_000L, "2,8 GB")]
     public async Task LoadCommand_ShowsTheSizeInAUnitTheUserReads(long sizeInBytes, string expected)
     {
-        // O tamanho e escrito na cultura da maquina. Fixa-la aqui e o que torna
-        // o esperado previsivel, em vez de depender de onde o teste roda.
+        // O tamanho é escrito na cultura da máquina. Fixá-la aqui é o que torna
+        // o esperado previsível, em vez de depender de onde o teste roda.
         CultureInfo.CurrentCulture = new CultureInfo("pt-BR");
 
         GivenHistoryContains(AnEntry(sizeInBytes: sizeInBytes));
@@ -139,8 +139,8 @@ public class HistoryViewModelTests
     }
 
     /// <summary>
-    /// A tela recarrega depois de limpar em vez de esvaziar a lista na mao: se a
-    /// gravacao falhou, o usuario ve que os registros continuam la.
+    /// A tela recarrega depois de limpar em vez de esvaziar a lista na mão: se a
+    /// gravação falhou, o usuário ve que os registros continuam lá.
     /// </summary>
     [Fact]
     public async Task ClearCommand_WhenNothingCouldBeErased_KeepsShowingWhatIsStillThere()

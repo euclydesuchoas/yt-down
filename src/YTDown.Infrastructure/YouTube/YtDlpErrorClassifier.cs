@@ -3,12 +3,12 @@ using YTDown.Application.Common;
 namespace YTDown.Infrastructure.YouTube;
 
 /// <summary>
-/// Traduz a saida de erro do yt-dlp em um motivo que a aplicacao entende.
+/// Traduz a saída de erro do yt-dlp em um motivo que a aplicação entende.
 /// </summary>
 /// <remarks>
-/// O yt-dlp so distingue seus erros pelo texto da mensagem. A ordem das regras
-/// importa: uma restricao de idade ou de regiao tambem menciona
-/// "Video unavailable", entao precisa ser reconhecida antes.
+/// O yt-dlp só distingue seus erros pelo texto da mensagem. A ordem das regras
+/// importa: uma restrição de idade ou de região também menciona
+/// "Vídeo unavailable", então precisa ser reconhecida antes.
 /// </remarks>
 public static class YtDlpErrorClassifier
 {
@@ -22,7 +22,7 @@ public static class YtDlpErrorClassifier
         ]),
 
         // Marcador curto de proposito: evita o apostrofo, que o yt-dlp emite
-        // como aspa tipografica, e nao colide com "sign in to confirm your age".
+        // como aspa tipográfica, e não colide com "sign in to confirm your age".
         (ErrorCode.BotCheckRequired, ["not a bot"]),
 
         (ErrorCode.RegionBlocked,

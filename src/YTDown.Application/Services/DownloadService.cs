@@ -40,9 +40,9 @@ public sealed class DownloadService : IDownloadService
 
         if (options.DestinationDirectory is { Length: > 0 } chosen)
         {
-            // Escolha explicita nao vira outra coisa em silencio. Cair para a
-            // pasta Downloads aqui entregaria o arquivo longe de onde o usuario
-            // acabou de apontar, e ele so descobriria ao procurar.
+            // Escolha explícita não vira outra coisa em silêncio. Cair para a
+            // pasta Downloads aqui entregaria o arquivo longe de onde o usuário
+            // acabou de apontar, e ele só descobriria ao procurar.
             if (!_downloadLocationProvider.Exists(chosen))
             {
                 return Result<DownloadedFileDto>.Failure(ErrorCode.DestinationUnavailable, chosen);
@@ -55,8 +55,8 @@ public sealed class DownloadService : IDownloadService
             destinationDirectory = await _downloadLocationProvider.GetDestinationDirectoryAsync(cancellationToken);
         }
 
-        // O nome e limpo aqui, e nao na tela: a apresentacao pode ajudar o
-        // usuario enquanto ele digita, mas quem garante que o nome serve ao
+        // O nome é limpo aqui, e não na tela: a apresentação pode ajudar o
+        // usuário enquanto ele digita, mas quem garante que o nome serve ao
         // sistema e esta camada, por onde todo download passa.
         var sanitized = OutputFileName.TryCreate(options.FileName, out var fileName)
             ? options with { FileName = fileName.Value }
@@ -81,9 +81,9 @@ public sealed class DownloadService : IDownloadService
     /// Registra o download que acabou de terminar.
     /// </summary>
     /// <remarks>
-    /// Sem o token de cancelamento de proposito: o arquivo ja esta no disco, e
-    /// um cancelamento que chegue exatamente aqui deixaria o usuario com um
-    /// arquivo que o historico nao conhece.
+    /// Sem o token de cancelamento de proposito: o arquivo já esta no disco, e
+    /// um cancelamento que chegue exatamente aqui deixaria o usuário com um
+    /// arquivo que o histórico não conhece.
     /// </remarks>
     private Task RecordAsync(VideoUrl videoUrl, DownloadOptionsDto options, DownloadedFileDto file) =>
         _downloadHistory.RecordAsync(

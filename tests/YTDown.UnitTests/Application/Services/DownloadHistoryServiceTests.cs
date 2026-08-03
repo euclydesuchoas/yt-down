@@ -42,8 +42,8 @@ public class DownloadHistoryServiceTests
     }
 
     /// <summary>
-    /// Baixar o mesmo video de novo produz o mesmo arquivo. Duas linhas iguais
-    /// apontando para ele nao ajudariam ninguem.
+    /// Baixar o mesmo vídeo de novo produz o mesmo arquivo. Duas linhas iguais
+    /// apontando para ele não ajudariam ninguém.
     /// </summary>
     [Fact]
     public async Task RecordAsync_WithAFileThatWasAlreadyDownloaded_KeepsOneEntryAndMovesItToTheTop()
@@ -98,8 +98,8 @@ public class DownloadHistoryServiceTests
     }
 
     /// <summary>
-    /// Quem organiza por assunto volta as mesmas pastas. Repeti-las na lista
-    /// gastaria o espaco que as outras precisam.
+    /// Quem organiza por assunto volta às mesmas pastas. Repeti-las na lista
+    /// gastaria o espaço que as outras precisam.
     /// </summary>
     [Fact]
     public async Task GetRecentFoldersAsync_ListsEachFolderOnceFromTheMostRecent()
@@ -153,8 +153,8 @@ public class DownloadHistoryServiceTests
     }
 
     /// <summary>
-    /// O arquivo ja esta no disco quando o registro e escrito. Desfazer um
-    /// download por causa de um historico que nao pode ser gravado seria pior
+    /// O arquivo já está no disco quando o registro é escrito. Desfazer um
+    /// download por causa de um histórico que não pode ser gravado seria pior
     /// que perder o registro.
     /// </summary>
     [Fact]
@@ -178,8 +178,8 @@ public class DownloadHistoryServiceTests
     }
 
     /// <summary>
-    /// So falha de acesso ao arquivo e tolerada. Defeito de programacao precisa
-    /// aparecer, e nao ser confundido com um historico vazio.
+    /// Só falha de acesso ao arquivo é tolerada. Defeito de programação precisa
+    /// aparecer, e não ser confundido com um histórico vazio.
     /// </summary>
     [Fact]
     public async Task GetRecentAsync_WhenSomethingElseBreaks_LetsItSurface()

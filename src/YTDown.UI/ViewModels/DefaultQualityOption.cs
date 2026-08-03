@@ -1,11 +1,11 @@
 namespace YTDown.UI.ViewModels;
 
 /// <summary>
-/// Um teto de qualidade oferecido nas configuracoes.
+/// Um teto de qualidade oferecido nas configurações.
 /// </summary>
 /// <remarks>
-/// Diferente da lista da tela principal, que mostra o que aquele video tem, aqui
-/// as opcoes sao fixas: a escolha vale para videos que ainda nem foram colados.
+/// Diferente da lista da tela principal, que mostra o que aquele vídeo tem, aqui
+/// as opções são fixas: a escolha vale para vídeos que ainda nem foram colados.
 /// </remarks>
 public sealed record DefaultQualityOption(int? Height)
 {

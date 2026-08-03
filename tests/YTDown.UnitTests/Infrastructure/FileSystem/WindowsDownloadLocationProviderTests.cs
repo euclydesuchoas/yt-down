@@ -65,7 +65,7 @@ public class WindowsDownloadLocationProviderTests : IDisposable
 
     /// <summary>
     /// Pendrive removido, unidade de rede fora do ar, pasta apagada. Um arquivo
-    /// em lugar diferente do esperado ainda e melhor que nenhum arquivo.
+    /// em lugar diferente do esperado ainda é melhor que nenhum arquivo.
     /// </summary>
     [Fact]
     public async Task GetDestinationDirectoryAsync_WhenTheChosenFolderIsGone_FallsBackToDownloads()

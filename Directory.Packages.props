@@ -15,9 +15,9 @@
   </ItemGroup>
 
   <!--
-    FluentAssertions esta fixado na linha 7.x de proposito: a partir da 8.0.0 o
-    pacote passou a exigir licenca comercial para uso nao open source. A 7.2.2 e
-    a ultima versao sob Apache 2.0.
+    FluentAssertions está fixado na linha 7.x de propósito: a partir da 8.0.0 o
+    pacote passou a exigir licença comercial para uso não open source. A 7.2.2 é
+    a última versão sob Apache 2.0.
 
     NetArchTest.eNhancedEdition e o fork mantido do NetArchTest.Rules original,
     que esta sem manutencao ativa.

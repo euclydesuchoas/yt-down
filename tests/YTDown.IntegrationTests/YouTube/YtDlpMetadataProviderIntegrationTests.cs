@@ -12,8 +12,8 @@ namespace YTDown.IntegrationTests.YouTube;
 /// </summary>
 /// <remarks>
 /// Exige rede e as ferramentas baixadas por scripts/bootstrap-tools.ps1.
-/// Marcados com a categoria Integration para poderem ser excluidos quando
-/// nao houver rede disponivel.
+/// Marcados com a categoria Integration para poderem ser excluídos quando
+/// não houver rede disponível.
 /// </remarks>
 [Trait("Category", "Integration")]
 public class YtDlpMetadataProviderIntegrationTests
@@ -24,13 +24,13 @@ public class YtDlpMetadataProviderIntegrationTests
     {
         var tools = FindToolsDirectory();
 
-        // Nos testes as duas pastas sao a mesma: o repositorio nao separa a
-        // copia do perfil da que acompanha a instalacao.
+        // Nos testes as duas pastas são a mesma: o repositório não separa a
+        // cópia do perfil da que acompanha a instalação.
         return new YtDlpMetadataProvider(new ProcessRunner(), new ManagedToolLocator(new ToolLocations(tools, tools)));
     }
 
     /// <summary>
-    /// A pasta tools fica na raiz do repositorio, nao junto do binario de teste.
+    /// A pasta tools fica na raiz do repositório, não junto do binário de teste.
     /// </summary>
     private static string FindToolsDirectory()
     {
@@ -45,7 +45,7 @@ public class YtDlpMetadataProviderIntegrationTests
         }
 
         throw new InvalidOperationException(
-            "Pasta tools nao encontrada. Execute scripts/bootstrap-tools.ps1 antes dos testes de integracao.");
+            "Pasta tools não encontrada. Execute scripts/bootstrap-tools.ps1 antes dos testes de integração.");
     }
 
     [Fact]
@@ -60,8 +60,8 @@ public class YtDlpMetadataProviderIntegrationTests
         result.Value!.VideoId.Should().Be(ReferenceVideoId);
         result.Value.ChannelName.Should().Be("TOHO animation");
         result.Value.Duration.Should().Be(TimeSpan.FromSeconds(96));
-        // Afirmar o titulo exato e o que revela perda de codificacao entre o
-        // yt-dlp e o aplicativo. Um "nao esta vazio" deixaria passar.
+        // Afirmar o título exato é o que revela perda de codificação entre o
+        // yt-dlp e o aplicativo. Um "não está vazio" deixaria passar.
         result.Value.Title.Should().Be(
             "『無職転生Ⅲ ～異世界行ったら本気だす～』ノンクレジットED映像／EDテーマ：「祈り、終われば」中島美嘉");
         result.Value.ThumbnailUrl.Should().StartWith("https://");

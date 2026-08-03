@@ -8,23 +8,23 @@ namespace YTDown.Infrastructure.YouTube;
 public static class YtDlpOutputTemplate
 {
     /// <summary>
-    /// O titulo entra no nome, limitado para nao estourar o caminho maximo do
+    /// O título entra no nome, limitado para não estourar o caminho máximo do
     /// Windows.
     /// </summary>
     public const string FromTitle = "%(title).100s.%(ext)s";
 
     /// <remarks>
-    /// Forcadas pelos argumentos do download: MP4 pela juncao, MP3 pela extracao
-    /// de audio.
+    /// Forcadas pelos argumentos do download: MP4 pela junção, MP3 pela extração
+    /// de áudio.
     /// </remarks>
     public static string ExtensionFor(MediaKind kind) => kind == MediaKind.AudioOnly ? "mp3" : "mp4";
 
     /// <summary>
-    /// Monta o template de saida para um nome escolhido pelo usuario.
+    /// Monta o template de saída para um nome escolhido pelo usuário.
     /// </summary>
     /// <remarks>
     /// O <c>%</c> abre um campo no template do yt-dlp: um nome com "100%" seria
-    /// lido como instrucao, e "%(title)s" viraria o titulo do video. Duplicado,
+    /// lido como instrução, e "%(title)s" viraria o título do vídeo. Duplicado,
     /// ele volta a ser um por cento literal.
     /// </remarks>
     public static string For(string? chosenName, MediaKind kind, string destinationDirectory)
@@ -40,15 +40,15 @@ public static class YtDlpOutputTemplate
     }
 
     /// <summary>
-    /// Encontra um nome que ainda nao exista na pasta, ao modo do navegador:
-    /// "Musica", depois "Musica (2)", depois "Musica (3)".
+    /// Encontra um nome que ainda não exista na pasta, ao modo do navegador:
+    /// "Música", depois "Música (2)", depois "Música (3)".
     /// </summary>
     /// <remarks>
-    /// Existe porque o yt-dlp, ao encontrar o arquivo ja gravado, **pula o
+    /// Existe porque o yt-dlp, ao encontrar o arquivo já gravado, **pula o
     /// download, termina com sucesso e informa o caminho como se tivesse
-    /// baixado**. Sem isto, pedir outro video com um nome ja usado devolveria o
+    /// baixado**. Sem isto, pedir outro vídeo com um nome já usado devolveria o
     /// arquivo antigo e o aplicativo diria que deu tudo certo. Sobrescrever
-    /// resolveria a mentira, mas apagaria em silencio o que o usuario ja tinha.
+    /// resolveria a mentira, mas apagaria em silêncio o que o usuário já tinha.
     /// </remarks>
     private static string FindFreeName(string directory, string name, string extension)
     {
@@ -67,8 +67,8 @@ public static class YtDlpOutputTemplate
             }
         }
 
-        // Novecentos e noventa e oito arquivos com o mesmo nome nao acontece,
-        // mas um laco sem saida acontece.
+        // Novecentos e noventa e oito arquivos com o mesmo nome não acontece,
+        // mas um laco sem saída acontece.
         return $"{name} ({Guid.NewGuid():N})";
     }
 }

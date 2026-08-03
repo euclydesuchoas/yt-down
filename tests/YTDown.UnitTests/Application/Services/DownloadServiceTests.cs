@@ -68,12 +68,12 @@ public class DownloadServiceTests
             CancellationToken.None);
 
     /// <summary>
-    /// Entrada invalida falha aqui, antes de iniciar qualquer processo externo.
+    /// Entrada inválida falha aqui, antes de iniciar qualquer processo externo.
     /// </summary>
     [Fact]
     public async Task DownloadAsync_WithSomethingThatIsNotAVideoAddress_FailsWithoutDownloading()
     {
-        var result = await DownloadAsync("nao e um endereco");
+        var result = await DownloadAsync("não é um endereço");
 
         result.IsSuccess.Should().BeFalse();
         result.Error.Should().Be(ErrorCode.InvalidUrl);
@@ -103,8 +103,8 @@ public class DownloadServiceTests
     }
 
     /// <summary>
-    /// O historico guarda o endereco normalizado, e nao o que o usuario colou:
-    /// e ele que serve para baixar de novo.
+    /// O histórico guarda o endereço normalizado, e não o que o usuário colou:
+    /// é ele que serve para baixar de novo.
     /// </summary>
     [Fact]
     public async Task DownloadAsync_RecordsTheNormalizedAddress()
@@ -157,8 +157,8 @@ public class DownloadServiceTests
 
     /// <summary>
     /// Pasta apagada, pendrive removido, unidade de rede fora do ar. Cair para a
-    /// pasta Downloads entregaria o arquivo longe de onde o usuario apontou, e
-    /// ele so descobriria ao procurar.
+    /// pasta Downloads entregaria o arquivo longe de onde o usuário apontou, e
+    /// ele só descobriria ao procurar.
     /// </summary>
     [Fact]
     public async Task DownloadAsync_WhenTheChosenFolderIsGone_FailsInsteadOfSavingElsewhere()
@@ -173,7 +173,7 @@ public class DownloadServiceTests
         _history.VerifyNoOtherCalls();
     }
 
-    /// <summary>Opcoes que o downloader recebeu de fato.</summary>
+    /// <summary>Opções que o downloader recebeu de fato.</summary>
     private DownloadOptionsDto? _optionsUsed;
 
     private void GivenDownloadRecordsTheOptions() =>
@@ -189,8 +189,8 @@ public class DownloadServiceTests
             .ReturnsAsync(Result<DownloadedFileDto>.Success(AnyFile));
 
     /// <summary>
-    /// Quem garante que o nome serve ao sistema e esta camada, por onde todo
-    /// download passa, e nao a tela.
+    /// Quem garante que o nome serve ao sistema é esta camada, por onde todo
+    /// download passa, e não a tela.
     /// </summary>
     [Fact]
     public async Task DownloadAsync_CleansTheChosenFileNameBeforeDownloading()
@@ -203,7 +203,7 @@ public class DownloadServiceTests
     }
 
     /// <summary>
-    /// Sem nome utilizavel, o titulo do video volta a valer em vez de o download
+    /// Sem nome utilizável, o título do vídeo volta a valer em vez de o download
     /// ser recusado.
     /// </summary>
     [Theory]
@@ -221,7 +221,7 @@ public class DownloadServiceTests
     }
 
     /// <summary>
-    /// Cancelar apaga tudo o que foi baixado: nao ha arquivo para lembrar.
+    /// Cancelar apaga tudo o que foi baixado: não há arquivo para lembrar.
     /// </summary>
     [Fact]
     public async Task DownloadAsync_WhenCancelled_RecordsNothing()

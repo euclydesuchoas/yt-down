@@ -7,20 +7,20 @@ namespace YTDown.Application.Services;
 public sealed class DownloadHistoryService : IDownloadHistoryService
 {
     /// <summary>
-    /// Quantos downloads o historico lembra.
+    /// Quantos downloads o histórico lembra.
     /// </summary>
     /// <remarks>
-    /// O historico serve para reencontrar o que foi baixado ha pouco. Passando
+    /// O histórico serve para reencontrar o que foi baixado há pouco. Passando
     /// de algumas dezenas ele deixa de responder a essa pergunta e vira uma
-    /// lista que ninguem le, entao os mais antigos saem.
+    /// lista que ninguém lê, então os mais antigos saem.
     /// </remarks>
     private const int MaximumEntries = 50;
 
     private readonly IDownloadHistoryStore _store;
 
-    // Ler, alterar e gravar sao tres passos sobre o mesmo arquivo. Hoje so ha um
-    // download por vez, mas a tela tambem le a lista, e nada garante que os dois
-    // nao se cruzem.
+    // Ler, alterar e gravar são três passos sobre o mesmo arquivo. Hoje só há um
+    // download por vez, mas a tela também lê a lista, e nada garante que os dois
+    // não se cruzem.
     private readonly SemaphoreSlim _access = new(1, 1);
 
     public DownloadHistoryService(IDownloadHistoryStore store) => _store = store;
@@ -69,7 +69,7 @@ public sealed class DownloadHistoryService : IDownloadHistoryService
             var entries = await _store.ReadAsync(cancellationToken);
 
             // Baixar o mesmo arquivo de novo atualiza o registro em vez de criar
-            // um segundo: sao duas linhas iguais apontando para o mesmo arquivo.
+            // um segundo: são duas linhas iguais apontando para o mesmo arquivo.
             var kept = entries
                 .Where(existing => !existing.FilePath.Equals(entry.FilePath, StringComparison.OrdinalIgnoreCase))
                 .Take(MaximumEntries - 1);
@@ -78,8 +78,8 @@ public sealed class DownloadHistoryService : IDownloadHistoryService
         }
         catch (Exception exception) when (IsStorageFailure(exception))
         {
-            // O download terminou. Nao registra-lo e uma perda pequena; desfazer
-            // um arquivo que ja esta no disco por causa disso seria pior.
+            // O download terminou. Não registrá-lo é uma perda pequena; desfazer
+            // um arquivo que já está no disco por causa disso seria pior.
         }
         finally
         {
@@ -97,8 +97,8 @@ public sealed class DownloadHistoryService : IDownloadHistoryService
         }
         catch (Exception exception) when (IsStorageFailure(exception))
         {
-            // A tela recarrega a lista depois de limpar: se a gravacao falhou,
-            // os registros continuam la e o usuario ve que nada mudou.
+            // A tela recarrega a lista depois de limpar: se a gravação falhou,
+            // os registros continuam lá e o usuário vê que nada mudou.
         }
         finally
         {
@@ -107,12 +107,12 @@ public sealed class DownloadHistoryService : IDownloadHistoryService
     }
 
     /// <summary>
-    /// Falha ao alcancar o arquivo, e nao defeito de programacao.
+    /// Falha ao alcançar o arquivo, e não defeito de programação.
     /// </summary>
     /// <remarks>
-    /// Disco cheio, pasta sem permissao e arquivo travado por outro processo sao
-    /// desfechos possiveis fora do controle do aplicativo. Qualquer outra
-    /// excecao continua subindo, porque ai o defeito e nosso.
+    /// Disco cheio, pasta sem permissão e arquivo travado por outro processo são
+    /// desfechos possíveis fora do controle do aplicativo. Qualquer outra
+    /// exceção continua subindo, porque aí o defeito é nosso.
     /// </remarks>
     private static bool IsStorageFailure(Exception exception) =>
         exception is IOException or UnauthorizedAccessException;

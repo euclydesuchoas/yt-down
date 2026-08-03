@@ -1,56 +1,56 @@
 namespace YTDown.Application.Common;
 
 /// <summary>
-/// Motivos de falha que a aplicacao sabe distinguir.
+/// Motivos de falha que a aplicação sabe distinguir.
 /// </summary>
 /// <remarks>
-/// A camada de apresentacao traduz cada codigo em uma mensagem para o usuario.
-/// Nenhuma saida bruta de ferramenta externa chega a tela.
+/// A camada de apresentação traduz cada código em uma mensagem para o usuário.
+/// Nenhuma saída bruta de ferramenta externa chega à tela.
 /// </remarks>
 public enum ErrorCode
 {
-    /// <summary>O texto informado nao identifica um video do YouTube.</summary>
+    /// <summary>O texto informado não identifica um vídeo do YouTube.</summary>
     InvalidUrl,
 
-    /// <summary>O video foi removido, e privado ou nunca existiu.</summary>
+    /// <summary>O vídeo foi removido, é privado ou nunca existiu.</summary>
     VideoUnavailable,
 
-    /// <summary>O video exige confirmacao de idade.</summary>
+    /// <summary>O vídeo exige confirmação de idade.</summary>
     AgeRestricted,
 
-    /// <summary>O video nao esta disponivel na regiao atual.</summary>
+    /// <summary>O vídeo não está disponível na região atual.</summary>
     RegionBlocked,
 
     /// <summary>
-    /// O YouTube exigiu verificacao antes de liberar o acesso.
+    /// O YouTube exigiu verificação antes de liberar o acesso.
     /// </summary>
     /// <remarks>
-    /// Costuma acontecer depois de muitos downloads seguidos do mesmo endereco
-    /// de rede, e passa sozinho. Insistir imediatamente so prolonga o bloqueio,
-    /// entao a mensagem ao usuario pede espera em vez de nova tentativa.
+    /// Costuma acontecer depois de muitos downloads seguidos do mesmo endereço
+    /// de rede, e passa sozinho. Insistir imediatamente só prolonga o bloqueio,
+    /// então a mensagem ao usuário pede espera em vez de nova tentativa.
     /// </remarks>
     BotCheckRequired,
 
     /// <summary>Falha de rede ao contatar o YouTube.</summary>
     NetworkError,
 
-    /// <summary>A pasta escolhida para salvar nao existe mais.</summary>
+    /// <summary>A pasta escolhida para salvar não existe mais.</summary>
     /// <remarks>
     /// Acontece com pasta apagada, pendrive removido ou unidade de rede fora do
-    /// ar. So vale para a pasta escolhida a mao: quando o destino e o padrao,
-    /// cair para a pasta Downloads e melhor que recusar o download.
+    /// ar. Só vale para a pasta escolhida à mão: quando o destino é o padrão,
+    /// cair para a pasta Downloads é melhor que recusar o download.
     /// </remarks>
     DestinationUnavailable,
 
-    /// <summary>A ferramenta externa nao foi encontrada na instalacao.</summary>
+    /// <summary>A ferramenta externa não foi encontrada na instalação.</summary>
     ToolNotFound,
 
-    /// <summary>A ferramenta externa executou e falhou por um motivo nao reconhecido.</summary>
+    /// <summary>A ferramenta externa executou e falhou por um motivo não reconhecido.</summary>
     ToolFailure,
 
-    /// <summary>A operacao foi cancelada pelo usuario.</summary>
+    /// <summary>A operação foi cancelada pelo usuário.</summary>
     Canceled,
 
-    /// <summary>Falha nao prevista.</summary>
+    /// <summary>Falha não prevista.</summary>
     Unexpected
 }

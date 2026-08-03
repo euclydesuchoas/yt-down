@@ -87,7 +87,7 @@ public class YtDlpVideoDownloaderTests : IDisposable
         var selector = FormatSelectorIn(arguments);
 
         selector.Should().Contain("[height<=720]");
-        // Se apenas a primeira alternativa fosse limitada, um video sem avc1 em
+        // Se apenas a primeira alternativa fosse limitada, um vídeo sem avc1 em
         // 720p cairia para a alternativa seguinte e baixaria em 1080p.
         selector.Split('/').Should().OnlyContain(alternative =>
             alternative.Contains("[height<=720]") || alternative == "b");
@@ -114,8 +114,8 @@ public class YtDlpVideoDownloaderTests : IDisposable
     }
 
     /// <summary>
-    /// A pasta de trabalho e removida mesmo quando o download termina bem, para
-    /// nao deixar nada visivel na pasta do usuario.
+    /// A pasta de trabalho é removida mesmo quando o download termina bem, para
+    /// não deixar nada visível na pasta do usuário.
     /// </summary>
     [Fact]
     public async Task DownloadAsync_LeavesNoWorkDirectoryBehind()

@@ -43,7 +43,7 @@ public class ToolMaintenanceServiceTests
     }
 
     /// <summary>
-    /// Ficar sem atualizar quase sempre e falta de internet, e nao impede o uso.
+    /// Ficar sem atualizar quase sempre é falta de internet, e não impede o uso.
     /// </summary>
     [Fact]
     public async Task PrepareAsync_WhenTheUpdateFails_SaysSoWithoutTreatingItAsBroken()
@@ -57,8 +57,8 @@ public class ToolMaintenanceServiceTests
     }
 
     /// <summary>
-    /// Sem a copia gravavel nao ha o que atualizar, mas o aplicativo recorre a
-    /// copia que acompanha a instalacao e continua utilizavel.
+    /// Sem a cópia gravável não há o que atualizar, mas o aplicativo recorre à
+    /// cópia que acompanha a instalação e continua utilizável.
     /// </summary>
     [Fact]
     public async Task PrepareAsync_WhenInstallationFails_DoesNotEvenTryToUpdate()

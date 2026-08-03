@@ -6,7 +6,7 @@ using YTDown.Application.Interfaces;
 namespace YTDown.UI.ViewModels;
 
 /// <summary>
-/// O que o usuario decide uma vez.
+/// O que o usuário decide uma vez.
 /// </summary>
 public sealed partial class SettingsViewModel : ObservableObject
 {
@@ -15,8 +15,8 @@ public sealed partial class SettingsViewModel : ObservableObject
     public SettingsViewModel(ISettingsService settingsService) => _settingsService = settingsService;
 
     /// <remarks>
-    /// Os tetos oferecidos param em 1080p porque o YouTube nao entrega H.264
-    /// acima disso, e e H.264 que permite entregar um MP4 sem reconverter.
+    /// Os tetos oferecidos param em 1080p porque o YouTube não entrega H.264
+    /// acima disso, e é H.264 que permite entregar um MP4 sem reconverter.
     /// </remarks>
     public IReadOnlyList<DefaultQualityOption> QualityOptions { get; } =
         [new(null), new(1080), new(720), new(480), new(360)];
@@ -31,7 +31,7 @@ public sealed partial class SettingsViewModel : ObservableObject
     private DefaultQualityOption _selectedQuality = new(null);
 
     /// <summary>
-    /// A pasta como o usuario a le. Sem escolha, diz qual e o destino em vez de
+    /// A pasta como o usuário a lê. Sem escolha, diz qual é o destino em vez de
     /// ficar em branco.
     /// </summary>
     public string DestinationDescription =>

@@ -4,16 +4,16 @@ using YTDown.Domain.Exceptions;
 namespace YTDown.Domain.ValueObjects;
 
 /// <summary>
-/// Referencia a um unico video do YouTube, em forma canonica.
+/// Referência a um único vídeo do YouTube, em forma canônica.
 /// </summary>
 /// <remarks>
-/// O usuario cola a URL direto da barra de enderecos, do botao de compartilhar
-/// ou do aplicativo movel, entao a mesma referencia chega em muitos formatos.
-/// Este tipo reduz todos eles ao identificador do video e descarta tudo o que
-/// nao identifica o video: parametros de playlist, de tempo, de rastreamento e
-/// de posicao.
+/// O usuário cola a URL direto da barra de endereços, do botão de compartilhar
+/// ou do aplicativo móvel, então a mesma referência chega em muitos formatos.
+/// Este tipo reduz todos eles ao identificador do vídeo e descarta tudo o que
+/// não identifica o vídeo: parâmetros de playlist, de tempo, de rastreamento e
+/// de posição.
 ///
-/// Duas instancias criadas a partir de formatos diferentes do mesmo video sao
+/// Duas instâncias criadas a partir de formatos diferentes do mesmo vídeo são
 /// iguais.
 /// </remarks>
 public sealed record VideoUrl
@@ -36,7 +36,7 @@ public sealed record VideoUrl
         "www.youtu.be"
     ];
 
-    /// <summary>Segmentos que antecedem o identificador do video no caminho.</summary>
+    /// <summary>Segmentos que antecedem o identificador do vídeo no caminho.</summary>
     private static readonly string[] VideoIdPathPrefixes =
     [
         "shorts",
@@ -47,23 +47,23 @@ public sealed record VideoUrl
 
     private VideoUrl(string videoId) => VideoId = videoId;
 
-    /// <summary>Identificador de 11 caracteres atribuido pelo YouTube.</summary>
+    /// <summary>Identificador de 11 caracteres atribuído pelo YouTube.</summary>
     public string VideoId { get; }
 
-    /// <summary>Forma canonica da URL, usada para exibir e para chamar o yt-dlp.</summary>
+    /// <summary>Forma canônica da URL, usada para exibir e para chamar o yt-dlp.</summary>
     public string Value => $"https://www.youtube.com/watch?v={VideoId}";
 
     /// <summary>
-    /// Cria a partir de uma entrada ja considerada valida.
+    /// Cria a partir de uma entrada já considerada válida.
     /// </summary>
-    /// <exception cref="InvalidVideoUrlException">A entrada nao identifica um video.</exception>
+    /// <exception cref="InvalidVideoUrlException">A entrada não identifica um vídeo.</exception>
     public static VideoUrl Create(string? candidate) =>
         TryCreate(candidate, out var videoUrl)
             ? videoUrl
             : throw new InvalidVideoUrlException(candidate);
 
     /// <summary>
-    /// Tenta interpretar uma entrada digitada ou colada pelo usuario.
+    /// Tenta interpretar uma entrada digitada ou colada pelo usuário.
     /// </summary>
     public static bool TryCreate(string? candidate, [NotNullWhen(true)] out VideoUrl? videoUrl)
     {
@@ -106,7 +106,7 @@ public sealed record VideoUrl
     }
 
     /// <summary>
-    /// Aceita URLs sem esquema, porque colar "youtu.be/..." e comum.
+    /// Aceita URLs sem esquema, porque colar "youtu.be/..." é comum.
     /// </summary>
     private static bool TryParseHttpUri(string candidate, [NotNullWhen(true)] out Uri? uri)
     {
@@ -130,13 +130,13 @@ public sealed record VideoUrl
             return null;
         }
 
-        // Em youtu.be o caminho inteiro e o identificador: youtu.be/UKcJqQqiXq0
+        // Em youtu.be o caminho inteiro é o identificador: youtu.be/UKcJqQqiXq0
         if (ShortLinkHosts.Contains(uri.Host, StringComparer.OrdinalIgnoreCase))
         {
             return segments[0];
         }
 
-        // Nas demais formas o identificador vem apos um segmento conhecido: /shorts/UKcJqQqiXq0
+        // Nas demais formas o identificador vem após um segmento conhecido: /shorts/UKcJqQqiXq0
         return segments.Length >= 2 && VideoIdPathPrefixes.Contains(segments[0], StringComparer.OrdinalIgnoreCase)
             ? segments[1]
             : null;

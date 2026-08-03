@@ -25,8 +25,8 @@ public class YtDlpErrorClassifierTests
     }
 
     /// <summary>
-    /// A mensagem de bloqueio regional tambem contem "Video unavailable", entao
-    /// so e classificada corretamente por causa da ordem das regras.
+    /// A mensagem de bloqueio regional também contém "Vídeo unavailable", então
+    /// só é classificada corretamente por causa da ordem das regras.
     /// </summary>
     [Theory]
     [InlineData("ERROR: [youtube] abc: Video unavailable\nThe uploader has not made this video available in your country")]
@@ -37,8 +37,8 @@ public class YtDlpErrorClassifierTests
     }
 
     /// <summary>
-    /// Mensagem real, capturada apos varios downloads seguidos do mesmo endereco
-    /// de rede. Note o apostrofo tipografico, que o marcador evita de proposito.
+    /// Mensagem real, capturada após vários downloads seguidos do mesmo endereço
+    /// de rede. Note o apóstrofo tipográfico, que o marcador evita de propósito.
     /// </summary>
     [Fact]
     public void Classify_WhenYouTubeAsksForVerification_ReturnsBotCheckRequired()
@@ -51,8 +51,8 @@ public class YtDlpErrorClassifierTests
     }
 
     /// <summary>
-    /// As duas mensagens comecam igual: a de idade nao pode ser confundida com a
-    /// de verificacao.
+    /// As duas mensagens começam igual: a de idade não pode ser confundida com a
+    /// de verificação.
     /// </summary>
     [Fact]
     public void Classify_DistinguishesAgeRestrictionFromTheBotCheck()

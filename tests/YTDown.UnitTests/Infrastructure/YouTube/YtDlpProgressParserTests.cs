@@ -4,8 +4,8 @@ using YTDown.Infrastructure.YouTube;
 namespace YTDown.UnitTests.Infrastructure.YouTube;
 
 /// <summary>
-/// As linhas usadas aqui foram capturadas de um download real do video de
-/// referencia, e nao inventadas.
+/// As linhas usadas aqui foram capturadas de um download real do vídeo de
+/// referência, e não inventadas.
 /// </summary>
 public class YtDlpProgressParserTests
 {
@@ -26,8 +26,8 @@ public class YtDlpProgressParserTests
     }
 
     /// <summary>
-    /// Enquanto baixa o audio o yt-dlp informa o codec de video como "none": e
-    /// so por isso os dois streams podem ser distinguidos.
+    /// Enquanto baixa o áudio o yt-dlp informa o codec de vídeo como "none": é
+    /// só por isso os dois streams podem ser distinguidos.
     /// </summary>
     [Fact]
     public void TryParse_WithAudioStreamLine_MarksItAsNotVideo()
@@ -54,8 +54,8 @@ public class YtDlpProgressParserTests
     }
 
     /// <summary>
-    /// Sem total nao ha percentual possivel, e uma barra inventada engana mais
-    /// do que a ausencia dela.
+    /// Sem total não há percentual possível, e uma barra inventada engana mais
+    /// do que a ausência dela.
     /// </summary>
     [Theory]
     [InlineData("PROG|avc1.640028|downloading|1024|NA|512037.11|36")]
@@ -90,9 +90,9 @@ public class YtDlpProgressParserTests
     }
 
     /// <summary>
-    /// Regressao do defeito que motivou pedir o caminho em JSON: ao escrever em
-    /// um pipe, o yt-dlp descarta o que nao for ASCII, e o caminho resultante
-    /// nao existe em disco.
+    /// Regressão do defeito que motivou pedir o caminho em JSON: ao escrever em
+    /// um pipe, o yt-dlp descarta o que não for ASCII, e o caminho resultante
+    /// não existe em disco.
     /// </summary>
     [Fact]
     public void TryParseFinalFilePath_WithNonAsciiTitle_PreservesEveryCharacter()

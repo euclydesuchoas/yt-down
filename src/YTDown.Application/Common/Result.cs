@@ -3,12 +3,12 @@ using System.Diagnostics.CodeAnalysis;
 namespace YTDown.Application.Common;
 
 /// <summary>
-/// Resultado de uma operacao que pode falhar por um motivo esperado.
+/// Resultado de uma operação que pode falhar por um motivo esperado.
 /// </summary>
 /// <remarks>
-/// Video indisponivel e queda de rede sao desfechos normais neste aplicativo,
-/// nao situacoes excepcionais, entao percorrem o codigo como valor de retorno.
-/// Excecao continua reservada para defeito de programacao.
+/// Vídeo indisponível e queda de rede são desfechos normais neste aplicativo,
+/// não situações excepcionais, então percorrem o código como valor de retorno.
+/// Exceção continua reservada para defeito de programação.
 /// </remarks>
 public sealed class Result<TValue>
 {
@@ -28,9 +28,9 @@ public sealed class Result<TValue>
     public ErrorCode? Error { get; }
 
     /// <summary>
-    /// Detalhe tecnico da falha, para registro e depuracao.
+    /// Detalhe técnico da falha, para registro e depuração.
     /// </summary>
-    /// <remarks>Nunca exibido ao usuario: pode conter saida bruta de ferramenta externa.</remarks>
+    /// <remarks>Nunca exibido ao usuário: pode conter saída bruta de ferramenta externa.</remarks>
     public string? Diagnostics { get; }
 
     public static Result<TValue> Success(TValue value) => new(value, null, null);

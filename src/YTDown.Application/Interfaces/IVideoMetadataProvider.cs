@@ -5,10 +5,10 @@ using YTDown.Domain.ValueObjects;
 namespace YTDown.Application.Interfaces;
 
 /// <summary>
-/// Obtem os dados de um video junto ao YouTube.
+/// Obtém os dados de um vídeo junto ao YouTube.
 /// </summary>
 /// <remarks>
-/// Implementado pela Infrastructure. A Application nao sabe que existe yt-dlp.
+/// Implementado pela Infrastructure. A Application não sabe que existe yt-dlp.
 /// </remarks>
 public interface IVideoMetadataProvider
 {

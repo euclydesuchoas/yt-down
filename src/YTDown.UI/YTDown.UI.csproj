@@ -9,7 +9,7 @@
     <AssemblyName>YTDown</AssemblyName>
   </PropertyGroup>
 
-  <!-- Identificacao que o Windows mostra nas propriedades do arquivo e no
+  <!-- Identificação que o Windows mostra nas propriedades do arquivo e no
        gerenciador de tarefas. Sem isso o aplicativo aparece como "YTDown.UI". -->
   <PropertyGroup>
     <Version>0.1.0</Version>
@@ -19,22 +19,22 @@
     <Authors>Euclydes Uchoas</Authors>
     <Copyright>Euclydes Uchoas</Copyright>
 
-    <!-- Vale para o executavel, para a janela e para a barra de tarefas de uma
-         vez so: o WPF usa o icone do proprio executavel. Gerado por
+    <!-- Vale para o executável, para a janela e para a barra de tarefas de uma
+         vez só: o WPF usa o ícone do próprio executável. Gerado por
          scripts/build-icon.ps1. -->
     <ApplicationIcon>..\..\assets\ytdown.ico</ApplicationIcon>
   </PropertyGroup>
 
   <!--
-    Compilar antecipadamente troca tamanho por tempo de abertura. O publico deste
-    aplicativo julga qualidade pelo tempo ate a janela aparecer, e o pacote ja e
+    Compilar antecipadamente troca tamanho por tempo de abertura. O público deste
+    aplicativo julga qualidade pelo tempo até a janela aparecer, e o pacote já é
     grande por causa do FFmpeg: os megabytes a mais pesam pouco no total.
   -->
   <PropertyGroup>
     <PublishReadyToRun>true</PublishReadyToRun>
   </PropertyGroup>
 
-  <!-- A UI e o composition root: e o unico projeto que conhece o container concreto. -->
+  <!-- A UI é o composition root: é o único projeto que conhece o container concreto. -->
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
@@ -46,9 +46,9 @@
   </ItemGroup>
 	
   <!--
-    As ferramentas externas nao sao versionadas (ver scripts/bootstrap-tools.ps1).
-    A condicao Exists mantem o build funcionando em um clone limpo: a ausencia vira
-    um aviso no build e um erro claro em tempo de execucao, nunca uma falha de MSBuild.
+    As ferramentas externas não são versionadas (ver scripts/bootstrap-tools.ps1).
+    A condição Exists mantém o build funcionando em um clone limpo: a ausência vira
+    um aviso no build e um erro claro em tempo de execução, nunca uma falha de MSBuild.
   -->
   <ItemGroup>
     <Content Include="..\..\tools\yt-dlp.exe" Condition="Exists('..\..\tools\yt-dlp.exe')">
@@ -61,8 +61,8 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
 
-    <!-- Acompanha a instalacao para que o aplicativo saiba qual versao do
-         yt-dlp ele traz, e so recopie quando essa versao mudar. -->
+    <!-- Acompanha a instalação para que o aplicativo saiba qual versão do
+         yt-dlp ele traz, e só recopie quando essa versão mudar. -->
     <Content Include="..\..\tools\tools.lock.json">
       <Link>tools\tools.lock.json</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

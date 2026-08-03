@@ -34,9 +34,9 @@ public sealed class ManagedToolLocator : IToolLocator
     /// Ordem de procura, da preferida para a alternativa.
     /// </summary>
     /// <remarks>
-    /// A copia do perfil do usuario vem primeiro por ser a que se mantem
-    /// atualizada. A copia que acompanha a instalacao serve de reserva, e por
-    /// isso um download funciona mesmo antes de a instalacao ter terminado.
+    /// A cópia do perfil do usuário vem primeiro por ser a que se mantém
+    /// atualizada. A cópia que acompanha a instalação serve de reserva, e por
+    /// isso um download funciona mesmo antes de a instalação ter terminado.
     /// </remarks>
     private IEnumerable<string> DirectoriesFor(ExternalTool tool) =>
         tool == ExternalTool.YtDlp

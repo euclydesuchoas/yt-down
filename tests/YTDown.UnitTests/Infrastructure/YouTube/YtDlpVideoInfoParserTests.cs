@@ -22,8 +22,8 @@ public class YtDlpVideoInfoParserTests
     }
 
     /// <summary>
-    /// O titulo real do video de referencia e japones: se a leitura perder a
-    /// codificacao em qualquer ponto, este teste falha.
+    /// O título real do vídeo de referência é japonês: se a leitura perder a
+    /// codificação em qualquer ponto, este teste falha.
     /// </summary>
     [Fact]
     public void TryParse_WithNonLatinTitle_PreservesTheCharacters()
@@ -36,9 +36,9 @@ public class YtDlpVideoInfoParserTests
     }
 
     /// <summary>
-    /// Cada altura existe em avc1, vp9 e av01. Oferecer as tres seria oferecer
-    /// a mesma qualidade repetida; oferecer 1440p ou 2160p, que so existem em
-    /// vp9 e av01, seria prometer algo que nao sai em MP4 sem reconverter.
+    /// Cada altura existe em avc1, vp9 e av01. Oferecer as três seria oferecer
+    /// a mesma qualidade repetida; oferecer 1440p ou 2160p, que só existem em
+    /// vp9 e av01, seria prometer algo que não sai em MP4 sem reconverter.
     /// </summary>
     [Fact]
     public void TryParse_OffersOnlyTheHeightsThatExistInH264_FromLargestToSmallest()

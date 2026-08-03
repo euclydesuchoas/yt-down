@@ -18,11 +18,11 @@ public partial class HistoryWindow : Window
     }
 
     /// <summary>
-    /// Limpar nao apaga arquivo nenhum, mas tambem nao tem como ser desfeito.
+    /// Limpar não apaga arquivo nenhum, mas também não tem como ser desfeito.
     /// </summary>
     /// <remarks>
-    /// A pergunta fica na janela, e nao no ViewModel: quem decide como perguntar
-    /// e a apresentacao.
+    /// A pergunta fica na janela, e não no ViewModel: quem decide como perguntar
+    /// é a apresentação.
     /// </remarks>
     private void OnClearRequested(object sender, RoutedEventArgs e)
     {

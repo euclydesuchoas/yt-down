@@ -4,8 +4,8 @@ using YTDown.Infrastructure.Tools;
 namespace YTDown.UnitTests.Infrastructure.Tools;
 
 /// <summary>
-/// As saidas usadas aqui foram capturadas de uma execucao real de
-/// <c>yt-dlp -U</c>, e nao inventadas.
+/// As saídas usadas aqui foram capturadas de uma execução real de
+/// <c>yt-dlp -U</c>, e não inventadas.
 /// </summary>
 public class YtDlpUpdaterTests
 {

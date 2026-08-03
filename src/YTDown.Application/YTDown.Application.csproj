@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <!-- Apenas as abstracoes: a camada registra seus servicos sem depender do container. -->
+  <!-- Apenas as abstrações: a camada registra seus serviços sem depender do container. -->
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
   </ItemGroup>

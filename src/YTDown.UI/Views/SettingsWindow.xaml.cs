@@ -19,8 +19,8 @@ public partial class SettingsWindow : Window
     }
 
     /// <remarks>
-    /// O seletor de pastas e do Windows, e escolher pasta e assunto da janela:
-    /// o ViewModel recebe o resultado, nao a caixa de dialogo.
+    /// O seletor de pastas é do Windows, e escolher pasta é assunto da janela:
+    /// o ViewModel recebe o resultado, não a caixa de diálogo.
     /// </remarks>
     private void OnChooseFolderRequested(object sender, RoutedEventArgs e)
     {

@@ -4,7 +4,7 @@ using System.Windows.Data;
 namespace YTDown.UI.Converters;
 
 /// <summary>
-/// Inverte um valor logico, para desabilitar um elemento enquanto algo esta em curso.
+/// Inverte um valor lógico, para desabilitar um elemento enquanto algo está em curso.
 /// </summary>
 public sealed class InverseBooleanConverter : IValueConverter
 {

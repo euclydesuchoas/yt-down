@@ -5,9 +5,9 @@ namespace YTDown.Application.Services;
 
 /// <inheritdoc cref="ISettingsService" />
 /// <remarks>
-/// As configuracoes sao lidas do disco uma vez e ficam em memoria. Todo download
+/// As configurações são lidas do disco uma vez e ficam em memória. Todo download
 /// consulta o destino, e ir ao disco a cada consulta seria pagar por uma leitura
-/// que nunca muda sozinha: quem grava e o proprio aplicativo.
+/// que nunca muda sozinha: quem grava é o próprio aplicativo.
 /// </remarks>
 public sealed class SettingsService : ISettingsService
 {
@@ -44,8 +44,8 @@ public sealed class SettingsService : ISettingsService
         }
         catch (Exception exception) when (IsStorageFailure(exception))
         {
-            // Nao guardar a escolha e um incomodo; impedir o usuario de fechar a
-            // tela por causa disso seria pior. Ela vale ate o aplicativo fechar.
+            // Não guardar a escolha é um incômodo; impedir o usuário de fechar a
+            // tela por causa disso seria pior. Ela vale até o aplicativo fechar.
             _current = settings;
         }
         finally
@@ -67,7 +67,7 @@ public sealed class SettingsService : ISettingsService
     }
 
     /// <summary>
-    /// Falha ao alcancar o arquivo, e nao defeito de programacao.
+    /// Falha ao alcançar o arquivo, e não defeito de programação.
     /// </summary>
     private static bool IsStorageFailure(Exception exception) =>
         exception is IOException or UnauthorizedAccessException;

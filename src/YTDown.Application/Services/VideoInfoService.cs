@@ -17,8 +17,8 @@ public sealed class VideoInfoService : IVideoInfoService
 
     public Task<Result<VideoInfoDto>> GetVideoInfoAsync(string? rawUrl, CancellationToken cancellationToken)
     {
-        // Recusar aqui evita iniciar um processo externo para uma entrada que ja
-        // sabemos invalida, e devolve ao usuario um erro imediato e especifico.
+        // Recusar aqui evita iniciar um processo externo para uma entrada que já
+        // sabemos inválida, e devolve ao usuário um erro imediato e específico.
         if (!VideoUrl.TryCreate(rawUrl, out var videoUrl))
         {
             return Task.FromResult(Result<VideoInfoDto>.Failure(ErrorCode.InvalidUrl));

@@ -15,8 +15,8 @@ public class OutputFileNameTests
     }
 
     /// <summary>
-    /// Acento e outros alfabetos sao conteudo legitimo de nome de arquivo, e o
-    /// publico deste aplicativo escreve em portugues.
+    /// Acento e outros alfabetos são conteúdo legítimo de nome de arquivo, e o
+    /// público deste aplicativo escreve em português.
     /// </summary>
     [Theory]
     [InlineData("Canção da Manhã")]
@@ -38,8 +38,8 @@ public class OutputFileNameTests
     }
 
     /// <summary>
-    /// O Windows descarta ponto e espaco no fim em silencio, o que faria o
-    /// arquivo gravado nao bater com o nome pedido.
+    /// O Windows descarta ponto e espaço no fim em silêncio, o que faria o
+    /// arquivo gravado não bater com o nome pedido.
     /// </summary>
     [Theory]
     [InlineData("Musica...", "Musica")]
@@ -59,7 +59,7 @@ public class OutputFileNameTests
     }
 
     /// <summary>
-    /// Nomes de dispositivo sao recusados pelo Windows mesmo com extensao.
+    /// Nomes de dispositivo são recusados pelo Windows mesmo com extensão.
     /// </summary>
     [Theory]
     [InlineData("CON")]

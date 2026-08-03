@@ -5,7 +5,7 @@ using System.Windows.Data;
 namespace YTDown.UI.Converters;
 
 /// <summary>
-/// Exibe o elemento quando o valor existe e recolhe quando e nulo ou vazio.
+/// Exibe o elemento quando o valor existe e recolhe quando é nulo ou vazio.
 /// </summary>
 public sealed class NotEmptyToVisibilityConverter : IValueConverter
 {

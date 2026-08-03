@@ -31,12 +31,12 @@ public sealed class YtDlpVideoDownloader : IVideoDownloader
         {
             return Result<DownloadedFileDto>.Failure(
                 ErrorCode.ToolNotFound,
-                "yt-dlp.exe ou ffmpeg.exe nao foi encontrado na pasta tools.");
+                "yt-dlp.exe ou ffmpeg.exe não foi encontrado na pasta tools.");
         }
 
-        // Os arquivos intermediarios ficam isolados em uma pasta propria, dentro
-        // do destino para que a mudanca final seja no mesmo volume. Assim a
-        // limpeza e apagar a pasta inteira, sem precisar adivinhar nomes.
+        // Os arquivos intermediários ficam isolados em uma pasta própria, dentro
+        // do destino para que a mudança final seja no mesmo volume. Assim a
+        // limpeza é apagar a pasta inteira, sem precisar adivinhar nomes.
         var workDirectory = Path.Combine(destinationDirectory, $".ytdown-{Guid.NewGuid():N}");
 
         var aggregator = new DownloadProgressAggregator(options.Kind);
@@ -86,7 +86,7 @@ public sealed class YtDlpVideoDownloader : IVideoDownloader
             {
                 return Result<DownloadedFileDto>.Failure(
                     ErrorCode.ToolFailure,
-                    $"O yt-dlp terminou sem indicar o arquivo final. Saida: {processResult.StandardOutput}");
+                    $"O yt-dlp terminou sem indicar o arquivo final. Saída: {processResult.StandardOutput}");
             }
 
             progress.Report(aggregator.ForCompletion());
@@ -97,8 +97,8 @@ public sealed class YtDlpVideoDownloader : IVideoDownloader
         }
         catch (Exception exception)
         {
-            // Este e o limite entre o aplicativo e o sistema operacional: qualquer
-            // falha vira resultado tipado, para que o usuario receba uma mensagem
+            // Este é o limite entre o aplicativo e o sistema operacional: qualquer
+            // falha vira resultado tipado, para que o usuário receba uma mensagem
             // em vez de o aplicativo encerrar.
             return Result<DownloadedFileDto>.Failure(ErrorCode.Unexpected, exception.ToString());
         }
@@ -128,7 +128,7 @@ public sealed class YtDlpVideoDownloader : IVideoDownloader
             // Sem isto o progresso vem com retorno de carro e nunca fecha a linha.
             "--newline",
             // --print implica --quiet, que silencia o progresso. Este argumento o
-            // traz de volta, e sem ele a barra so se moveria ao terminar.
+            // traz de volta, e sem ele a barra só se moveria ao terminar.
             "--progress",
             "--progress-template", YtDlpProgressParser.ProgressTemplate,
             "--print", YtDlpProgressParser.FinalFileTemplate,
@@ -142,13 +142,13 @@ public sealed class YtDlpVideoDownloader : IVideoDownloader
     }
 
     /// <summary>
-    /// Monta a expressao de selecao de formato do yt-dlp.
+    /// Monta a expressão de seleção de formato do yt-dlp.
     /// </summary>
     /// <remarks>
-    /// Para video, prefere H.264 com audio AAC: permite juntar sem reconverter e
-    /// gera um MP4 que abre em qualquer lugar. O teto de 1080p e consequencia
-    /// disso, ja que o YouTube nao serve H.264 acima dessa altura. As
-    /// alternativas cobrem videos que so existem em formato unico.
+    /// Para vídeo, prefere H.264 com áudio AAC: permite juntar sem reconverter e
+    /// gera um MP4 que abre em qualquer lugar. O teto de 1080p é consequência
+    /// disso, já que o YouTube não serve H.264 acima dessa altura. As
+    /// alternativas cobrem vídeos que só existem em formato único.
     /// </remarks>
     private static string BuildFormatSelector(DownloadOptionsDto options)
     {
@@ -164,7 +164,7 @@ public sealed class YtDlpVideoDownloader : IVideoDownloader
 
     /// <remarks>
     /// O FFmpeg pode levar um instante para soltar os arquivos depois de
-    /// encerrado, entao a remocao e tentada mais de uma vez antes de desistir.
+    /// encerrado, então a remoção é tentada mais de uma vez antes de desistir.
     /// </remarks>
     private static void DeleteWorkDirectory(string workDirectory)
     {

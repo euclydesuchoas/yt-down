@@ -22,8 +22,8 @@ public sealed class ToolMaintenanceService : IToolMaintenanceService
 
         var installation = await _toolInstaller.EnsureInstalledAsync(cancellationToken);
 
-        // Falhar a instalacao na pasta gravavel nao impede o uso: o aplicativo
-        // recorre a copia que acompanha a instalacao. So a atualizacao se perde.
+        // Falhar a instalação na pasta gravável não impede o uso: o aplicativo
+        // recorre à cópia que acompanha a instalação. Só a atualização se perde.
         if (!installation.IsSuccess)
         {
             onStatusChanged.Report(ToolMaintenanceStatus.UpdateUnavailable);

@@ -6,11 +6,11 @@ namespace YTDown.Infrastructure.Tools;
 /// Onde cada ferramenta externa vive.
 /// </summary>
 /// <remarks>
-/// Sao dois lugares por necessidade. O yt-dlp precisa se sobrescrever para se
-/// atualizar, e nao consegue quando o aplicativo esta instalado em Arquivos de
-/// Programas, entao vive em uma pasta do perfil do usuario. O FFmpeg nunca se
+/// São dois lugares por necessidade. O yt-dlp precisa se sobrescrever para se
+/// atualizar, e não consegue quando o aplicativo está instalado em Arquivos de
+/// Programas, então vive em uma pasta do perfil do usuário. O FFmpeg nunca se
 /// atualiza e fica junto do aplicativo: copiar cem megabytes na primeira
-/// execucao seria uma espera visivel sem ganho algum.
+/// execução seria uma espera visível sem ganho algum.
 /// </remarks>
 public sealed class ToolLocations
 {
@@ -29,9 +29,9 @@ public sealed class ToolLocations
         UserDirectory = userDirectory;
     }
 
-    /// <summary>Pasta que acompanha a instalacao, somente leitura na pratica.</summary>
+    /// <summary>Pasta que acompanha a instalação, somente leitura na prática.</summary>
     public string BundledDirectory { get; }
 
-    /// <summary>Pasta gravavel no perfil do usuario.</summary>
+    /// <summary>Pasta gravável no perfil do usuário.</summary>
     public string UserDirectory { get; }
 }

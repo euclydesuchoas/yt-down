@@ -1,12 +1,12 @@
 namespace YTDown.Infrastructure.FileSystem;
 
 /// <summary>
-/// Pasta do perfil do usuario onde o aplicativo guarda o que e dele.
+/// Pasta do perfil do usuário onde o aplicativo guarda o que é dele.
 /// </summary>
 /// <remarks>
-/// Existe para que a pasta seja decidida em um lugar so. Ja sao dois moradores,
-/// as ferramentas e o historico, e ambos precisam de escrita: a pasta da
-/// instalacao nao serve, porque em Arquivos de Programas o usuario comum nao
+/// Existe para que a pasta seja decidida em um lugar só. Já são dois moradores,
+/// as ferramentas e o histórico, e ambos precisam de escrita: a pasta da
+/// instalação não serve, porque em Arquivos de Programas o usuário comum não
 /// escreve.
 /// </remarks>
 public static class UserDataLocation

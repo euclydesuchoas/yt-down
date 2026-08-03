@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <!--
-      Acompanha o alvo da UI para poder inspeciona-la: as regras mais faceis de
-      violar por descuido sao justamente as da camada de apresentacao.
+      Acompanha o alvo da UI para poder inspecioná-la: as regras mais fáceis de
+      violar por descuido são justamente as da camada de apresentação.
     -->
     <TargetFramework>net10.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>

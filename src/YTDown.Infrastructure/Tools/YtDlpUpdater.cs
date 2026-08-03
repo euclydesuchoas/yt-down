@@ -22,7 +22,7 @@ public sealed partial class YtDlpUpdater : IToolUpdater
     {
         if (!_toolLocator.TryLocate(ExternalTool.YtDlp, out var ytDlpPath))
         {
-            return Result<string>.Failure(ErrorCode.ToolNotFound, "yt-dlp.exe nao foi encontrado.");
+            return Result<string>.Failure(ErrorCode.ToolNotFound, "yt-dlp.exe não foi encontrado.");
         }
 
         ProcessResult processResult;
@@ -45,7 +45,7 @@ public sealed partial class YtDlpUpdater : IToolUpdater
 
         if (!processResult.Succeeded)
         {
-            // Ficar sem atualizar nao impede o uso: e quase sempre falta de rede.
+            // Ficar sem atualizar não impede o uso: é quase sempre falta de rede.
             return Result<string>.Failure(ErrorCode.NetworkError, processResult.StandardError);
         }
 
@@ -55,11 +55,11 @@ public sealed partial class YtDlpUpdater : IToolUpdater
     }
 
     /// <summary>
-    /// Extrai a versao da saida do yt-dlp.
+    /// Extrai a versão da saída do yt-dlp.
     /// </summary>
     /// <remarks>
-    /// O padrao <c>stable@versao</c> aparece tanto quando ha atualizacao quanto
-    /// quando ja esta em dia, entao serve para os dois casos.
+    /// O padrão <c>stable@versão</c> aparece tanto quando há atualização quanto
+    /// quando já está em dia, então serve para os dois casos.
     /// </remarks>
     public static bool TryReadVersion(string? output, out string version)
     {

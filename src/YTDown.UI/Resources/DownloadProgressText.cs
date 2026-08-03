@@ -7,9 +7,9 @@ namespace YTDown.UI.Resources;
 /// Descreve o andamento de um download em linguagem comum.
 /// </summary>
 /// <remarks>
-/// O usuario nao precisa saber que video e audio chegam separados, mas precisa
+/// O usuário não precisa saber que vídeo e áudio chegam separados, mas precisa
 /// entender que a espera continua depois que o download parece ter acabado.
-/// Por isso a etapa de juncao aparece como "Finalizando", e nao com o nome da
+/// Por isso a etapa de junção aparece como "Finalizando", e não com o nome da
 /// ferramenta.
 /// </remarks>
 internal static class DownloadProgressText
@@ -43,7 +43,7 @@ internal static class DownloadProgressText
     };
 
     /// <summary>
-    /// Estimativas de poucos segundos mudam a cada instante e so poluem a tela.
+    /// Estimativas de poucos segundos mudam a cada instante e só poluem a tela.
     /// </summary>
     private static string? RemainingTimeOf(TimeSpan? timeRemaining) => timeRemaining switch
     {

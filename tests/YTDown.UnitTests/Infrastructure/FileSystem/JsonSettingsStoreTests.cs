@@ -53,7 +53,7 @@ public class JsonSettingsStoreTests : IDisposable
     public async Task ReadAsync_WithACorruptedFile_ReturnsNothingInsteadOfFailing()
     {
         Directory.CreateDirectory(_root);
-        await File.WriteAllTextAsync(FilePath, "isto nao e json");
+        await File.WriteAllTextAsync(FilePath, "isto não é json");
 
         (await CreateStore().ReadAsync(CancellationToken.None)).Should().BeNull();
     }

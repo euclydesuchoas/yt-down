@@ -38,7 +38,7 @@ public class DownloadProgressAggregatorTests
     }
 
     /// <summary>
-    /// Uma barra que anda para tras faz o usuario achar que algo deu errado.
+    /// Uma barra que anda para tras faz o usuário achar que algo deu errado.
     /// O yt-dlp pode reportar menos bytes que antes ao retomar um stream.
     /// </summary>
     [Fact]
@@ -69,8 +69,8 @@ public class DownloadProgressAggregatorTests
     }
 
     /// <summary>
-    /// O ultimo stream terminar e o unico aviso de que o FFmpeg comecou: as
-    /// mensagens dos pos-processadores nao chegam, porque --print implica
+    /// O último stream terminar é o único aviso de que o FFmpeg começou: as
+    /// mensagens dos pos-processadores não chegam, porque --print implica
     /// --quiet.
     /// </summary>
     [Fact]
@@ -88,7 +88,7 @@ public class DownloadProgressAggregatorTests
     }
 
     /// <summary>
-    /// O video terminar nao significa que acabou: o audio ainda vem depois.
+    /// O vídeo terminar não significa que acabou: o áudio ainda vem depois.
     /// </summary>
     [Fact]
     public void ForStream_WhenOnlyTheVideoStreamFinishes_StaysDownloading()

@@ -5,11 +5,11 @@ using YTDown.Application.Services;
 namespace YTDown.Application.DependencyInjection;
 
 /// <summary>
-/// Registra os servicos da camada Application.
+/// Registra os serviços da camada Application.
 /// </summary>
 /// <remarks>
-/// Cada camada expoe seu proprio registro, para que o composition root nao
-/// precise conhecer as implementacoes concretas de nenhuma delas.
+/// Cada camada expoe seu próprio registro, para que o composition root não
+/// precise conhecer as implementações concretas de nenhuma delas.
 /// </remarks>
 public static class ApplicationServiceCollectionExtensions
 {

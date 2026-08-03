@@ -5,7 +5,7 @@ namespace YTDown.Application.Interfaces;
 /// </summary>
 /// <remarks>
 /// Existe para manter a Application longe do sistema de arquivos. Devolve a
-/// pasta escolhida pelo usuario, ou a pasta Downloads enquanto nao houver
+/// pasta escolhida pelo usuário, ou a pasta Downloads enquanto não houver
 /// escolha.
 /// </remarks>
 public interface IDownloadLocationProvider
@@ -17,7 +17,7 @@ public interface IDownloadLocationProvider
     /// </summary>
     /// <remarks>
     /// Existe para que a Application saiba responder sobre uma pasta sem
-    /// conhecer o sistema de arquivos. Uma pasta escolhida a mao pode ter
+    /// conhecer o sistema de arquivos. Uma pasta escolhida à mão pode ter
     /// desaparecido entre a escolha e o download.
     /// </remarks>
     bool Exists(string directory);

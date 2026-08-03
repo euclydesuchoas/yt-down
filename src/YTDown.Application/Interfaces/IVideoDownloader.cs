@@ -5,10 +5,10 @@ using YTDown.Domain.ValueObjects;
 namespace YTDown.Application.Interfaces;
 
 /// <summary>
-/// Baixa um video para o disco.
+/// Baixa um vídeo para o disco.
 /// </summary>
 /// <remarks>
-/// Implementado pela Infrastructure. A Application nao sabe que existe yt-dlp
+/// Implementado pela Infrastructure. A Application não sabe que existe yt-dlp
 /// nem FFmpeg.
 /// </remarks>
 public interface IVideoDownloader

@@ -65,8 +65,8 @@ public class MainViewModelTests
                 "UKcJqQqiXq0", "Titulo", "Canal", TimeSpan.FromSeconds(96), null, ValidUrl, availableHeights)));
 
     /// <summary>
-    /// A versao sai do assembly, e nao de uma constante: uma copia divergiria da
-    /// declarada no csproj na primeira publicacao.
+    /// A versão sai do assembly, e não de uma constante: uma cópia divergiria da
+    /// declarada no csproj na primeira publicação.
     /// </summary>
     [Fact]
     public void Credit_NamesTheAuthorAndTheVersionThatIsRunning()
@@ -78,7 +78,7 @@ public class MainViewModelTests
     }
 
     /// <summary>
-    /// Prepara a tela no estado em que o usuario pode baixar: endereco colado e
+    /// Prepara a tela no estado em que o usuário pode baixar: endereço colado e
     /// busca concluida.
     /// </summary>
     private async Task<MainViewModel> AfterSearchAsync(IReadOnlyList<int>? availableHeights = null)
@@ -107,8 +107,8 @@ public class MainViewModelTests
     }
 
     /// <summary>
-    /// Baixar sem buscar antes esconderia do usuario a qualidade que ele vai
-    /// receber, e nao confirmaria que o endereco aponta para o video certo.
+    /// Baixar sem buscar antes esconderia do usuário a qualidade que ele vai
+    /// receber, e não confirmaria que o endereço aponta para o vídeo certo.
     /// </summary>
     [Fact]
     public async Task DownloadCommand_IsDisabledUntilASearchSucceeds()
@@ -141,7 +141,7 @@ public class MainViewModelTests
     }
 
     /// <summary>
-    /// Sem isso seria possivel buscar um video, colar outro endereco e baixar o
+    /// Sem isso seria possível buscar um vídeo, colar outro endereço e baixar o
     /// segundo enquanto o primeiro continua na tela.
     /// </summary>
     [Fact]
@@ -191,8 +191,8 @@ public class MainViewModelTests
     }
 
     /// <summary>
-    /// Cancelar foi uma escolha do usuario. Tratar como erro faria o aplicativo
-    /// acusar uma falha que nao houve.
+    /// Cancelar foi uma escolha do usuário. Tratar como erro faria o aplicativo
+    /// acusar uma falha que não houve.
     /// </summary>
     [Fact]
     public async Task DownloadCommand_WhenCancelled_ShowsNoError()
@@ -274,8 +274,8 @@ public class MainViewModelTests
     }
 
     /// <summary>
-    /// Transmissao ao vivo nao declara altura nenhuma. Sem qualidade escolhida,
-    /// vale o teto das configuracoes em vez de nenhum limite.
+    /// Transmissão ao vivo não declara altura nenhuma. Sem qualidade escolhida,
+    /// vale o teto das configurações em vez de nenhum limite.
     /// </summary>
     [Fact]
     public async Task DownloadCommand_WhenTheVideoDeclaresNoQuality_UsesTheCeilingFromTheSettings()
@@ -327,8 +327,8 @@ public class MainViewModelTests
     }
 
     /// <summary>
-    /// O teto escolhido nas configuracoes decide o que ja vem marcado, sem tirar
-    /// da lista o que o video oferece.
+    /// O teto escolhido nas configurações decide o que já vem marcado, sem tirar
+    /// da lista o que o vídeo oferece.
     /// </summary>
     [Fact]
     public async Task SearchCommand_WithAQualityCeiling_PreSelectsTheBestThatFitsInIt()
@@ -347,7 +347,7 @@ public class MainViewModelTests
     }
 
     /// <summary>
-    /// O teto e um limite, e nao uma exigencia: um video que so exista abaixo
+    /// O teto é um limite, e não uma exigência: um vídeo que só exista abaixo
     /// dele continua sendo baixado.
     /// </summary>
     [Fact]
@@ -366,7 +366,7 @@ public class MainViewModelTests
     }
 
     /// <summary>
-    /// O campo mostra o nome que sera gravado, e nao uma promessa que o disco
+    /// O campo mostra o nome que será gravado, e não uma promessa que o disco
     /// recusaria.
     /// </summary>
     [Fact]
@@ -400,8 +400,8 @@ public class MainViewModelTests
     }
 
     /// <summary>
-    /// A extensao nao e digitada: ela e consequencia da escolha entre video e
-    /// audio.
+    /// A extensão não é digitada: ela é consequência da escolha entre vídeo e
+    /// áudio.
     /// </summary>
     [Fact]
     public async Task ExtensionText_FollowsTheChoiceBetweenVideoAndAudio()
@@ -458,8 +458,8 @@ public class MainViewModelTests
     }
 
     /// <summary>
-    /// O historico so registra downloads concluidos, entao a pasta recem-apontada
-    /// ainda nao esta la. Sem entrar na lista, ela sumiria logo apos ser
+    /// O histórico só registra downloads concluídos, então a pasta recém-apontada
+    /// ainda não está lá. Sem entrar na lista, ela sumiria logo após ser
     /// escolhida.
     /// </summary>
     [Fact]
@@ -475,7 +475,7 @@ public class MainViewModelTests
     }
 
     /// <summary>
-    /// Quem separa doze musicas em uma pasta escolheria a mesma doze vezes.
+    /// Quem separa doze músicas em uma pasta escolheria a mesma doze vezes.
     /// </summary>
     [Fact]
     public async Task TheChosenFolder_SurvivesFromOneDownloadToTheNext()

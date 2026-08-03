@@ -81,8 +81,8 @@ public class SettingsServiceTests
     }
 
     /// <summary>
-    /// A escolha vale ate o aplicativo fechar mesmo quando nao pode ser gravada:
-    /// impedir o usuario de fechar a tela seria pior que perder a preferencia.
+    /// A escolha vale até o aplicativo fechar mesmo quando não pode ser gravada:
+    /// impedir o usuário de fechar a tela seria pior que perder a preferência.
     /// </summary>
     [Fact]
     public async Task SaveAsync_WhenTheFileCannotBeWritten_KeepsTheChoiceForThisSession()
@@ -113,7 +113,7 @@ public class SettingsServiceTests
     }
 
     /// <summary>
-    /// So falha de acesso ao arquivo e tolerada; defeito de programacao precisa
+    /// Só falha de acesso ao arquivo é tolerada; defeito de programação precisa
     /// aparecer.
     /// </summary>
     [Fact]

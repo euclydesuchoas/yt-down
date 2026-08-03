@@ -85,8 +85,8 @@ public class JsonDownloadHistoryStoreTests : IDisposable
     }
 
     /// <summary>
-    /// Titulos de video usam qualquer alfabeto, e o nome do arquivo vem do
-    /// titulo. Um historico que estrague acentos ou japones seria inutil.
+    /// Títulos de vídeo usam qualquer alfabeto, e o nome do arquivo vem do
+    /// título. Um histórico que estrague acentos ou japonês seria inútil.
     /// </summary>
     [Fact]
     public async Task WriteAsync_KeepsCharactersThatAreNotAscii()
@@ -101,7 +101,7 @@ public class JsonDownloadHistoryStoreTests : IDisposable
     }
 
     /// <summary>
-    /// Perder a lista e aceitavel; deixar o aplicativo sem abrir nao e.
+    /// Perder a lista é aceitável; deixar o aplicativo sem abrir não é.
     /// </summary>
     [Fact]
     public async Task ReadAsync_WithACorruptedFile_ReturnsNothingInsteadOfFailing()
@@ -115,8 +115,8 @@ public class JsonDownloadHistoryStoreTests : IDisposable
     }
 
     /// <summary>
-    /// O arquivo e o unico lugar onde o formato aparece por extenso: convem que
-    /// continue legivel por gente, para poder ser conferido a mao.
+    /// O arquivo é o único lugar onde o formato aparece por extenso: convém que
+    /// continue legível por gente, para poder ser conferido à mão.
     /// </summary>
     [Fact]
     public async Task WriteAsync_RecordsTheKindByNameAndNotByNumber()

@@ -1,6 +1,6 @@
 <!--
-    Aparencia compartilhada pelas janelas do aplicativo. Fica fora das janelas
-    para que uma segunda tela nao precise repetir o que a primeira ja definiu.
+    Aparência compartilhada pelas janelas do aplicativo. Fica fora das janelas
+    para que uma segunda tela não precise repetir o que a primeira já definiu.
 -->
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">

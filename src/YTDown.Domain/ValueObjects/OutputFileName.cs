@@ -3,11 +3,11 @@ using System.Diagnostics.CodeAnalysis;
 namespace YTDown.Domain.ValueObjects;
 
 /// <summary>
-/// Nome de arquivo aceitavel para o sistema, sem extensao.
+/// Nome de arquivo aceitável para o sistema, sem extensão.
 /// </summary>
 /// <remarks>
-/// O usuario digita o nome que quiser, e boa parte do que ele digita o Windows
-/// recusa. Deixar isso chegar ao yt-dlp produziria uma falha que ninguem
+/// O usuário digita o nome que quiser, e boa parte do que ele digita o Windows
+/// recusa. Deixar isso chegar ao yt-dlp produziria uma falha que ninguém
 /// entende; corrigir aqui produz um nome parecido com o pedido.
 /// </remarks>
 public sealed record OutputFileName
@@ -16,8 +16,8 @@ public sealed record OutputFileName
     /// Limite de caracteres do nome.
     /// </summary>
     /// <remarks>
-    /// Nao e limite do sistema, e sim margem: o caminho completo do Windows para
-    /// em 260 caracteres, e a pasta escolhida pelo usuario pode ja ser funda.
+    /// Não é limite do sistema, e sim margem: o caminho completo do Windows para
+    /// em 260 caracteres, e a pasta escolhida pelo usuário pode já ser funda.
     /// </remarks>
     public const int MaximumLength = 100;
 
@@ -25,14 +25,14 @@ public sealed record OutputFileName
     /// Caracteres que o Windows recusa em nome de arquivo.
     /// </summary>
     /// <remarks>
-    /// Escritos a mao em vez de <c>Path.GetInvalidFileNameChars</c>: a lista
-    /// daquele metodo muda conforme o sistema onde o codigo roda, e o destino
-    /// deste aplicativo e sempre o Windows.
+    /// Escritos à mão em vez de <c>Path.GetInvalidFileNameChars</c>: a lista
+    /// daquele método muda conforme o sistema onde o código roda, e o destino
+    /// deste aplicativo é sempre o Windows.
     /// </remarks>
     private const string ForbiddenCharacters = @"<>:""/\|?*";
 
     /// <summary>
-    /// Nomes que o Windows reserva para dispositivos, com ou sem extensao.
+    /// Nomes que o Windows reserva para dispositivos, com ou sem extensão.
     /// </summary>
     private static readonly string[] ReservedNames =
     [
@@ -49,8 +49,8 @@ public sealed record OutputFileName
     /// Se o caractere pode aparecer em um nome de arquivo.
     /// </summary>
     /// <remarks>
-    /// Existe para que a tela possa recusar a tecla no momento em que ela e
-    /// digitada, em vez de alterar o texto depois e mover o cursor do usuario.
+    /// Existe para que a tela possa recusar a tecla no momento em que ela é
+    /// digitada, em vez de alterar o texto depois e mover o cursor do usuário.
     /// </remarks>
     public static bool IsAllowedCharacter(char character) =>
         !char.IsControl(character) && !ForbiddenCharacters.Contains(character);
@@ -59,7 +59,7 @@ public sealed record OutputFileName
     /// Aproveita o que der do nome pedido.
     /// </summary>
     /// <returns>
-    /// Falso quando nao sobra nada utilizavel, caso em que quem chama decide o
+    /// Falso quando não sobra nada utilizável, caso em que quem chama decide o
     /// que usar no lugar.
     /// </returns>
     public static bool TryCreate(string? candidate, [NotNullWhen(true)] out OutputFileName? fileName)
@@ -78,8 +78,8 @@ public sealed record OutputFileName
             cleaned = cleaned[..MaximumLength];
         }
 
-        // O Windows descarta ponto e espaco no fim do nome em silencio, o que
-        // faria o arquivo gravado nao bater com o nome pedido.
+        // O Windows descarta ponto e espaço no fim do nome em silêncio, o que
+        // faria o arquivo gravado não bater com o nome pedido.
         cleaned = cleaned.TrimEnd(' ', '.').Trim();
 
         if (cleaned.Length == 0 || IsReserved(cleaned))
@@ -93,7 +93,7 @@ public sealed record OutputFileName
     }
 
     /// <remarks>
-    /// A reserva vale tambem com extensao: <c>NUL.mp4</c> e tao recusado quanto
+    /// A reserva vale também com extensão: <c>NUL.mp4</c> é tão recusado quanto
     /// <c>NUL</c>.
     /// </remarks>
     private static bool IsReserved(string candidate)
