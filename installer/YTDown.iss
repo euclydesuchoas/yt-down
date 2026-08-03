@@ -1,7 +1,7 @@
-; Instalador do YTDown, para Inno Setup 7.
+﻿; Instalador do YTDown, para Inno Setup 7.
 ;
-; Nao e compilado a mao: scripts/publish.ps1 publica o aplicativo e chama o
-; ISCC passando a versao e a pasta publicada. Compilar direto daqui exige
+; Não é compilado à mão: scripts/publish.ps1 publica o aplicativo e chama o
+; ISCC passando a versão e a pasta publicada. Compilar direto daqui exige
 ; informar as duas coisas:
 ;
 ;   ISCC.exe /DAppVersion=0.1.0 /DPublishedDirectory=..\dist\YTDown-0.1.0-win-x64 YTDown.iss
@@ -19,8 +19,8 @@
 #endif
 
 [Setup]
-; Identidade do aplicativo perante o Windows. Nunca deve mudar: e por ela que
-; uma instalacao nova reconhece a anterior e a substitui em vez de duplicar.
+; Identidade do aplicativo perante o Windows. Nunca deve mudar: é por ela que
+; uma instalação nova reconhece a anterior e a substitui em vez de duplicar.
 AppId={{1460EFC7-6901-49D7-8ED3-94B1AE465A91}
 AppName=YTDown
 AppVersion={#AppVersion}
@@ -28,34 +28,34 @@ AppVerName=YTDown {#AppVersion}
 AppPublisher=Euclydes Uchoas
 VersionInfoVersion={#AppVersion}
 
-; Instalacao por usuario, sem UAC. O aplicativo so escreve em %LOCALAPPDATA%,
-; entao pedir administrador cobraria do usuario uma permissao que nada aqui usa.
+; Instalação por usuário, sem UAC. O aplicativo só escreve em %LOCALAPPDATA%,
+; então pedir administrador cobraria do usuário uma permissão que nada aqui usa.
 PrivilegesRequired=lowest
 PrivilegesRequiredOverridesAllowed=dialog
 DefaultDirName={autopf}\YTDown
 DefaultGroupName=YTDown
 
-; O aplicativo publicado e win-x64, e as duas ferramentas externas tambem.
+; O aplicativo publicado é win-x64, e as duas ferramentas externas também.
 ArchitecturesAllowed=x64compatible
 
-; O carregador de 64 bits apresenta o instalador como executavel nativo e
-; habilita ASLR de alta entropia, o que ajuda com politicas que barram binarios
-; sem reputacao.
+; O carregador de 64 bits apresenta o instalador como executável nativo e
+; habilita ASLR de alta entropia, o que ajuda com políticas que barram binários
+; sem reputação.
 UseSetupLdr=x64
 
-; O pacote passa de 250 MB, quase todo em executaveis. Compressao solida no
-; maximo demora para compilar, mas isso acontece uma vez por publicacao.
+; O pacote passa de 250 MB, quase todo em executáveis. Compressão sólida no
+; máximo demora para compilar, mas isso acontece uma vez por publicação.
 Compression=lzma2/max
 SolidCompression=yes
 
 OutputDir={#OutputDirectory}
 OutputBaseFilename=YTDown-{#AppVersion}-setup
 
-; Sem isto o proprio setup.exe sai com o icone generico do Inno Setup, que e o
+; Sem isto o próprio setup.exe sai com o ícone genérico do Inno Setup, que é o
 ; primeiro arquivo que a pessoa ve ao receber o aplicativo.
 SetupIconFile=..\assets\ytdown.ico
 
-; O publico-alvo nao tem o que decidir aqui: sem componentes, sem escolha de
+; O público-alvo não tem o que decidir aqui: sem componentes, sem escolha de
 ; pasta do menu Iniciar, sem tela de boas-vindas para clicar em Avancar.
 DisableProgramGroupPage=yes
 DisableWelcomePage=yes
@@ -83,5 +83,5 @@ Name: "{autodesktop}\YTDown"; Filename: "{app}\YTDown.exe"; Tasks: desktopicon
 Filename: "{app}\YTDown.exe"; Description: "{cm:LaunchProgram,YTDown}"; Flags: nowait postinstall skipifsilent
 
 ; Nada de [UninstallDelete] apontando para %LOCALAPPDATA%\YTDown. Aquela pasta
-; guarda o historico, as configuracoes e o yt-dlp que ja se atualizou sozinho:
-; e do usuario, nao da instalacao. Desinstalar e reinstalar preserva tudo.
+; guarda o histórico, as configurações e o yt-dlp que já se atualizou sozinho:
+; é do usuário, não da instalação. Desinstalar e reinstalar preserva tudo.

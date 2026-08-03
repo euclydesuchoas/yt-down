@@ -1,21 +1,21 @@
-<#
+﻿<#
 .SYNOPSIS
     Gera assets/ytdown.ico, o icone do aplicativo.
 
 .DESCRIPTION
-    O icone e desenhado por codigo, e nao editado em uma ferramenta grafica, para
+    O ícone é desenhado por código, e não editado em uma ferramenta gráfica, para
     que possa ser refeito e ajustado sem depender de nada instalado — do mesmo
-    modo que as ferramentas externas sao baixadas por script em vez de
+    modo que as ferramentas externas são baixadas por script em vez de
     versionadas prontas.
 
-    O desenho e um triangulo apontando para baixo sobre uma barra: a mesma forma
-    le como botao de play e como seta de download.
+    O desenho é um triângulo apontando para baixo sobre uma barra: a mesma forma
+    lê como botão de play e como seta de download.
 
-    Cada tamanho e desenhado no seu proprio tamanho, e nao reduzido do maior, que
-    e o que deixa icone borrado nas dimensoes pequenas.
+    Cada tamanho é desenhado no seu próprio tamanho, e não reduzido do maior, que
+    é o que deixa ícone borrado nas dimensões pequenas.
 
 .PARAMETER OutputPath
-    Onde gravar. Por padrao assets/ytdown.ico, na raiz do repositorio.
+    Onde gravar. Por padrão assets/ytdown.ico, na raiz do repositório.
 
 .EXAMPLE
     ./scripts/build-icon.ps1
@@ -36,14 +36,14 @@ if (-not $OutputPath) {
     $OutputPath = Join-Path $repositoryRoot 'assets/ytdown.ico'
 }
 
-# O mesmo azul dos botoes da tela. Vermelho do YouTube ficaria de fora pela mesma
-# razao que o nome nao virou "YouTube Downloader": descrever a funcao e diferente
+# O mesmo azul dos botões da tela. Vermelho do YouTube ficaria de fora pela mesma
+# razão que o nome não virou "YouTube Downloader": descrever a função é diferente
 # de vestir a marca de outro.
 $brandColor = [System.Drawing.Color]::FromArgb(255, 44, 107, 237)
 $glyphColor = [System.Drawing.Color]::White
 
-# Ate 48 o icone vai como DIB, que qualquer contexto do shell le; acima disso
-# como PNG, para o arquivo nao inchar.
+# Até 48 o ícone vai como DIB, que qualquer contexto do shell lê; acima disso
+# como PNG, para o arquivo não inchar.
 $sizes = @(16, 24, 32, 48, 64, 128, 256)
 $largestDibSize = 48
 
@@ -99,8 +99,8 @@ function New-IconBitmap {
 .SYNOPSIS
     Converte a imagem no bitmap de 32 bits que o formato ICO espera.
 .DESCRIPTION
-    As linhas vao de baixo para cima, a altura declarada e o dobro da real e uma
-    mascara AND vazia fecha o bloco. Nada disso e opcional: sem a mascara, o
+    As linhas vão de baixo para cima, a altura declarada é o dobro da real e uma
+    máscara AND vazia fecha o bloco. Nada disso é opcional: sem a máscara, o
     Windows recusa a entrada.
 #>
 function ConvertTo-Dib {
@@ -138,7 +138,7 @@ function ConvertTo-Dib {
     $writer.Flush()
 
     # A virgula impede o PowerShell de desenrolar o array em elementos soltos, o
-    # que faria o chamador receber uma colecao de objetos em vez de bytes.
+    # que faria o chamador receber uma coleção de objetos em vez de bytes.
     return , $stream.ToArray()
 }
 
@@ -183,7 +183,7 @@ try {
     $offset = 6 + (16 * $images.Count)
 
     foreach ($image in $images) {
-        # 256 e gravado como zero: o campo tem um byte so.
+        # 256 é gravado como zero: o campo tem um byte só.
         $declaredSize = if ($image.Size -ge 256) { 0 } else { $image.Size }
 
         $writer.Write([byte] $declaredSize)

@@ -1,29 +1,29 @@
-<#
+﻿<#
 .SYNOPSIS
-    Gera uma versao do YTDown pronta para ser entregue a outra pessoa.
+    Gera uma versão do YTDown pronta para ser entregue a outra pessoa.
 
 .DESCRIPTION
-    Publica o aplicativo em modo self-contained: o .NET vai junto, entao a maquina
-    de destino nao precisa ter nada instalado. Esse e o ponto para o publico deste
-    aplicativo, que nao vai instalar um runtime antes de baixar um video.
+    Publica o aplicativo em modo self-contained: o .NET vai junto, então a máquina
+    de destino não precisa ter nada instalado. Esse é o ponto para o público deste
+    aplicativo, que não vai instalar um runtime antes de baixar um vídeo.
 
-    O resultado e uma pasta com o executavel e um zip dela. Nao e um instalador:
+    O resultado é uma pasta com o executável e um zip dela. Não é um instalador:
     quem receber extrai e executa YTDown.exe.
 
-    As ferramentas externas entram no pacote a partir de tools/, e sao baixadas
+    As ferramentas externas entram no pacote a partir de tools/, e são baixadas
     antes caso estejam faltando.
 
 .PARAMETER Configuration
-    Release por padrao. Debug so faz sentido para investigar o proprio empacotamento.
+    Release por padrão. Debug só faz sentido para investigar o próprio empacotamento.
 
 .PARAMETER OutputDirectory
-    Onde gravar. Por padrao dist/, na raiz do repositorio.
+    Onde gravar. Por padrão dist/, na raiz do repositório.
 
 .PARAMETER SkipZip
-    Nao compacta a pasta publicada.
+    Não compacta a pasta publicada.
 
 .PARAMETER SkipInstaller
-    Nao gera o instalador, mesmo com o Inno Setup presente.
+    Não gera o instalador, mesmo com o Inno Setup presente.
 
 .EXAMPLE
     ./scripts/publish.ps1
@@ -47,8 +47,8 @@ if (-not $OutputDirectory) {
     $OutputDirectory = Join-Path $repositoryRoot 'dist'
 }
 
-# O identificador fixa 64 bits: o FFmpeg e o yt-dlp empacotados sao dessa
-# arquitetura, e um Windows de 32 bits nao executaria nem um nem outro.
+# O identificador fixa 64 bits: o FFmpeg e o yt-dlp empacotados são dessa
+# arquitetura, e um Windows de 32 bits não executaria nem um nem outro.
 $runtimeIdentifier = 'win-x64'
 
 function Find-InnoSetupCompiler {
@@ -96,8 +96,8 @@ if (Test-Path -LiteralPath $stagingDirectory) {
 Write-Host "[publish]     YTDown $version ($Configuration, $runtimeIdentifier, self-contained)..."
 
 # --self-contained leva o .NET junto; sem trimming, porque o WPF depende de
-# reflexao para carregar XAML e o recorte removeria o que ele procura em tempo
-# de execucao.
+# reflexão para carregar XAML e o recorte removeria o que ele procura em tempo
+# de execução.
 & dotnet publish $projectPath `
     --configuration $Configuration `
     --runtime $runtimeIdentifier `
@@ -107,17 +107,17 @@ Write-Host "[publish]     YTDown $version ($Configuration, $runtimeIdentifier, s
     -p:PublishTrimmed=false | Out-Host
 
 if ($LASTEXITCODE -ne 0) {
-    throw "dotnet publish falhou com codigo $LASTEXITCODE."
+    throw "dotnet publish falhou com código $LASTEXITCODE."
 }
 
-# O aplicativo nao funciona sem as ferramentas, e a ausencia so apareceria para
+# O aplicativo não funciona sem as ferramentas, e a ausência só apareceria para
 # quem recebesse o pacote. Conferir aqui transforma isso em falha de quem publica.
 $expectedTools = @('yt-dlp.exe', 'ffmpeg.exe', 'tools.lock.json')
 $publishedToolsDirectory = Join-Path $stagingDirectory 'tools'
 
 foreach ($tool in $expectedTools) {
     if (-not (Test-Path -LiteralPath (Join-Path $publishedToolsDirectory $tool))) {
-        throw "O pacote saiu sem tools/$tool. O aplicativo nao funcionaria na maquina de destino."
+        throw "O pacote saiu sem tools/$tool. O aplicativo não funcionaria na máquina de destino."
     }
 }
 
@@ -149,10 +149,10 @@ if (-not $SkipInstaller) {
     $compilerPath = Find-InnoSetupCompiler
 
     if (-not $compilerPath) {
-        Write-Host '[instalador]  Inno Setup nao encontrado; apenas a pasta e o zip foram gerados.'
+        Write-Host '[instalador]  Inno Setup não encontrado; apenas a pasta e o zip foram gerados.'
     }
     else {
-        Write-Host '[instalador]  compilando (compressao solida no maximo, costuma demorar)...'
+        Write-Host '[instalador]  compilando (compressão sólida no máximo, costuma demorar)...'
 
         $scriptPath = Join-Path $repositoryRoot 'installer/YTDown.iss'
 
@@ -163,7 +163,7 @@ if (-not $SkipInstaller) {
             $scriptPath | Out-Host
 
         if ($LASTEXITCODE -ne 0) {
-            throw "A compilacao do instalador falhou com codigo $LASTEXITCODE."
+            throw "A compilação do instalador falhou com código $LASTEXITCODE."
         }
 
         $installerPath = Join-Path $OutputDirectory "YTDown-$version-setup.exe"
@@ -174,7 +174,7 @@ if (-not $SkipInstaller) {
 }
 
 Write-Host ''
-Write-Host 'O instalador nao pede administrador: instala para o usuario atual.'
-Write-Host 'O zip serve a quem preferir nao instalar nada: extrair e executar YTDown.exe.'
-Write-Host 'Nos dois casos o Windows avisa que o programa e de origem desconhecida,'
-Write-Host 'porque o executavel nao e assinado.'
+Write-Host 'O instalador não pede administrador: instala para o usuário atual.'
+Write-Host 'O zip serve a quem preferir não instalar nada: extrair e executar YTDown.exe.'
+Write-Host 'Nos dois casos o Windows avisa que o programa é de origem desconhecida,'
+Write-Host 'porque o executável não é assinado.'

@@ -1,16 +1,16 @@
-<#
+﻿<#
 .SYNOPSIS
     Baixa as ferramentas externas (yt-dlp e FFmpeg) exigidas pelo YTDown.
 
 .DESCRIPTION
-    Os binarios nao sao versionados no Git: sao grandes e atualizados com frequencia.
-    As versoes usadas ficam fixadas em tools/tools.lock.json, junto do SHA256 esperado.
+    Os binários não são versionados no Git: são grandes e atualizados com frequência.
+    As versões usadas ficam fixadas em tools/tools.lock.json, junto do SHA256 esperado.
 
-    Um arquivo ja presente e com hash correto nao e baixado novamente, entao rodar
-    o script varias vezes e barato e seguro.
+    Um arquivo já presente e com hash correto não é baixado novamente, então rodar
+    o script várias vezes é barato e seguro.
 
 .PARAMETER Force
-    Rebaixa as ferramentas mesmo que ja estejam presentes e integras.
+    Rebaixa as ferramentas mesmo que já estejam presentes e íntegras.
 
 .EXAMPLE
     pwsh ./scripts/bootstrap-tools.ps1
@@ -62,10 +62,10 @@ function Save-ZipEntry {
         Add-Type -AssemblyName System.IO.Compression.FileSystem
         $archive = [System.IO.Compression.ZipFile]::OpenRead($temporaryZip)
         try {
-            # O pacote do FFmpeg traz os executaveis em bin/, entao localizamos pelo nome.
+            # O pacote do FFmpeg traz os executáveis em bin/, então localizamos pelo nome.
             $entry = $archive.Entries | Where-Object { $_.Name -eq $EntryName } | Select-Object -First 1
             if ($null -eq $entry) {
-                throw "Entrada '$EntryName' nao encontrada no pacote baixado de $Url."
+                throw "Entrada '$EntryName' não encontrada no pacote baixado de $Url."
             }
 
             [System.IO.Compression.ZipFileExtensions]::ExtractToFile($entry, $DestinationPath, $true)
@@ -80,7 +80,7 @@ function Save-ZipEntry {
 }
 
 if (-not (Test-Path -LiteralPath $manifestPath)) {
-    throw "Manifesto nao encontrado em $manifestPath."
+    throw "Manifesto não encontrado em $manifestPath."
 }
 
 if (-not (Test-Path -LiteralPath $toolsDirectory)) {
@@ -93,7 +93,7 @@ foreach ($tool in $manifest.tools) {
     $destinationPath = Join-Path $toolsDirectory $tool.fileName
 
     if (-not $Force -and (Test-ToolIsUpToDate -Path $destinationPath -ExpectedSha256 $tool.sha256)) {
-        Write-Host "[ok]       $($tool.name) $($tool.version) ja esta presente e integro."
+        Write-Host "[ok]       $($tool.name) $($tool.version) já está presente e íntegro."
         continue
     }
 

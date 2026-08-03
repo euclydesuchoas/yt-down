@@ -1,5 +1,5 @@
 {
-  "$comment": "Versoes fixadas das ferramentas externas. O bootstrap so baixa quando o arquivo esta ausente ou com hash divergente. Atualizar uma ferramenta = alterar version/url/sha256 aqui, em um commit proprio.",
+  "$comment": "Versões fixadas das ferramentas externas. O bootstrap só baixa quando o arquivo está ausente ou com hash divergente. Atualizar uma ferramenta = alterar version/url/sha256 aqui, em um commit próprio.",
   "tools": [
     {
       "name": "yt-dlp",
