@@ -556,8 +556,10 @@ bloqueio.
 
 ### Outros
 
-- Assinatura de commit: este repositório usa a conta pessoal
-  fixada no config **local**. A máquina tem outras
-  contas, de empresa, que não devem ser usadas aqui.
+- Assinatura de commit: este repositório usa a conta pessoal, fixada no config
+  **local**. A máquina tem outras contas, de empresa, que não devem ser usadas
+  aqui. O endereço não fica escrito nesta documentação de propósito, porque o
+  repositório é público; confira com `git config --local user.email` antes do
+  primeiro commit.
 - Os testes de integração exigem rede e as ferramentas baixadas. Estão marcados
   com a categoria `Integration` para poderem ser excluídos.
